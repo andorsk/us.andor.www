@@ -21,18 +21,8 @@ export const docsConfig: DocsConfig = {
       title: "Blog",
       items: [
         {
-          title: "Introduction",
-          href: "/docs/in-progress",
-          disabled: true,
-        },
-        {
-          title: "Build your own",
-          href: "/docs/in-progress",
-          disabled: true,
-        },
-        {
-          title: "Writing Posts",
-          href: "/docs/in-progress",
+          title: "About",
+          href: "/blog/about",
           disabled: true,
         },
       ],
