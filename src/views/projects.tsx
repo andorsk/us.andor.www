@@ -1,36 +1,45 @@
 "use client";
 
-type HomeLink = {
+type Link = {
   url: string;
   label: string;
+  description: string;
 };
 
-export const Home = () => {
-  const links: HomeLink[] = [
+export const ProjectPage = () => {
+  const links: Link[] = [
     {
-      url: "/blog",
-      label: "Blog",
-      description: "My personal blog.",
+      url: "https://starbucks.andor.us",
+      label: "Starbucks Mug Tracker",
+      description: "My starbucks mug collection from around the world..",
     },
     {
-      url: "/about",
-      label: "About",
-      description: "About this site.",
+      url: "https://service-profiles.andor.us",
+      label: "Service Profiles",
+      description:
+        "A tool I put together that implements a decentralized service discovery specifcations I lead at Trust Over IP.",
     },
     {
-      url: "/projects",
-      label: "Projects",
-      description: "View my some projects",
+      url: "https://github.com/andorsk/d2-mode",
+      label: "D2 Mode For Emacs",
+      description: "D2 Mode For Emacs",
+    },
+    {
+      url: "https://protocols.benri.io/",
+      label: "Web5 Protocols",
+      description:
+        "A regitry I put together for Decentralized Web Node Protocol Specifications",
+    },
+    {
+      url: "https://github.com/andorsk/a_novel_approach_toward_tda_paper",
+      label:
+        "A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis",
+      description: "A academic project I worked on with a friend",
     },
     {
       url: "/opensource",
-      label: "Open Source",
-      description: "Open Source Specifications and Standards I Work On",
-    },
-    {
-      contact: "/contact",
-      label: "Contact",
-      description: "Contact Me",
+      label: "Other Open Source Projects",
+      description: "Check out my other open source projects.",
     },
   ];
 
