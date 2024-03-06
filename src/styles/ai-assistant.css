@@ -1,0 +1,46 @@
+/* AIAssistant.css */
+.ai-assistant {
+  font-family: Arial, sans-serif;
+}
+
+.form {
+  margin-bottom: 10px;
+}
+
+.input {
+  flex: 1;
+  margin-right: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.messages {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.responses {
+  background-color: #f5f5f5;
+}
+
+.message {
+  margin: 10px 0;
+}
+
+.message-user {
+  text-align: right;
+}
+
+.message-ai {
+  text-align: left;
+}
