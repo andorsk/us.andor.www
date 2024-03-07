@@ -11,7 +11,8 @@ const ProjectLayout = () => {
     {
       url: "https://starbucks.andor.us",
       label: "Starbucks Mug Tracker",
-      description: "My starbucks mug collection from around the world..",
+      description:
+        "A fun little data project to help me figure out which starbucks mugs I was missing, and view starbucks mug collection from around the world...",
     },
     {
       url: "https://service-profiles.andor.us",
@@ -22,24 +23,32 @@ const ProjectLayout = () => {
     {
       url: "https://github.com/andorsk/d2-mode",
       label: "D2 Mode For Emacs",
-      description: "D2 Mode For Emacs",
+      description: "D2 Mode For Emacs. Listed by d2 and on MELPA",
     },
     {
       url: "https://protocols.benri.io/",
       label: "Web5 Protocols",
       description:
-        "A registry I put together for Decentralized Web Node Protocol Specifications",
+        "A public registry/tool I put together for Decentralized Web Node Protocol Specifications while working with Benri",
     },
     {
       url: "https://arxiv.org/abs/2201.06923",
       label:
         "A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis",
-      description: "A academic project I worked on with a friend",
+      description:
+        "A academic project I worked on with a friend focusing on Topology and Gravitational Wave Analysis.",
     },
     {
       url: "/opensource",
       label: "Other Open Source Projects",
-      description: "Check out my other open source projects.",
+      description:
+        "Check out my other open source projects specifications/projects I lead.",
+    },
+    {
+      url: "https://mangaloremom.com/en/",
+      label: "Managlore Mom",
+      description:
+        "A website I help put together for my mother in law to list her recipes",
     },
   ];
 
