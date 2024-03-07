@@ -15,17 +15,17 @@ export default function Home() {
     {
       url: "/blog",
       label: "Blog",
-      description: "My personal blog.",
+      description: "Will be available soon!",
     },
     {
       url: "/blog/about",
       label: "About",
-      description: "About this site.",
+      description: "Learn about &&||",
     },
     {
       url: "/projects",
       label: "Projects",
-      description: "View my some projects",
+      description: "Some of the projects I've worked on in the past",
     },
     {
       url: "/opensource",

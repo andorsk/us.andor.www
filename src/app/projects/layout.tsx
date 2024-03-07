@@ -9,6 +9,29 @@ type Link = {
 const ProjectLayout = () => {
   const links: Link[] = [
     {
+      url: "https://pathr.ai/products-technology/",
+      label: "Pathr.ai -- SensorLayer v1.0 and v2.0",
+      description:
+        "Pathr.ai is transforming how companies understand their physical locations – through the power of spatial intelligence. I led engineering while I was there. ",
+    },
+    {
+      url: "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/snapdragon_retailnext_case_study_0.pdf",
+      label: "RetailNext -- Aurora Sensor",
+      description:
+        "Part of the team that launched the first Aurora, a camera that processed human patterns at the edge.",
+    },
+    {
+      url: "https://developer.tbd.website/blog/ssi-console/",
+      label: "Benri",
+      description: "Storage for Decentralized Web Nodes",
+    },
+    {
+      url: "https://www.zion.fyi/",
+      label: "Zion Project",
+      description:
+        "Zion is a peer-governed social network where members are the true owners of their data. I was CTO  while I was there.",
+    },
+    {
       url: "https://starbucks.andor.us",
       label: "Starbucks Mug Tracker",
       description:
@@ -67,8 +90,8 @@ const ProjectLayout = () => {
   return (
     <DocumentLayout>
       <div className="flex w-full flex-col items-center py-10 text-center">
-        A lot of projects I`&aposve worked on are not published. Here are a few
-        that have been:
+        A lot of projects I worked on are not published. Here are a few that
+        have been:
         <div className="grid w-full grid-cols-3 text-center py-5">
           {links.map((item, index) => (
             <a
