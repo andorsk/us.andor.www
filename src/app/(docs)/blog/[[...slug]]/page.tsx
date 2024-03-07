@@ -81,12 +81,24 @@ export async function generateStaticParams(): Promise<
 }
 
 export default async function DocPage({ params }: DocPageProps) {
-  console.log("SEARCHING FOR", params);
   const doc = await getDocFromParams({ params });
+
+  if (params.slug === undefined) {
+    return (
+      <main className="relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
+        <div className="m-5">
+          <div className="mx-auto w-full min-w-0">
+            Stay Tuned! Blog Coming Soon!
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (!doc) {
     notFound();
   }
+
   const toc = await getTableOfContents(doc.body.raw);
   return (
     <main className="relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
