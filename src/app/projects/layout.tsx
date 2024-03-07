@@ -50,6 +50,18 @@ const ProjectLayout = () => {
       description:
         "A website I help put together for my mother in law to list her recipes",
     },
+    {
+      url: "/projects",
+      label: "Stealth",
+      description:
+        "A new project I'm working on. I'll be able to share more soon.",
+    },
+    {
+      url: "/projects",
+      label: "Stealth",
+      description:
+        "Another new project I'm working on. I'll be able to share more soon.",
+    },
   ];
 
   return (
