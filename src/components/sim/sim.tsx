@@ -3,8 +3,11 @@ import * as THREE from "three";
 import WebGL from "three/addons/capabilities/WebGL.js";
 
 const ThreeScene = () => {
-  const mountRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement>(null);
 
+  //  const mountRef = useRef(null);
+
+  // @ts-ignore
   const createCube = (scene) => {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -19,6 +22,7 @@ const ThreeScene = () => {
     return cube;
   };
 
+  // @ts-ignore
   const createLine = (scene) => {
     const material = new THREE.LineBasicMaterial({ color: 0x0000ff });
     const points = [];
@@ -33,6 +37,7 @@ const ThreeScene = () => {
   };
 
   useEffect(() => {
+    if (!mountRef.current) return;
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
 
@@ -49,6 +54,7 @@ const ThreeScene = () => {
 
     // Handle window resize
     const handleResize = () => {
+      if (!mountRef.current) return;
       const width = mountRef.current.clientWidth;
       const height = mountRef.current.clientHeight;
       renderer.setSize(width, height);
@@ -73,6 +79,7 @@ const ThreeScene = () => {
 
     // Cleanup
     return () => {
+      if (!mountRef.current) return;
       mountRef.current.removeChild(renderer.domElement);
       window.removeEventListener("resize", handleResize);
     };

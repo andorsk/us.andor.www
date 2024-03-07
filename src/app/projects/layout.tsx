@@ -67,8 +67,8 @@ const ProjectLayout = () => {
   return (
     <DocumentLayout>
       <div className="flex w-full flex-col items-center py-10 text-center">
-        A lot of projects I've worked on are not published. Here are a few that
-        have been:
+        A lot of projects I`&aposve worked on are not published. Here are a few
+        that have been:
         <div className="grid w-full grid-cols-3 text-center py-5">
           {links.map((item, index) => (
             <a

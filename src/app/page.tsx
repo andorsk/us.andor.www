@@ -4,6 +4,12 @@ import { UseWeb5 } from "@/components/web5";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ThreeScene from "@/components/sim/sim";
 
+type HomeLink = {
+  label: string;
+  url: string;
+  description: string;
+};
+
 export default function Home() {
   const links: HomeLink[] = [
     {

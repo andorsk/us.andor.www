@@ -9,7 +9,7 @@ const shortenDID = (did: string): string => {
 export const UseWeb5 = () => {
   const [did, setMyDid] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [web5, setWeb5] = useState("");
+  const [web5, setWeb5] = useState();
 
   useEffect(() => {
     const initWeb5 = async () => {
@@ -18,6 +18,7 @@ export const UseWeb5 = () => {
 
       try {
         const { web5, did } = await Web5.connect();
+        // @ts-ignore
         setWeb5(web5);
         setMyDid(did);
         setIsLoading(false);
