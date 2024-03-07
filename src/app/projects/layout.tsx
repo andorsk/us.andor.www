@@ -89,7 +89,7 @@ const ProjectLayout = () => {
 
   return (
     <DocumentLayout>
-      <div className="flex w-full flex-col items-center py-10 text-center">
+      <div className="flex w-full flex-col items-center p-10 text-center">
         A lot of projects I worked on are not published. Here are a few that
         have been:
         <div className="grid w-full grid-cols-3 text-center py-5">

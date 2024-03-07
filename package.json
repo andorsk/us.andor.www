@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.5",
     "@heroicons/react": "^2.1.1",
     "@web5/api": "^0.8.4",
     "class-variance-authority": "^0.7.0",

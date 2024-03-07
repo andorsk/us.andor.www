@@ -6,6 +6,16 @@ const ThreeScene = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const [mouse] = useState(new THREE.Vector2());
   const [raycaster] = useState(new THREE.Raycaster());
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const mobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        userAgent,
+      );
+    setIsMobile(mobile);
+  }, []);
 
   // @ts-ignore
   const createCube = (scene) => {
@@ -111,8 +121,9 @@ const ThreeScene = () => {
       cube.rotation.y += 0.005;
       const originalScale = new THREE.Vector3(1, 1, 1);
       const targetScale = new THREE.Vector3(1.2, 1.2, 1.2);
-      expandIfRollover(mouse, camera, cube, targetScale, originalScale);
-
+      if (!isMobile) {
+        expandIfRollover(mouse, camera, cube, targetScale, originalScale);
+      }
       renderer.render(scene, camera);
     };
 
