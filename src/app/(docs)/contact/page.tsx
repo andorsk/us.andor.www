@@ -1,7 +1,7 @@
-import { notFound } from "next/navigation";
-import { allDocs } from "contentlayer/generated";
-
 import { getTableOfContents } from "@/lib/toc";
+import { allDocs } from "contentlayer/generated";
+import { notFound } from "next/navigation";
+
 import { Mdx } from "@/components/mdx-components";
 import { DocsPageHeader } from "@/components/page-header";
 import { DocsPager } from "@/components/pager";
@@ -10,7 +10,7 @@ import { DashboardTableOfContents } from "@/components/toc";
 import "@/styles/mdx.css";
 import { Metadata } from "next";
 
-// import { env } from "@/env.mjs";
+import { env } from "@/env.mjs";
 import { absoluteUrl } from "@/lib/utils";
 
 interface DocPageProps {
@@ -22,11 +22,9 @@ interface DocPageProps {
 async function getDocFromParams({ params }: DocPageProps) {
   const slug = params.slug?.join("/") || "";
   const doc = allDocs.find((doc) => doc.slugAsParams === slug);
-
   if (!doc) {
     null;
   }
-
   return doc;
 }
 
@@ -80,10 +78,12 @@ export async function generateStaticParams(): Promise<
   }));
 }
 
-export default async function DocPage({ params }: DocPageProps) {
-  console.log("SEARCHING FOR", params);
-  const doc = await getDocFromParams({ params });
-
+export default async function DocPage() {
+  const doc = await getDocFromParams({
+    params: {
+      slug: ["contact"],
+    },
+  });
   if (!doc) {
     notFound();
   }

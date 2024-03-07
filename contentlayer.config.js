@@ -83,6 +83,9 @@ export const Article = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: "./content",
   documentTypes: [Doc, Article],
+  mdx: {
+    remarkPlugins: [remarkGfm],
+  },
   options: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

@@ -1,9 +1,9 @@
-type DocsLayoutProps = {
+type DocumentLayoutProps = {
   children: React.ReactNode;
 };
 
 // removed container
-export default function DocsLayout({ children }: DocsLayoutProps) {
+export default function DocumentLayout({ children }: DocumentLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-40 w-full border-b bg-background">

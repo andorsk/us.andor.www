@@ -54,16 +54,19 @@ export const AIAssistant = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask me something..."
-            className="flex-1 mr-2.5 p-2.5 rounded border border-gray-300"
+            className="flex-1 mr-2.5 p-2.5 text-black rounded border border-gray-300"
           />
+          <button type="submit" className="p-2.5 rounded  cursor-pointer">
+            Ask Virtual Me
+          </button>
           <button
             type="submit"
-            className="p-2.5 rounded bg-black text-white cursor-pointer"
+            className="px-5 mx-5 p-2.5 rounded cursor-pointer"
           >
-            Ask
+            Ask Me Over DWN
           </button>
         </form>
-        <div className="text-center max-h-75 overflow-y-auto ">
+        <div className="text-center max-h-40 overflow-y-auto ">
           {messages.map((message) => (
             <div
               key={message.id}

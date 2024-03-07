@@ -160,7 +160,6 @@ interface MdxProps {
 
 export function Mdx({ code }: MdxProps) {
   const Component = useMDXComponent(code);
-
   return (
     <div className="mdx">
       <Component components={components} />
