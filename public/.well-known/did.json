@@ -1,0 +1,64 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/did/v1",
+        {
+            "@id": "https://w3id.org/security#publicKeyJwk",
+            "@type": "@json"
+        }
+    ],
+    "id": "did:web:andor.us",
+    "publicKey": [
+        {
+            "id": "did:web:andor.us#owner",
+            "type": "Ed25519VerificationKey2018",
+            "controller": "did:web:andor.us",
+            "publicKeyBase58": "DDdrSK34VacSJAdpypruFWrYRoT5s8ugQR1yDGPmqk3y"
+        }
+    ],
+    "service": [
+        {
+            "id": "#dwn",
+            "type": "DecentralizedWebNode",
+            "serviceEndpoint": {
+                "messageAuthorizationKeys": [
+                    "#authz"
+                ],
+                "nodes": [
+                    "https://dwn.tbddev.org/dwn5",
+                    "https://dwn.tbddev.org/dwn1"
+                ],
+                "recordEncryptionKeys": [
+                    "#enc"
+                ],
+                "profile": "https://raw.githubusercontent.com/andorsk/blog/02e649024ffb090584a69636bb25922a4fe09c8a/sample-profile",
+                "uri": "https://my-tr-service/",
+                "integrity": "122041dd7b6443542e75701aa98a0c235951a28a0d851b11564d20022ab11d2589a8"
+            }
+        }
+    ],
+    "verificationMethod": [
+        {
+            "id": "did:web:andor.us#owner",
+            "type": "Ed25519VerificationKey2018",
+            "controller": "did:web:andor.us",
+            "publicKeyBase58": "DDdrSK34VacSJAdpypruFWrYRoT5s8ugQR1yDGPmqk3y",
+            "publicKeyJwk": {
+                "kty": "OKP",
+                "crv": "Ed25519",
+                "x": "tYjhxPveCWHjuJ1fSGmnwjn5AgynJLdZaX22qZrBk3g"
+            }
+        }
+    ],
+    "authentication": [
+        "did:web:andor.us#owner"
+    ],
+    "assertionMethod": [
+        "did:web:andor.us#owner"
+    ],
+    "capabilityDelegation": [
+        "did:web:andor.us#owner"
+    ],
+    "capabilityInvocation": [
+        "did:web:andor.us#owner"
+    ]
+}
