@@ -9,17 +9,18 @@ const ThreeScene = () => {
 
   // @ts-ignore
   const createCube = (scene) => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    // Create a dodecahedron geometry with a radius of 1
+    const geometry = new THREE.DodecahedronGeometry(1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    const edges = new THREE.EdgesGeometry(geometry);
-    const line = new THREE.LineSegments(
-      edges,
-      new THREE.LineBasicMaterial({ color: 0xffffff }),
-    );
-    scene.add(cube);
-    scene.add(line);
-    return cube;
+    const dodecahedron = new THREE.Mesh(geometry, material);
+    scene.add(dodecahedron);
+    // Edges geometry and material
+    const edgesGeometry = new THREE.EdgesGeometry(geometry);
+    const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+    dodecahedron.add(edges); // Add edges as a child of the dodecahedron mesh
+
+    return dodecahedron;
   };
 
   // @ts-ignore
@@ -33,6 +34,7 @@ const ThreeScene = () => {
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const line = new THREE.Line(geometry, material);
     scene.add(line);
+
     return line;
   };
 
@@ -65,8 +67,11 @@ const ThreeScene = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      const time = Date.now() * 0.0005;
+      cube.material.color.setHSL(Math.sin(time) * 0.5 + 0.5, 0.5, 0.5);
+      cube.material.color.setHSL(Math.sin(time) * 0.5 + 0.5, 0.5, 0.5);
+      cube.rotation.x += 0.005;
+      cube.rotation.y += 0.005;
       renderer.render(scene, camera);
     };
 
