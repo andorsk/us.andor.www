@@ -46,6 +46,7 @@ const ThreeScene = () => {
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
 
+    // @ts-ignore
     const onMouseMove = (event) => {
       // Calculate mouse position in normalized device coordinates
       // (-1 to +1) for both components
@@ -80,10 +81,16 @@ const ThreeScene = () => {
 
     // Modify the expandIfRollover function to set a target scale instead of immediately changing the object's scale.
     const expandIfRollover = (
+      // @ts-ignore
       mouse,
+      // @ts-ignore
       camera,
+      // @ts-ignore
       object,
+      // @ts-ignore
       targetScale,
+      // @ts-ignore
+
       originalScale,
     ) => {
       // Lerping
