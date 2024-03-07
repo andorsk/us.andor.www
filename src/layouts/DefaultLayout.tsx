@@ -1,3 +1,4 @@
+import InstallPWAButton from "@/components/install-pwa";
 /* import Search from "@/components/ui/search";
  *  */
 type DefaultLayoutProps = {
@@ -14,6 +15,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             <a href="/">Home</a>
           </div>
           <div className="flex flex-1 items-center space-x-2 justify-end">
+            <InstallPWAButton />
             <nav className="flex space-x-4">{/* <Search /> */}</nav>
             <a href="https://github.com/andorsk">Github</a>
           </div>
