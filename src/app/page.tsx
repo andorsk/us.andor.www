@@ -43,7 +43,6 @@ export default function Home() {
                   key={index}
                   href={item.url}
                   className="group  rounded-lg border border-transparent p-5 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-                  target="_blank"
                   rel="noopener noreferrer"
                 >
                   <div className="flex h-full flex-col items-center justify-center">

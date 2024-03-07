@@ -31,7 +31,7 @@ const ProjectLayout = () => {
         "A regitry I put together for Decentralized Web Node Protocol Specifications",
     },
     {
-      url: "https://github.com/andorsk/a_novel_approach_toward_tda_paper",
+      url: "https://arxiv.org/abs/2201.06923",
       label:
         "A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis",
       description: "A academic project I worked on with a friend",
