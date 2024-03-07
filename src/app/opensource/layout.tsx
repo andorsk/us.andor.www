@@ -62,6 +62,10 @@ const OpenSource = () => {
             >
               <div className="flex h-full flex-col items-center justify-center">
                 <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
+                <p className={`m-2 text-md text-right px-5 w-full opacity-50`}>
+                  {item.organization}
+                </p>
+
                 <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
               </div>
             </a>

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.1",
     "@web5/api": "^0.8.4",
     "class-variance-authority": "^0.7.0",
     "contentlayer": "^0.3.4",
@@ -27,7 +28,9 @@
     "shiki": "^1.1.7",
     "sodium-native": "^4.0.10",
     "stream-browserify": "^3.0.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "three": "^0.162.0",
+    "use-debounce": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",

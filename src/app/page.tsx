@@ -2,6 +2,7 @@
 import { AIAssistant } from "@/components/ai-assistant";
 import { UseWeb5 } from "@/components/web5";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import ThreeScene from "@/components/sim/sim";
 
 export default function Home() {
   const links: HomeLink[] = [
@@ -36,6 +37,9 @@ export default function Home() {
     <main className=" w-full">
       <DefaultLayout>
         <div>
+          <div>
+            <ThreeScene />
+          </div>
           <div className="flex w-full flex-col items-center py-10 text-center">
             <div className="grid w-full grid-cols-3 text-center py-5">
               {links.map((item, index) => (

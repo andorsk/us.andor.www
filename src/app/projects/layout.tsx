@@ -28,7 +28,7 @@ const ProjectLayout = () => {
       url: "https://protocols.benri.io/",
       label: "Web5 Protocols",
       description:
-        "A regitry I put together for Decentralized Web Node Protocol Specifications",
+        "A registry I put together for Decentralized Web Node Protocol Specifications",
     },
     {
       url: "https://arxiv.org/abs/2201.06923",

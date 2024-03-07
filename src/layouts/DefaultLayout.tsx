@@ -1,3 +1,5 @@
+/* import Search from "@/components/ui/search";
+ *  */
 type DefaultLayoutProps = {
   children: React.ReactNode;
 };
@@ -12,10 +14,8 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             <a href="/">Home</a>
           </div>
           <div className="flex flex-1 items-center space-x-2 justify-end">
+            <nav className="flex space-x-4">{/* <Search /> */}</nav>
             <a href="https://github.com/andorsk">Github</a>
-            <nav className="flex space-x-4">
-              <span className="sr-only">GitHub</span>
-            </nav>
           </div>
         </div>
       </header>
