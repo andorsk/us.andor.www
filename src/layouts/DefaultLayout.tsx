@@ -1,3 +1,5 @@
+"use client";
+
 import InstallPWAButton from "@/components/install-pwa";
 /* import Search from "@/components/ui/search";
  *  */
