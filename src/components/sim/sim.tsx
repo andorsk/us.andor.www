@@ -132,6 +132,7 @@ const ThreeScene = () => {
       animate();
     } else {
       const warning = WebGL.getWebGLErrorMessage();
+      alert("could not render 3d scene");
     }
 
     // Cleanup
