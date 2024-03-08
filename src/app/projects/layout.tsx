@@ -4,53 +4,63 @@ type Link = {
   url: string;
   label: string;
   description: string;
+  affiliation?: string;
+  dates?: string;
 };
 
 const ProjectLayout = () => {
   const links: Link[] = [
     {
       url: "https://pathr.ai/products-technology/",
-      label: "Pathr.ai -- SensorLayer v1.0 and v2.0",
+      label: "SensorLayer v1.0 and v2.0",
+      affiliation: "Pathr.ai",
       description:
         "Pathr.ai is transforming how companies understand their physical locations – through the power of spatial intelligence. I led engineering while I was there. ",
     },
     {
       url: "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/snapdragon_retailnext_case_study_0.pdf",
-      label: "RetailNext -- Aurora Sensor",
+      affiliation: "RetailNext",
+      label: "Aurora Sensor",
       description:
         "Part of the team that launched the first Aurora, a camera that processed human patterns at the edge.",
     },
     {
       url: "https://developer.tbd.website/blog/ssi-console/",
-      label: "Benri",
+      affiliation: "Benri",
+      label: "SSI Console",
       description: "Storage for Decentralized Web Nodes",
     },
     {
       url: "https://www.zion.fyi/",
       label: "Zion Project",
+      affiliation: "Zion",
       description:
         "Zion is a peer-governed social network where members are the true owners of their data. I was CTO  while I was there.",
     },
     {
       url: "https://starbucks.andor.us",
       label: "Starbucks Mug Tracker",
+      affiliation: "Personal",
       description:
         "A fun little data project to help me figure out which starbucks mugs I was missing, and view starbucks mug collection from around the world...",
     },
     {
       url: "https://service-profiles.andor.us",
       label: "Service Profiles",
+      affiliation: "Henosisknot LLC",
       description:
         "A tool I put together that implements a decentralized service discovery specifcations I lead at Trust Over IP.",
     },
     {
       url: "https://github.com/andorsk/d2-mode",
       label: "D2 Mode For Emacs",
+      affiliation: "Personal",
       description: "D2 Mode For Emacs. Listed by d2 and on MELPA",
     },
     {
       url: "https://protocols.benri.io/",
       label: "Web5 Protocols",
+      affiliation: "Benri",
       description:
         "A public registry/tool I put together for Decentralized Web Node Protocol Specifications while working with Benri",
     },
@@ -58,6 +68,7 @@ const ProjectLayout = () => {
       url: "https://arxiv.org/abs/2201.06923",
       label:
         "A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis",
+      affiliation: "Pathr.ai",
       description:
         "A academic project I worked on with a friend focusing on Topology and Gravitational Wave Analysis.",
     },
@@ -89,7 +100,22 @@ const ProjectLayout = () => {
 
   const header =
     "A lot of projects I worked on are not published. Here are a few that have been:";
-  return <GridBoxLayout header={header} links={links}></GridBoxLayout>;
+
+  return (
+    <GridBoxLayout
+      header={header}
+      links={links.map((item) => {
+        return {
+          url: item.url,
+          label: item.label,
+          description: item.description,
+          sublabel:
+            (item.affiliation ? item.affiliation : "") +
+            (item.dates ? " " + item.dates : ""),
+        };
+      })}
+    ></GridBoxLayout>
+  );
 };
 
 export default ProjectLayout;
