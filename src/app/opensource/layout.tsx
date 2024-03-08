@@ -41,7 +41,7 @@ const OpenSource = () => {
     {
       url: "https://wiki.trustoverip.org/display/HOME/Technology+Architecture+Task+Force",
       organization: "Trust Over IP",
-      label: "Technology Architecture Task Force Editor",
+      label: "Technology Architecture Task Force",
       role: "Editor",
       dates: "2022-Present",
       description:
@@ -49,7 +49,7 @@ const OpenSource = () => {
     },
     {
       url: "https://wiki.trustoverip.org/pages/viewpage.action?pageId=74875289",
-      label: "Founder/Co-Lead Service Discovery Task Force",
+      label: "Service Discovery Task Force",
       organization: "Trust Over IP",
       dates: "2024-Present",
       role: "Co-Lead and Founder",
