@@ -85,6 +85,22 @@ const ProjectLayout = () => {
         "A website I help put together for my mother in law to list her recipes",
     },
     {
+      url: "https://github.com/andorsk/daily_wisdom",
+      label: "Daily Wisdom",
+      description: "Random facts and information pushed to my slack daily",
+    },
+    {
+      url: "https://github.com/andorsk/hugo-doom-emacs-theme",
+      label: "Hugo Doom Emacs",
+      description: "Emulator for Emacs Doom on Hugo",
+    },
+    {
+      url: "https://github.com/andorsk/learn_kannada",
+      label: "Kannada ",
+      description:
+        "A website to help me learn Kannada, a language from my wife's home town.",
+    },
+    {
       url: "/projects",
       label: "Stealth",
       description:
