@@ -12,6 +12,12 @@ type Link = {
 const ProjectLayout = () => {
   const links: Link[] = [
     {
+      url: "/opensource",
+      label: "Open Source Working Groups",
+      description:
+        "Check out my other open source projects specifications/projects I lead.",
+    },
+    {
       url: "https://pathr.ai/products-technology/",
       label: "SensorLayer v1.0 and v2.0",
       affiliation: "Pathr.ai",
@@ -74,14 +80,8 @@ const ProjectLayout = () => {
         "A academic project I worked on with a friend focusing on Topology and Gravitational Wave Analysis.",
     },
     {
-      url: "/opensource",
-      label: "Other Open Source Projects",
-      description:
-        "Check out my other open source projects specifications/projects I lead.",
-    },
-    {
       url: "https://mangaloremom.com/en/",
-      label: "Managlore Mom",
+      label: "Mangalore Mom",
       description:
         "A website I help put together for my mother in law to list her recipes",
     },
