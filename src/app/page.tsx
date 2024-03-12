@@ -1,6 +1,6 @@
 "use client";
-import { AIAssistant } from "@/components/ai-assistant";
-import { UseWeb5 } from "@/components/web5";
+// import { AIAssistant } from "@/components/ai-assistant";
+// import { UseWeb5 } from "@/components/web5";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ThreeScene from "@/components/sim/sim";
 
