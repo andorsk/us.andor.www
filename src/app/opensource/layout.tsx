@@ -1,4 +1,4 @@
-import GridBoxLayout from "@/layouts/GridBoxLayout";
+import { GridBoxLayout } from "@/layouts/GridBoxLayout";
 
 type Link = {
   url: string;
@@ -62,21 +62,23 @@ const OpenSource = () => {
     "Note: See my github for other open source projects. These are specifically collaborations I made in the open source community.";
 
   return (
-    <GridBoxLayout
-      header={header}
-      links={links.map((item) => {
-        return {
-          url: item.url,
-          label: item.label,
-          description: item.description,
-          sublabel:
-            item.role +
-            "@" +
-            item.organization +
-            (item.dates ? " " + item.dates : ""),
-        };
-      })}
-    ></GridBoxLayout>
+    <div>
+      <GridBoxLayout
+        header={header}
+        links={links.map((item) => {
+          return {
+            url: item.url,
+            label: item.label,
+            description: item.description,
+            sublabel:
+              item.role +
+              "@" +
+              item.organization +
+              (item.dates ? " " + item.dates : ""),
+          };
+        })}
+      ></GridBoxLayout>
+    </div>
   );
 };
 

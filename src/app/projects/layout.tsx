@@ -1,4 +1,5 @@
-import GridBoxLayout from "@/layouts/GridBoxLayout";
+import { GridBoxLayout } from "@/layouts/GridBoxLayout";
+import DocumentLayout from "@/layouts/DocumentLayout";
 
 type Link = {
   url: string;
@@ -118,19 +119,21 @@ const ProjectLayout = () => {
     "A lot of projects I worked on are not published. Here are a few that have been:";
 
   return (
-    <GridBoxLayout
-      header={header}
-      links={links.map((item) => {
-        return {
-          url: item.url,
-          label: item.label,
-          description: item.description,
-          sublabel:
-            (item.affiliation ? item.affiliation : "") +
-            (item.dates ? " " + item.dates : ""),
-        };
-      })}
-    ></GridBoxLayout>
+    <div>
+      <GridBoxLayout
+        header={header}
+        links={links.map((item) => {
+          return {
+            url: item.url,
+            label: item.label,
+            description: item.description,
+            sublabel:
+              (item.affiliation ? item.affiliation : "") +
+              (item.dates ? " " + item.dates : ""),
+          };
+        })}
+      ></GridBoxLayout>
+    </div>
   );
 };
 
