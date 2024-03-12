@@ -28,6 +28,7 @@ export const GridBoxLayout = (props: GridBoxLayoutProps) => {
             >
               <div className="flex h-full flex-col items-center justify-center">
                 <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
+                <p className={`mb-5 text-sm opacity-50`}> {item.sublabel} </p>
                 <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
               </div>
             </a>
