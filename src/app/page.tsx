@@ -2,7 +2,7 @@
 // import { AIAssistant } from "@/components/ai-assistant";
 // import { UseWeb5 } from "@/components/web5";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import ThreeScene from "@/components/sim/sim";
+import ThreeSceneWrapper from "@/components/sim/sim-wrapper";
 
 type HomeLink = {
   label: string;
@@ -44,7 +44,7 @@ export default function Home() {
       <DefaultLayout>
         <div>
           <div>
-            <ThreeScene />
+            <ThreeSceneWrapper />
           </div>
           <div className="flex w-full flex-col items-center py-10 text-center">
             <div className="grid w-full grid-cols-3 text-center py-5">
