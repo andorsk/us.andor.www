@@ -13,11 +13,6 @@ type HomeLink = {
 export default function Home() {
   const links: HomeLink[] = [
     {
-      url: "/blog",
-      label: "Blog",
-      description: "Will be available soon!",
-    },
-    {
       url: "/blog/about",
       label: "About",
       description: "Learn about &&||",
@@ -47,7 +42,7 @@ export default function Home() {
             <ThreeSceneWrapper />
           </div>
           <div className="flex w-full flex-col items-center py-10 text-center">
-            <div className="grid w-full grid-cols-3 text-center py-5">
+            <div className="grid w-full grid-cols-2 text-center py-5">
               {links.map((item, index) => (
                 <a
                   key={index}
