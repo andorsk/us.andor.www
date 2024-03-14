@@ -113,6 +113,7 @@ const ThreeScene = () => {
       object.userData.targetScale = isHovered ? targetScale : originalScale;
     };
 
+    // @ts-ignore
     const pulseOverTime = (object, targetScale, originalScale, duration) => {
       const currentTime = Date.now();
       const elapsedTime = (currentTime % duration) / duration; // Use modulus to loop time
