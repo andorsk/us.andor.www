@@ -74,7 +74,7 @@ const ThreeScene = () => {
 
     camera.position.z = 5;
     const cube = createCube(scene);
-    const line = createLine(scene);
+    //    const line = createLine(scene);
     renderer.setSize(width, height);
     mountRef.current.appendChild(renderer.domElement);
 
@@ -113,6 +113,15 @@ const ThreeScene = () => {
       object.userData.targetScale = isHovered ? targetScale : originalScale;
     };
 
+    const pulseOverTime = (object, targetScale, originalScale, duration) => {
+      const currentTime = Date.now();
+      const elapsedTime = (currentTime % duration) / duration; // Use modulus to loop time
+      const sineWave = Math.sin(elapsedTime * Math.PI * 2); // Sine wave oscillates between -1 and 1
+      const progress = sineWave * 0.5 + 0.5;
+      const scale = originalScale.clone().lerp(targetScale, progress);
+      object.scale.copy(scale);
+    };
+
     const animate = () => {
       requestAnimationFrame(animate);
       const time = Date.now() * 0.0005;
@@ -121,9 +130,10 @@ const ThreeScene = () => {
       cube.rotation.y += 0.005;
       const originalScale = new THREE.Vector3(1, 1, 1);
       const targetScale = new THREE.Vector3(1.2, 1.2, 1.2);
-      if (!isMobile) {
-        expandIfRollover(mouse, camera, cube, targetScale, originalScale);
-      }
+      pulseOverTime(cube, targetScale, originalScale, 3000);
+      //      if (!isMobile) {
+      // expandIfRollover(mouse, camera, cube, targetScale, originalScale);
+      //     }
       renderer.render(scene, camera);
     };
 
