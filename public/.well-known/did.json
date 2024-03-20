@@ -44,7 +44,7 @@
     },
     {
       "id": "#trustRegistry",
-      "type": "",
+      "type": "Trust Registry",
       "serviceEndpoint": {
         "Integrity": "122041dd7b6443542e75701aa98a0c235951a28a0d851b11564d20022ab11d2589a8",
         "Profile": "https://raw.githubusercontent.com/andorsk/blog/02e649024ffb090584a69636bb25922a4fe09c8a/sample-profile",
