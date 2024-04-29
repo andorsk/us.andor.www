@@ -52,6 +52,14 @@ const ProjectLayout = () => {
         "A fun little data project to help me figure out which starbucks mugs I was missing, and view starbucks mug collection from around the world...",
     },
     {
+      url: "https://tabata.andor.us",
+      label: "Web5 Tabata App",
+      affiliation: "Personal",
+      description:
+        "no ads. open source. personal use. no tracking. free. no paywall. own your workout data with a web5 based tabata timer.",
+    },
+
+    {
       url: "https://service-profiles.andor.us",
       label: "Service Profiles",
       affiliation: "Henosisknot LLC",
