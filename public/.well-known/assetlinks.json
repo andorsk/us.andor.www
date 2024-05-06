@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "us.andor.tabata.twa",
+      "sha256_cert_fingerprints": [
+        "50:5F:F3:15:93:B5:07:4D:2A:78:BD:F7:4F:E6:43:0C:DD:DC:95:79:0B:42:77:CA:CB:36:43:C0:C5:3C:41:BB"
+      ]
+    }
+  }
+]
