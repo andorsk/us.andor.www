@@ -58,7 +58,6 @@ const ProjectLayout = () => {
       description:
         "no ads. open source. personal use. no tracking. free. no paywall. own your workout data with a web5 based tabata timer.",
     },
-
     {
       url: "https://service-profiles.andor.us",
       label: "Service Profiles",
@@ -92,6 +91,12 @@ const ProjectLayout = () => {
       label: "Mangalore Mom",
       description:
         "A website I help put together for my mother in law to list her recipes",
+    },
+    {
+      url: "https://github.com/andorsk/awesome-trust-registries",
+      label: "Awesome Trust Registries",
+      affiliation: "Personal",
+      description: "A curated list of trust registries",
     },
     {
       url: "https://github.com/andorsk/daily_wisdom",
