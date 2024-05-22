@@ -73,7 +73,7 @@ const ProjectLayout = () => {
     },
     {
       url: "https://protocols.benri.io/",
-      label: "Web5 Protocols",
+      label: "Web5 Protocol Repository",
       affiliation: "Benri",
       description:
         "A public registry/tool I put together for Decentralized Web Node Protocol Specifications while working with Benri",
