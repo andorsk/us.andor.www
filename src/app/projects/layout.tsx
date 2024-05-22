@@ -115,16 +115,20 @@ const ProjectLayout = () => {
         "A website to help me learn Kannada, a language from my wife's home town.",
     },
     {
-      url: "/projects",
-      label: "Stealth",
+      url: "https://ybr.andor.us",
+      label: "Yellow Brick Road",
       description:
-        "A new project I'm working on. I'll be able to share more soon.",
+        "A personal finance tool for finding which account works best for you.",
     },
     {
       url: "/projects",
-      label: "Stealth",
-      description:
-        "Another new project I'm working on. I'll be able to share more soon.",
+      label: "Codeshield",
+      description: "Build test vectors and ship more reliably. Not open yet.",
+    },
+    {
+      url: "https://github.com/andorsk/web5-calendar",
+      label: "Web5 Calendar",
+      description: "Privacy forward calendly competitor",
     },
   ];
 

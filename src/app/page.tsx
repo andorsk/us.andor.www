@@ -37,7 +37,7 @@ export default function Home() {
   return (
     <main className=" w-full">
       <DefaultLayout>
-        <div>
+        <div className="pt-4 text-4xl text-center">
           <div>
             <ThreeSceneWrapper />
           </div>

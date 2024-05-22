@@ -16,13 +16,21 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
           <div className="mx-10">
             <a href="/">Home</a>
           </div>
-          <div className="flex flex-1 items-center space-x-2 justify-end">
-            <nav className="flex space-x-4">{/* <Search /> */}</nav>
+          <div className="text-center flex-1">Andor Labs</div>
+
+          {/* Navigation and Links */}
+          <div className="flex items-center space-x-2 justify-end">
+            <nav className="flex space-x-4">
+              {/* Potential Search Component */}
+              {/* <Search /> */}
+            </nav>
             <a href="https://github.com/andorsk">Github</a>
           </div>
         </div>
       </header>
-      <div className=" flex-1">{children}</div>
+
+      {/* Main Content */}
+      <div className="flex-1">{children}</div>
     </div>
   );
 }
