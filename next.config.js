@@ -14,7 +14,7 @@ const nextConfig = {
   reactStrictMode: true,
   distDir: "dist",
   output: "export",
-  basePath: "/",
+  basePath: "",
   images: {
     unoptimized: true,
   },
