@@ -99,6 +99,18 @@ const ProjectLayout = () => {
       description: "A curated list of trust registries",
     },
     {
+      url: "https://github.com/andorsk/awesome-pds",
+      label: "Awesome Personal Datastores",
+      affiliation: "Personal",
+      description: "A curated list of trust personal data stores",
+    },
+    {
+      url: "https://github.com/andorsk/awesome-decentralized-community",
+      label: "Awesome Decentralized Identity Community",
+      affiliation: "Personal",
+      description: "A curated list of trust personal data stores",
+    },
+    {
       url: "https://github.com/andorsk/daily_wisdom",
       label: "Daily Wisdom",
       description: "Random facts and information pushed to my slack daily",
