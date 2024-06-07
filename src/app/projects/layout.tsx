@@ -72,7 +72,7 @@ const ProjectLayout = () => {
       description: "D2 Mode For Emacs. Listed by d2 and on MELPA",
     },
     {
-      url: "https://protocols.benri.io/",
+      url: "https://protocols.andor.us/",
       label: "Web5 Protocol Repository",
       affiliation: "Benri",
       description:
