@@ -13,6 +13,11 @@ const webpack = require("webpack");
 const nextConfig = {
   reactStrictMode: true,
   distDir: "dist",
+  output: "export",
+  basePath: "/",
+  images: {
+    unoptimized: true,
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
