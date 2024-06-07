@@ -5,6 +5,8 @@ const {
   PHASE_PRODUCTION_BUILD,
 } = require("next/constants");
 
+const { withContentlayer } = require("next-contentlayer");
+
 const webpack = require("webpack");
 
 /** @type {import('next').NextConfig} */
@@ -41,7 +43,7 @@ module.exports = (phase) => {
     const withPWA = require("@ducanh2912/next-pwa").default({
       dest: "public",
     });
-    return withPWA(nextConfig);
+    return withPWA(withContentlayer(nextConfig));
   }
   return nextConfig;
 };
