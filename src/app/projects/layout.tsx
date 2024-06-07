@@ -106,7 +106,7 @@ const ProjectLayout = () => {
     },
     {
       url: "https://github.com/andorsk/awesome-decentralized-community",
-      label: "Awesome Decentralized Identity Community",
+      label: "Awesome Decentralized Community",
       affiliation: "Personal",
       description: "A curated list of trust personal data stores",
     },
