@@ -56,6 +56,15 @@ const OpenSource = () => {
       description:
         "The mission of the Service Discovery Task Force (SDTF) is to develop specifications that enable discoverability of services in a decentralized context. This includes but is not limited to helping ToIP endpoint systems learn about the services that are available to them, and how to interact with them.",
     },
+    {
+      url: "https://github.com/decentralized-identity/incubation-labs",
+      label: "Incubation Labs",
+      organization: "Decentralized Identity Foundation",
+      dates: "2024-Present",
+      role: "Co-Lead and Founder",
+      description:
+        "An incubation community within DIF that encourages development and collaboration on new ideas and projects.",
+    },
   ];
 
   const header =
