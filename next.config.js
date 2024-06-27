@@ -12,9 +12,7 @@ const webpack = require("webpack");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  distDir: "dist",
   output: "export",
-  basePath: "",
   images: {
     unoptimized: true,
   },
@@ -48,6 +46,8 @@ module.exports = (phase) => {
     const withPWA = require("@ducanh2912/next-pwa").default({
       dest: "public",
     });
+
+    //#ts-ignore
     return withPWA(withContentlayer(nextConfig));
   }
   return nextConfig;

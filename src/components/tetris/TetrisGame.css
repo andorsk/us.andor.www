@@ -1,0 +1,29 @@
+.tetris-board {
+  display: grid;
+  border: 2px solid #000;
+  grid-template-rows: repeat(20, var(--cell-size));
+  grid-template-columns: repeat(10, var(--cell-size));
+  position: relative;
+}
+
+.cell {
+  border: 1px solid #ddd;
+}
+
+.cell.filled {
+  background-color: gray;
+}
+
+.tetromino {
+  position: absolute;
+}
+
+.cell.cyan {
+  background-color: cyan;
+}
+
+.cell.yellow {
+  background-color: yellow;
+}
+
+/* Add colors for other tetromino shapes here */
