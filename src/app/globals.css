@@ -31,3 +31,20 @@ body {
     text-wrap: balance;
   }
 }
+
+.quote-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem; /* Adjust as needed */
+  padding: 1rem;
+  font-style: italic;
+}
+
+.quote-content {
+  margin-bottom: 0.5rem; /* Adjust as needed */
+}
+
+.quote-author {
+  align-self: flex-end;
+  font-weight: bold;
+}
