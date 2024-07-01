@@ -56,30 +56,38 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
           <div className="hidden sm:flex space-x-4 mx-10">
             {links.map((item, index) => (
               <Link
-                className="group button bg-gray-900 px-4 py-2 border text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`group button  px-4 py-2 text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  item.icon ? "" : "border bg-gray-900"
+                }`}
                 key={index}
                 href={item.url}
                 passHref
               >
-                <span>{item.label}</span>
+                {item.icon ? (
+                  <img className="h-6" src={item.icon} alt={item.label} />
+                ) : (
+                  <span>{item.label}</span>
+                )}
               </Link>
             ))}
           </div>
           {isNavOpen && (
-            <div className="absolute top-16 left-0 w-full shadow-lg sm:hidden">
-              <nav className="flex flex-col items-start p-4 space-y-2">
-                {links.map((item, index) => (
-                  <Link
-                    className="group button bg-gray-900 px-4 py-2 border text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    key={index}
-                    href={item.url}
-                    passHref
-                  >
-                    <span>{item.label}</span>
-                  </Link>
-                ))}
-              </nav>
-            </div>
+            <>
+              <div className="absolute top-16 left-0 w-full shadow-lg sm:hidden">
+                <nav className="flex flex-col items-start p-4 space-y-2">
+                  {links.map((item, index) => (
+                    <Link
+                      className="group button bg-gray-900 px-4 py-2 border text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      key={index}
+                      href={item.url}
+                      passHref
+                    >
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            </>
           )}
           <div className="flex items-center space-x-2 justify-end">
             <nav className="flex space-x-4"></nav>
