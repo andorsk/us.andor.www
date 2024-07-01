@@ -82,10 +82,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
             </div>
           )}
           <div className="flex items-center space-x-2 justify-end">
-            <nav className="flex space-x-4">
-              {/* Potential Search Component */}
-              {/* <Search /> */}
-            </nav>
+            <nav className="flex space-x-4"></nav>
             <div className="flex space-x-2">
               <Github />
               <Linkedin />
@@ -94,6 +91,35 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
         </div>
       </header>
       <div className="mt-16">{children}</div>
+
+      <Footer />
     </div>
   );
 }
+
+const Footer = () => {
+  return (
+    <footer className="bg-gray-800 text-white p-6 mt-8">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div className="text-center md:text-left mb-4 md:mb-0">
+          <h5 className="text-2xl font-bold">Andor Labs</h5>
+          <p className="mt-2">© 2024 Henosisknot LLC.</p>
+        </div>
+        <div className="flex flex-col md:flex-row items-center">
+          <a
+            href="/blog/about"
+            className="md:ml-4 mt-2 md:mt-0 hover:underline"
+          >
+            About
+          </a>
+          <a href="/services" className="md:ml-4 mt-2 md:mt-0 hover:underline">
+            Services
+          </a>
+          <a href="/contact" className="md:ml-4 mt-2 md:mt-0 hover:underline">
+            Contact
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+};

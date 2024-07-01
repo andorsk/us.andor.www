@@ -10,7 +10,7 @@ const ThreeSceneWrapper = () => {
   }, []);
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
+    <div className="w-full h-full">
       {isComponentVisible ? (
         <Suspense fallback={<div>Loading 3D Scene...</div>}>
           <LazyThreeScene />

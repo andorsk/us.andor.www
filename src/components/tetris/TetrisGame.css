@@ -3,7 +3,6 @@
   border: 2px solid #000;
   grid-template-rows: repeat(20, var(--cell-size));
   grid-template-columns: repeat(10, var(--cell-size));
-  position: relative;
 }
 
 .cell {
@@ -12,10 +11,6 @@
 
 .cell.filled {
   background-color: gray;
-}
-
-.tetromino {
-  position: absolute;
 }
 
 .cell.cyan {
@@ -27,3 +22,19 @@
 }
 
 /* Add colors for other tetromino shapes here */
+
+.tetris-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.control-button {
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.control-icon {
+  width: 32px;
+  height: 32px;
+}

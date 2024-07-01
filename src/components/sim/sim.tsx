@@ -7,6 +7,8 @@ const ThreeScene = () => {
   const [mouse] = useState(new THREE.Vector2());
   const [raycaster] = useState(new THREE.Raycaster());
   const [isMobile, setIsMobile] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     const userAgent = navigator.userAgent.toLowerCase();
@@ -34,6 +36,13 @@ const ThreeScene = () => {
 
     const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
     dodecahedron.add(edges); // Add edges as a child of the dodecahedron mesh
+
+    // Set the maximum size of the cube
+    const maxCubeSize = 200; // Max size in pixels
+    const aspect = window.innerWidth / window.innerHeight;
+    const scale = (maxCubeSize / window.innerHeight) * aspect;
+    dodecahedron.scale.set(scale, scale, scale);
+
     return dodecahedron;
   };
 
@@ -89,6 +98,11 @@ const ThreeScene = () => {
     };
     window.addEventListener("resize", handleResize);
 
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+
     // Modify the expandIfRollover function to set a target scale instead of immediately changing the object's scale.
     const expandIfRollover = (
       // @ts-ignore
@@ -124,11 +138,14 @@ const ThreeScene = () => {
     };
 
     const animate = () => {
+      if (!isAnimating) return;
       requestAnimationFrame(animate);
       const time = Date.now() * 0.0005;
       cube.material.color.setHSL(Math.sin(time) * 0.5 + 0.5, 0.5, 0.5);
       cube.rotation.x += 0.005;
       cube.rotation.y += 0.005;
+      cube.position.y = -scrollY * 0.01;
+
       const originalScale = new THREE.Vector3(1, 1, 1);
       const targetScale = new THREE.Vector3(1.2, 1.2, 1.2);
       pulseOverTime(cube, targetScale, originalScale, 3000);
@@ -146,17 +163,37 @@ const ThreeScene = () => {
       alert("could not render 3d scene");
     }
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsAnimating(entry.isIntersecting);
+      },
+      { threshold: 0.1 },
+    );
+
+    if (mountRef.current) {
+      observer.observe(mountRef.current);
+    }
+
     // Cleanup
     return () => {
       if (!mountRef.current) return;
       mountRef.current.removeChild(renderer.domElement);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", onMouseMove, false);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll);
 
-  // Style the div to specify its dimensions, or use external CSS/className
-  return <div ref={mountRef} style={{ width: "100%", height: "400px" }} />;
+      if (mountRef.current) {
+        observer.unobserve(mountRef.current);
+      }
+    };
+  }, [isAnimating, scrollY]);
+
+  return (
+    <div
+      ref={mountRef}
+      style={{ width: "100%", minWidth: "400px", height: "100%" }}
+    />
+  );
 };
 
 export default ThreeScene;
