@@ -132,7 +132,7 @@ function PitchView() {
   }, []);
 
   return (
-    <div className="flex text-yellow bg-black flex-col text-2xl h-screen justify-center items-center relative overflow-hidden">
+    <div className="flex bg-black flex-col p-4 text-2xl justify-center items-center relative overflow-hidden">
       <div
         ref={containerRef}
         className="w-full h-full z-0 absolute hyperspeed-animation"

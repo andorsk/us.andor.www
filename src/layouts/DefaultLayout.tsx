@@ -28,7 +28,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex dark min-h-screen flex-col">
       <header className="fixed top-0 z-40 w-full border-b bg-black">
         <div className="px-5 flex h-16 items-center space-x-2 sm:justify-between sm:space-x-0">
           <div className="sm:hidden">
