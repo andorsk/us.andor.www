@@ -1,3 +1,13 @@
+export type HomeLink = {
+  url: string;
+  label: string;
+  description: string;
+  organization?: string;
+  affiliation?: string;
+  role?: string;
+  dates?: string;
+};
+
 export const homeLinks: HomeLink[] = [
   {
     url: "/",
