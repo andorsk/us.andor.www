@@ -3,6 +3,7 @@ export type HomeLink = {
   label: string;
   description: string;
   organization?: string;
+  icon?: string;
   affiliation?: string;
   role?: string;
   dates?: string;
@@ -13,6 +14,7 @@ export const homeLinks: HomeLink[] = [
     url: "/",
     label: "Home",
     description: "Learn about &&||",
+    icon: "/icons/icon-512x512.png",
   },
   {
     url: "/blog/about",
