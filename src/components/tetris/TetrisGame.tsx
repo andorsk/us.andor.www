@@ -12,10 +12,16 @@ type Tetrino = {
   color: string;
   label: string;
   y: number;
+  rotation?: number;
+  textcolor?: string;
   x: number;
 };
 
-const TetrinoShape = ({ tetrino }) => {
+type TetrinoShapeProps = {
+  tetrino: Tetrino;
+};
+
+const TetrinoShape: React.FC<TetrinoShapeProps> = ({ tetrino }) => {
   return (
     <div
       className="tetris-shape"
@@ -160,6 +166,8 @@ const GameControls: React.FC<GameControlsProps> = ({
       <div className="controls col-span-1">
         <h2 className="text-lg font-bold mb-4">Controls:</h2>
         <ControlButtons
+          nextTetrinos={nextTetrinos} // Display the next 3 tetrinos
+          allTetrinos={Tetrinos}
           handleRotate={handleRotate}
           handleLeft={handleLeft}
           handleRight={handleRight}
@@ -350,10 +358,14 @@ const TetrisGame: React.FC = () => {
     (direction: "clockwise" | "counterclockwise") => {
       if (!currentTetrino) return;
 
+      if (!currentTetrino.rotation) {
+        currentTetrino.rotation = 0;
+      }
+
       const newRotation =
         direction === "clockwise"
-          ? (currentTetrino.rotation + 1) % 4
-          : (currentTetrino.rotation + 3) % 4; // 3 is the same as -1 mod 4
+          ? (currentTetrino?.rotation + 1) % 4
+          : (currentTetrino?.rotation + 3) % 4; // 3 is the same as -1 mod 4
 
       if (!checkCollision(0, 0)) {
         setCurrentTetrino(
@@ -472,10 +484,10 @@ const TetrisGame: React.FC = () => {
       <div className="w-full">
         <GameControls
           nextTetrinos={tetrinoQueue.slice(0, 3)} // Display the next 3 tetrinos
+          allTetrinos={Tetrinos}
           handleRotate={handleRotateClick}
           handleLeft={handleLeftClick}
           handleRight={handleRightClick}
-          allTetrinos={Tetrinos}
           handleDown={handleDownClick}
         />
       </div>

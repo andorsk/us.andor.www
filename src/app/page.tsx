@@ -4,7 +4,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import ThreeSceneWrapper from "@/components/sim/sim-wrapper";
 import styles from "@/styles/HomePage.module.css";
 import { ProjectLinks } from "@/lib/data/projectLinks";
-import { OpenSourceLinks } from "@/lib/data/openSourceLinks.ts";
+import { OpenSourceLinks } from "@/lib/data/openSourceLinks";
 import "@/styles/hyperspeed.css";
 
 import TetrisGame from "@/components/tetris/TetrisGame";
@@ -21,7 +21,7 @@ type HomeLink = {
 };
 
 type Link = {
-  url: string;
+  url?: string;
   label: string;
   description: string;
   affiliation?: string;
@@ -33,7 +33,7 @@ type CardProps = {
   link: Link;
 };
 
-const Avatar = ({ link }) => {
+const Avatar: React.FC<CardProps> = ({ link }) => {
   return (
     <div className="w-full flex items-center justify-center rounded-lg shadow-lg p-5 box-border transform transition-transform duration-300 mb-5 md:mb-0 md:ml-5">
       <div className="flex flex-col items-center">
@@ -229,7 +229,7 @@ const ProjectsView = () => {
     <div className="flex w-full flex-col items-center py-10 text-center">
       <div className="text-4xl font-semibold">Sample Projects</div>
       <div className=" font-semibold text-gray-500">
-        Just some examples of things I've worked on{" "}
+        Just some examples of things I have worked on{" "}
       </div>
 
       <div className="grid w-full grid-cols-1 md:grid-cols-3 text-center py-5">
@@ -243,7 +243,6 @@ const ProjectsView = () => {
           >
             <div className="flex h-full flex-col items-center justify-center">
               <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
-              <p className={`mb-5 text-sm opacity-50`}> {item.sublabel} </p>
               <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
             </div>
           </a>
