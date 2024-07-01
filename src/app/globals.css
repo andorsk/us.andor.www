@@ -48,3 +48,7 @@ body {
   align-self: flex-end;
   font-weight: bold;
 }
+
+.servicesbg {
+  background: url("/imgs/bitart_wave.png");
+}
