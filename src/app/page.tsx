@@ -6,6 +6,7 @@ import styles from "@/styles/HomePage.module.css";
 import { ProjectLinks } from "@/lib/data/projectLinks";
 import { OpenSourceLinks } from "@/lib/data/openSourceLinks";
 import "@/styles/hyperspeed.css";
+import ContactForm from "@/components/ContactForm";
 
 import TetrisGame from "@/components/tetris/TetrisGame";
 
@@ -296,11 +297,9 @@ const SkillsView = () => {
 
 const ContactView = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen items-center justify-center w-full">
-      <div className="text-center m-4">
-        Want to talk more? All you need to do is click this button.
-        <br />
-        <button className="bg-gray-900 p-5 m-4 rounded-lg"> Contact Me </button>
+    <div className="flex flex-col md:flex-row text-white h-screen items-center justify-center w-full">
+      <div className="text-center min-width-1/3 m-4">
+        <ContactForm />
       </div>
     </div>
   );
@@ -316,7 +315,7 @@ function MainView() {
             I revive startup engineering teams and help evaluate technical
             acquisitions.
           </p>
-          <p>Focused on the Decentalized Tech and Retail AI Space.</p>
+          <p>Focused on the Decentalized Tech and Retail AI.</p>
         </div>
       </div>
       <div className="text-center flex items-center justify-center h-full w-full absolute z-10">
@@ -385,7 +384,7 @@ export default function Home() {
         <ProjectsView />
         <OpenSourceGroups />
         {/* <SkillsView /> */}
-        {/* <ContactView /> */}
+        <ContactView />
       </div>
     </DefaultLayout>
   );
