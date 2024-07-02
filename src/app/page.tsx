@@ -1,439 +1,390 @@
 "use client";
 
 import DefaultLayout from "@/layouts/DefaultLayout";
+import ThreeSceneWrapper from "@/components/sim/sim-wrapper";
+import styles from "@/styles/HomePage.module.css";
+import { ProjectLinks } from "@/lib/data/projectLinks";
+import { OpenSourceLinks } from "@/lib/data/openSourceLinks";
+import "@/styles/hyperspeed.css";
+import ContactForm from "@/components/ContactForm";
+
+import TetrisGame from "@/components/tetris/TetrisGame";
+
 import React, { useEffect, useRef, useState } from "react";
 
-// Enhanced Animated network nodes component with more connections
-const NetworkAnimation = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+import { serviceDescriptions } from "@/lib/data/serviceDescriptions";
+import { ServiceDescription } from "@/lib/types";
+
+type HomeLink = {
+  label: string;
+  url: string;
+  description: string;
+};
+
+type Link = {
+  url?: string;
+  label: string;
+  description: string;
+  affiliation?: string;
+  dates?: string;
+  image: string;
+};
+
+type CardProps = {
+  link: Link;
+};
+
+const Avatar: React.FC<CardProps> = ({ link }) => {
+  return (
+    <div className="w-full flex items-center justify-center rounded-lg shadow-lg p-5 box-border transform transition-transform duration-300 mb-5 md:mb-0 md:ml-5">
+      <div className="flex flex-col items-center">
+        <img
+          className="rounded-full mx-auto mb-4"
+          src={link.image}
+          alt={link.label}
+        />
+        <div className="text-xl font-bold text-center">{link.label}</div>
+        <div className="mt-2 text-center">{link.description}</div>
+      </div>
+    </div>
+  );
+};
+
+const ServicesView = () => {
+  return (
+    <div className="flex flex-col m-5 p-5 bg-gray-900 items-center">
+      <h2 className="text-3xl text-center font-bold text-white mb-8">
+        Services
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {serviceDescriptions.map((service) => (
+          <div
+            key={service.id}
+            className="bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+          >
+            <img
+              src={service.picture}
+              alt={service.name}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h3 className="text-2xl font-semibold text-white mb-2">
+                {service.name}
+              </h3>
+              <p className="text-gray-300">{service.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+function PitchView() {
+  type PitchData = {
+    headline: string;
+    subheadline?: string;
+  };
+
+  const [visibleIndex, setVisibleIndex] = useState(-1);
+  const pitchData: PitchData[] = [
+    {
+      headline: "Over 10+ years of Engineering Startup Experience",
+      subheadline: "Pushing the limits of what's possible",
+    },
+    {
+      headline: "Founding Engineer of 2 Startups",
+      subheadline: "Founding Engineer of Pathr.ai, and CTO/Co-Founder of Benri",
+    },
+    {
+      headline: "Leader of the Decentralized Identity Space",
+      subheadline:
+        "Co-Chair of the Technical Steering Committee At Decentralized Identity Foundation",
+    },
+    {
+      headline: "Everything on this website was built by me!",
+      subheadline: "I don't subcontract my work",
+    },
+    {
+      headline: "20+ Engineering Projects",
+      subheadline: "I'm a builder and a doer.",
+    },
+  ];
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // Node system for animated network
-    const nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      trusted: boolean;
-      pulse: number;
-    }> = [];
-
-    // Floating particles for background effect
-    const particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      opacity: number;
-      size: number;
-    }> = [];
-
-    // Create nodes
-    for (let i = 0; i < 20; i++) {
-      nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        trusted: i === 9 || i === 15, // Two highlighted "trusted" nodes
-        pulse: Math.random() * Math.PI * 2
-      });
+    const numStars = 100;
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement("div");
+      star.className = "star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      container.appendChild(star);
     }
-
-    // Create floating particles
-    for (let i = 0; i < 40; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        opacity: Math.random() * 0.3 + 0.1,
-        size: Math.random() * 2 + 1
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw floating particles
-      particles.forEach(particle => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        // Wrap around edges for particles
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        if (particle.y > canvas.height) particle.y = 0;
-
-        // Draw particle
-        ctx.fillStyle = `rgba(34, 197, 94, ${particle.opacity})`;
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      
-      // Update and draw nodes
-      nodes.forEach(node => {
-        node.x += node.vx;
-        node.y += node.vy;
-        node.pulse += 0.04;
-
-        // Bounce off edges with padding
-        const padding = 30;
-        if (node.x <= padding || node.x >= canvas.width - padding) node.vx *= -1;
-        if (node.y <= padding || node.y >= canvas.height - padding) node.vy *= -1;
-
-        // Draw connections with increased connectivity
-        nodes.forEach(other => {
-          const dist = Math.sqrt((node.x - other.x) ** 2 + (node.y - other.y) ** 2);
-          if (dist < 200) { // Increased connection distance
-            const opacity = (1 - dist / 200) * 0.5; // Increased opacity
-            ctx.strokeStyle = node.trusted || other.trusted ? 
-              `rgba(34, 197, 94, ${opacity})` : 
-              `rgba(156, 163, 175, ${opacity * 0.7})`;
-            ctx.lineWidth = node.trusted || other.trusted ? 2.5 : 1.5; // Thicker lines
-            ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.stroke();
-          }
-        });
-
-        // Draw node with pulsing effect
-        const pulseSize = node.trusted ? 1 + Math.sin(node.pulse) * 0.4 : 1;
-        const nodeSize = (node.trusted ? 10 : 6) * pulseSize; // Larger nodes
-        
-        // Node glow effect for trusted nodes
-        if (node.trusted) {
-          ctx.shadowColor = '#22c55e';
-          ctx.shadowBlur = 20;
-        } else {
-          ctx.shadowBlur = 0;
-        }
-        
-        ctx.fillStyle = node.trusted ? '#22c55e' : '#9ca3af';
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, nodeSize, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Reset shadow
-        ctx.shadowBlur = 0;
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
+    pitchData.forEach((_, index) => {
+      setTimeout(() => {
+        setVisibleIndex(index);
+      }, index * 500); // delay each item by 500ms
+    });
   }, []);
 
   return (
-    <canvas 
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full opacity-50"
-    />
-  );
-};
-
-// Hero Banner Component with Enhanced Word-by-Word Text Animations
-const HeroBanner = () => {
-  return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-navy-900 overflow-hidden">
-      <NetworkAnimation />
-      
-      <div className="relative z-10 text-center px-6 max-w-4xl">
-        <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            <span className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>Andor </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>Labs </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>: </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '500ms' }}>Trusted </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '600ms' }}>Agentic </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '700ms' }}>Web </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '800ms' }}>Consulting</span>
-          </h1>
+    <div className="flex bg-black flex-col p-4 text-2xl justify-center items-center relative overflow-hidden">
+      <div
+        ref={containerRef}
+        className="w-full h-full z-0 absolute hyperspeed-animation"
+      ></div>
+      <div className="warpscene">
+        <div className="wrap">
+          <div className="wall wall-right"></div>
+          <div className="wall wall-left"></div>
+          <div className="wall wall-top"></div>
+          <div className="wall wall-bottom"></div>
+          <div className="wall wall-back"></div>
         </div>
-        
-        <div className="mb-8">
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            <span className="animate-fade-in-up" style={{ animationDelay: '900ms' }}>Building </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>AI </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '1100ms' }}>Agents </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '1200ms' }}>is </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '1300ms' }}>easy.</span>
-            <br />
-            <br />
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1400ms' }}>Building </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1500ms' }}>Trusted </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1600ms' }}>AI </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1700ms' }}>Agents </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1800ms' }}>, not </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1900ms' }}>so </span>
-            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '2000ms' }}>much.</span>
-          </h2>
-          <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
-            <span className="animate-fade-in-up" style={{ animationDelay: '2100ms' }}>I </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2150ms' }}>help </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2200ms' }}>startups, </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2250ms' }}>enterprises, </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2300ms' }}>and </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2350ms' }}>investors </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2400ms' }}>create, </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2450ms' }}>evaluate, </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2500ms' }}>and </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2550ms' }}>govern </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2600ms' }}>AI </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2650ms' }}>Agents </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2700ms' }}>that </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2750ms' }}>can </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2800ms' }}>be </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '2850ms' }}>trusted.</span>
-          </p>
+        <div className="wrap">
+          <div className="wall wall-right"></div>
+          <div className="wall wall-left"></div>
+          <div className="wall wall-top"></div>
+          <div className="wall wall-bottom"></div>
+          <div className="wall wall-back"></div>
         </div>
-        
-        <a 
-          href="https://calendly.com/andor-us/initial-introduction-meeting"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-green-500 hover:bg-green-600 text-white text-xl font-semibold py-4 px-8 rounded-lg transition-colors duration-300 transform hover:scale-105 animate-fade-in-up"
-          style={{ animationDelay: '2900ms' }}
+      </div>
+      {pitchData.map((item, index) => (
+        <div
+          key={index}
+          className={`text-center p-4 z-10 outlined-text opacity-0 transition-opacity duration-500 ${
+            index <= visibleIndex ? "opacity-100" : ""
+          }`}
         >
-          👉 Book a Consultation
-        </a>
-      </div>
+          <h2 className="text-3xl font-bold">{item.headline}</h2>
+          {item.subheadline && <p>{item.subheadline}</p>}
+        </div>
+      ))}
+      <button className="text-3xl border py-2 px-4 rounded-lg hover:bg-black transition duration-300 z-10">
+        <a href="/blog/about">Learn More</a>
+      </button>
     </div>
   );
-};
+}
 
-// Problem Statement Section - Challenges of the Agentic Web
-const ProblemStatement = () => {
-  const challenges = [
+const TestimonialView = () => {
+  type Testimonial = {
+    content: string;
+    who: string;
+    active: boolean;
+  };
+
+  const testimonial: Testimonial[] = [
     {
-      icon: "🤖",
-      title: "Autonomous Decision Making",
-      description: "Act with autonomy and make decisions",
-      delay: "400"
+      content:
+        "We hired Andor to fix a number of critical bugs in our platform that had built up after a prior development team had offboarded. In spite of there being minimal existing documentation or technical handover available, Andor quickly dug in to our systems and resolved the issues. He also proactively set up new systems, testing, and documentation to assist handover to an incoming BAU development team. Andor was great to work with and was an excellent communicator. He kept us in the loop with everything he did, proactively flagging roadblocks and any trade-off decisions required. His depth of experience and knowledge of industry best practices has been very helpful to us in determining the next steps for our system architecture. His passion for his work is very strong and this shows through in the level of care he puts into his work and the expectations he sets for those around him.",
+      who: "David Kim (CEO Rethinkable)",
+      active: true,
     },
     {
-      icon: "🕸️",
-      title: "Multi-Agent Orchestration",
-      description: "Multiply complexity in multi-agent orchestration",
-      delay: "500"
+      content:
+        "As the Head of R&D at RetailNext, I had the pleasure of working with Andor quite a bit as he transitioned to a role split between the Customer Experience Team and the R&D Team. Watching him learn quickly and grow into this role for which he had no formal training was impressive, to say the least. Andor is intelligent, well educated, and carries himself well, but more importantly he possesses the most important trait for a technological innovator: insatiable curiosity. His motivation comes from within and he refuses to let up until he's achieved the (often Herculean) goals he's set out for himself.",
+      who: "George Shaw (CEO of Pathr)",
+      active: false,
     },
-    {
-      icon: "🏗️",
-      title: "New Infrastructure Layers",
-      description: "Require new layers: identity, governance, registries, storage, and secure communication",
-      delay: "600"
-    }
   ];
 
-  return (
-    <div className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>Challenges Of the Agentic Web</h2>
-        
-        <div className="text-center mb-12">
-          <p className="text-xl text-gray-700 mb-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            AI Agents represent a <strong>new challenge for organizations</strong>. Unlike traditional apps, they:
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {challenges.map((challenge, index) => (
-            <div
-              key={index}
-              className={`bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 hover:shadow-xl hover:bg-white animate-fade-in-up border border-slate-200`}
-              style={{ animationDelay: `${challenge.delay}ms` }}
-            >
-              <div className="text-4xl mb-4">{challenge.icon}</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{challenge.title}</h3>
-              <p className="text-gray-600">{challenge.description}</p>
-            </div>
-          ))}
-        </div>
-        
-        <div className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-r-lg transform transition-all duration-700 hover:shadow-xl animate-fade-in-up backdrop-blur-sm" style={{ animationDelay: '700ms' }}>
-          <p className="text-xl font-semibold text-red-700 italic text-center">
-            ⚠️ Without trust, AI Agents risk becoming opaque, unreliable, and even dangerous.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Project Links Section
-const ProjectLinksSection = () => {
-  return (
-    <div className="py-20 bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>My Work</h2>
-        
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">🚀 Projects</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Explore my technical projects, consulting work, and engineering solutions in the Trusted Agentic Web space.
-            </p>
-            <a 
-              href="/projects" 
-              className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform hover:scale-105"
-            >
-              View Projects
-            </a>
-          </div>
-          
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">🌐 Open Source Leadership</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              See my contributions to open source projects, community leadership roles, and standards development work.
-            </p>
-            <a 
-              href="/opensource" 
-              className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform hover:scale-105"
-            >
-              View Open Source
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Focus Areas Section with Text Animations
-const FocusAreas = () => {
-  const areas = [
-    {
-      title: "Agentic Identity",
-      icon: "🔐",
-      items: [
-        { title: "Delegation", description: "Securely granting and revoking authority between agents." },
-        { title: "Proof of Personhood", description: "Ensuring agents are tied to real, verifiable individuals." },
-        { title: "Reputation", description: "Building trust through verifiable track records." }
-      ]
-    },
-    {
-      title: "Agentic Governance", 
-      icon: "⚖️",
-      items: [
-        { title: "Agentic Access Management Policies", description: "OPA, Cedar, and other policy frameworks." },
-        { title: "Policy Management", description: "Runtime guardrails to prevent rogue behavior." },
-        { title: "Agentic Commerce", description: "Enabling safe economic transactions between agents." }
-      ]
-    },
-    {
-      title: "Agentic Infrastructure",
-      icon: "🏗️", 
-      items: [
-        { title: "Registries", description: "Publishing and resolving agent facts." },
-        { title: "Communication", description: "Secure, interoperable protocols for agent-to-agent interaction." },
-        { title: "Storage", description: "Verifiable, privacy-respecting data management for agents." }
-      ]
-    },
-    {
-      title: "Agentic Protocol Development",
-      icon: "📜", 
-      items: [
-        { title: "DIDComm", description: "Secure messaging protocol for decentralized identity." },
-        { title: "Verifiable Credentials", description: "Standards for digital credential exchange." },
-        { title: "Trust Over IP (ToIP)", description: "Protocol stack for internet-scale digital trust." },
-        { title: "OpenID Connect for VCs", description: "Integration of verifiable credentials with OIDC." }
-      ]
-    }
-  ];
+  const link = {
+    label: "Andor Kesselman",
+    description: "Fun fact: This was my attire for my wedding.",
+    image:
+      "https://media.licdn.com/dms/image/C4D03AQH-nNtREKGefQ/profile-displayphoto-shrink_800_800/0/1609844548992?e=1724889600&v=beta&t=oG1DqyoCbFsX9mDXbZN4hUkfObaosycfFDonWyaBlx0",
+  };
 
   return (
-    <div className="py-20 bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>Where I Focus</h2>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {areas.map((area, index) => (
-            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up" style={{ animationDelay: `${200 + index * 100}ms` }}>
-              <div className="text-center mb-6">
-                <div className="text-4xl mb-2">{area.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900">{area.title}</h3>
-              </div>
-              
-              <div className="space-y-3">
-                {area.items.map((item, itemIndex) => (
-                  <div key={itemIndex}>
-                    <h4 className="font-semibold text-gray-800 mb-1 text-sm">{item.title}</h4>
-                    <p className="text-gray-600 text-xs leading-relaxed">{item.description}</p>
-                  </div>
-                ))}
+    <div className="flex flex-col md:flex-row m-5 p-5 bg-gray-900 items-center md:items-start">
+      <div className="flex flex-col md:flex-col md:w-1/2 mb-5 md:mb-0">
+        <h2 className="text-white text-center text-3xl mb-4">Testimonials</h2>
+        {testimonial
+          .filter((item) => item.active)
+          .map((item, index) => (
+            <div className="flex flex-col mb-5 shadow-lg" key={index}>
+              <div className="quote-container text-white">
+                <div className="quote-content max-w-full overflow-hidden overflow-ellipsis whitespace-pre-wrap">
+                  {item.content}
+                </div>
+                <div className="quote-author">- {item.who}</div>
               </div>
             </div>
           ))}
-        </div>
-        
-        <div className="text-center mt-8">
-          <p className="text-lg text-gray-700 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-            👉 <em>Want to learn more? Watch my talk here:</em>{" "}
-            <a href="https://www.youtube.com/live/SJ8rFKJ8NHw?t=2235s" className="text-blue-600 hover:underline font-semibold">
-              Watch on YouTube
-            </a>
-          </p>
-        </div>
+      </div>
+      <div className="flex  flex-col md:flex-row md:w-1/2 justify-center md:justify-end md:items-center">
+        <Avatar link={link} />
       </div>
     </div>
   );
 };
 
-// Call to Action Section with Text Animations
-const CallToAction = () => {
+const ProjectsView = () => {
   return (
-    <div className="py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-black">
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-white mb-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>Ready to Build Trusted AI Agents?</h2>
-        
-        <a 
-          href="https://calendly.com/andor-us/initial-introduction-meeting"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl animate-fade-in-up"
-          style={{ animationDelay: '300ms' }}
-        >
-          👉 Book a Consultation
-        </a>
+    <div className="flex w-full flex-col items-center py-10 text-center">
+      <div className="text-4xl font-semibold">Sample Projects</div>
+      <div className=" font-semibold text-gray-500">
+        Just some examples of things I have worked on{" "}
+      </div>
+
+      <div className="grid w-full grid-cols-1 md:grid-cols-3 text-center py-5">
+        {ProjectLinks.slice(0, 15).map((item, index) => (
+          <a
+            key={index}
+            href={item.url}
+            className="group rounded-lg border border-transparent p-5 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="flex h-full flex-col items-center justify-center">
+              <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
+              <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   );
 };
 
+const OpenSourceGroups = () => {
+  return (
+    <div className="flex w-full flex-col items-center py-10 text-center bg-gray-900">
+      <div className="text-4xl font-semibold">OpenSource Activity</div>
+      <div className="grid w-full grid-cols-1 md:grid-cols-3 text-center py-5">
+        {OpenSourceLinks.map((item, index) => (
+          <a
+            key={index}
+            href={item.url}
+            className="group rounded-lg border border-transparent p-5 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="flex h-full flex-col items-center justify-center">
+              <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
+              <p className={`mb-5 text-sm opacity-50`}>
+                {" "}
+                {item.role +
+                  "@" +
+                  item.organization +
+                  (item.dates ? " " + item.dates : "")}
+              </p>
+              <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const SkillsView = () => {
+  return (
+    <div className="w-full h-screen text-center m-10">
+      <div className="text-4xl">Skill Tetris</div>
+      <div className=" w-full p-10 h-full">
+        <TetrisGame />
+      </div>
+    </div>
+  );
+};
+
+const ContactView = () => {
+  return (
+    <div className="flex flex-col md:flex-row text-white h-screen items-center justify-center w-full">
+      <div className="text-center min-width-1/3 m-4">
+        <ContactForm />
+      </div>
+    </div>
+  );
+};
+
+function MainView() {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+      <div className="text-center flex flex-col items-center justify-center w-full absolute z-50">
+        <div className="text-4xl flex flex-col">Andor Labs</div>
+        <div className="m-4 flex flex-col">
+          <p>
+            I revive startup engineering teams and help evaluate technical
+            acquisitions.
+          </p>
+          <p>Focused on the Decentalized Tech and Retail AI.</p>
+        </div>
+      </div>
+      <div className="text-center flex items-center justify-center h-full w-full absolute z-10">
+        <ThreeSceneWrapper />
+      </div>
+    </div>
+  );
+}
+function SampleView() {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen w-full bg-orange-500"></div>
+  );
+}
 export default function Home() {
+  const ScrollDownIndicator = () => {
+    return (
+      <div className="fixed bottom-4 left-4 flex flex-col items-center animate-bounce">
+        <div className="relative mb-2">
+          <svg
+            className="w-10 h-10 text-white"
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M50 50m-45 0a45 45 0 1 0 90 0 45 45 0 1 0-90 0"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="4 2"
+            />
+          </svg>
+          <div className="absolute inset-0 flex justify-center items-center text-white">
+            <svg
+              className="w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 12a1 1 0 01-.7-.3l-3-3a1 1 0 011.4-1.4l1.3 1.3V4a1 1 0 112 0v4.6l1.3-1.3a1 1 0 011.4 1.4l-3 3a1 1 0 01-.7.3z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+        <span className="text-white">Scroll Down</span>
+      </div>
+    );
+  };
+
   return (
     <DefaultLayout>
-      <div className="flex flex-col">
-        <HeroBanner />
-        <ProblemStatement />
-        <ProjectLinksSection />
-        <FocusAreas />
-        <CallToAction />
+      <div className="flex flex-col overflow-auto">
+        <div>
+          <MainView />
+          <ScrollDownIndicator />
+        </div>
+
+        <ServicesView />
+        <PitchView />
+
+        <TestimonialView />
+        <ProjectsView />
+        <OpenSourceGroups />
+        {/* <SkillsView /> */}
+        <ContactView />
       </div>
     </DefaultLayout>
   );
