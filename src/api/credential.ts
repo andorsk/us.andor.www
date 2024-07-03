@@ -2,21 +2,35 @@ export type ClientOptions = {
   url: string;
 };
 
-export type RequestCredentialRequest = {
-  issuer: string;
-  issuerKID: string;
-  subject: string;
-  data: string;
+export type InquiryStatus = string;
+
+export type InquiryRecord = {
+  email?: string;
+  name?: string;
+  company_name?: string;
+  phone_number?: string;
+  creation_date?: string;
+  update_date?: string;
+  status?: InquiryStatus;
+  origin?: string;
+  reason_for_contact?: string;
+  id?: string;
+};
+
+export type RequestStoreInquiry = {
+  record: InquiryRecord;
 };
 
 export type VerifyCredentialRequest = {
-  credentailJWT: string;
+  credentialJWT: string;
 };
 
 type APIFetchOptions = {
-  Headers: string[];
-  BaseURI: string; // overrides uri
+  headers?: string[];
+  baseURI?: string;
+  method?: string; // overrides the default method
 };
+
 /*
  * Creates a client to use with the website
  */
@@ -30,41 +44,46 @@ export class Client {
   async fetchHTTPAPI(
     endpoint: string,
     data: any,
-    options: APIFetchOptions,
+    options: APIFetchOptions = {},
   ): Promise<any> {
-    let headers = ["Accept: application/json", "Content-Type:application/json"];
+    let headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
 
-    if (options.Headers !== null) {
-      headers = options.Headers;
+    if (options.headers) {
+      options.headers.forEach((header) => {
+        const [key, value] = header.split(": ");
+        headers[key] = value;
+      });
     }
 
-    let baseURI = this.options.url;
-    if (options.BaseURI === "") {
-      baseURI = this.options.url;
-    }
+    const baseURI = options.baseURI || this.options.url;
+    const method = options.method || "POST"; // default to POST
 
     const url = baseURI + endpoint;
-    return fetch(url, {
-      method: "PUT", // *GET, POST, PUT, DELETE, etc.
+    const response = await fetch(url, {
+      method: method, // dynamic method
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
       credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: headers,
       body: JSON.stringify(data),
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
   }
 
-  async requestCredential(request: RequestCredentialRequest): Promise<any> {
-    return this.fetchHTTPAPI("/v1/credentials", request, {} as APIFetchOptions);
+  async requestCredential(request: RequestStoreInquiry): Promise<any> {
+    return this.fetchHTTPAPI("/inquiry", request, {});
   }
 
   async verifyCredential(request: VerifyCredentialRequest): Promise<any> {
-    return this.fetchHTTPAPI(
-      "/v1/credentials/verification",
-      request,
-      {} as APIFetchOptions,
-    );
+    console.log("request", request);
+    return this.fetchHTTPAPI("/verify", request, {});
   }
 }

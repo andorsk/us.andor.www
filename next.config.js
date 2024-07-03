@@ -12,8 +12,7 @@ const webpack = require("webpack");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-//  output: "export",
-//  distDir: "dist",
+  output: "export",
   images: {
     unoptimized: true,
   },
@@ -38,13 +37,17 @@ const nextConfig = {
   },
 };
 
+const withPWA = require("@ducanh2912/next-pwa").default({
+  dest: "public",
+});
+
 module.exports = (phase) => {
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     const withPWA = require("@ducanh2912/next-pwa").default({
       dest: "public",
     });
 
-    // @ts-ignore
+    //#ts-ignore
     return withPWA(withContentlayer(nextConfig));
   }
   return nextConfig;
