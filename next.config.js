@@ -13,7 +13,6 @@ const webpack = require("webpack");
 const nextConfig = {
   reactStrictMode: true,
   output: "export",
-  distDir: "dist",
   images: {
     unoptimized: true,
   },

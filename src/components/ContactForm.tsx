@@ -41,9 +41,16 @@ function ContactForm() {
   };
 
   return (
-    <div className="w-full mx-auto mt-10 items-center justify-center">
-      Contact Form
-      <form onSubmit={handleSubmit} className="p-8 rounded shadow-md">
+    <div className="w-full mx-auto mt-10 items-center justify-center bg-gray-300  min-w-1/2">
+      <div className="text-black">
+        <h3 className="text-3xl">Contact Form</h3>
+        At the end of this, you will receive an email with a VC for your account
+        which you can verify later.
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className="p-8 rounded bg-gray-900 shadow-md"
+      >
         <div className="mb-4">
           <label className="block text-sm font-bold mb-2" htmlFor="email">
             Email
