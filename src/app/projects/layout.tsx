@@ -18,6 +18,12 @@ const ProjectLayout = () => {
         "Check out my other open source projects specifications/projects I lead.",
     },
     {
+      url: "https://ayra.forum/ayra-technical-whitepaper/",
+      label: "Ayra Technical Whitepaper",
+      description:
+        "Lead Author of Technical Whitepaper for global, trusted, cross ecosystem data exchange.",
+    },
+    {
       url: "https://pathr.ai/products-technology/",
       label: "SensorLayer v1.0 and v2.0",
       affiliation: "Pathr.ai",
