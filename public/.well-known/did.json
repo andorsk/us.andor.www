@@ -1,55 +1,31 @@
 {
-  "@context": "https://www.w3.org/ns/did/v1",
-  "id": "did:andor:us",
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    {
+      "Ed25519VerificationKey2018": "https://w3id.org/security#Ed25519VerificationKey2018",
+      "publicKeyJwk": {
+        "@id": "https://w3id.org/security#publicKeyJwk",
+        "@type": "@json"
+      }
+    }
+  ],
+  "id": "did:web:andor.us",
   "verificationMethod": [
     {
-      "id": "did:andor:us",
-      "type": "JsonWebKey2020",
-      "controller": "did:andor:us#owner",
+      "id": "did:web:andor.us#z6MktMThhVuKVXAgGvWwGJHg3q46xhHWqbvP9TpJtpgg9zW4",
+      "type": "Ed25519VerificationKey2018",
+      "controller": "did:web:andor.us",
       "publicKeyJwk": {
         "kty": "OKP",
         "crv": "Ed25519",
-        "x": "10jTebqL3JNN1JRfCx2yXyuY6reMfRLSOK9dhMv5A9OCVb-mD7h5EojtBOZyk-bj2jvXSzoMJm-_FGgI6cGnrQ",
-        "alg": "EdDSA",
-        "kid": "did:andor:us"
+        "x": "zodQESSAXG1VYBy8kpMKrYhV45y09XF-ZX0pJ2LXSek"
       }
     }
   ],
   "authentication": [
-    [
-      "did:andor:us#owner"
-    ]
+    "did:web:andor.us#z6MktMThhVuKVXAgGvWwGJHg3q46xhHWqbvP9TpJtpgg9zW4"
   ],
   "assertionMethod": [
-    [
-      "did:andor:us#owner"
-    ]
-  ],
-  "service": [
-    {
-      "id": "#dwn",
-      "type": "DecentralizedWebNode",
-      "serviceEndpoint": {
-        "messageAuthorizationKeys": [
-          "#authz"
-        ],
-        "nodes": [
-          "https://dwn.tbddev.org/dwn5",
-          "https://dwn.tbddev.org/dwn1"
-        ],
-        "recordEncryptionKeys": [
-          "#enc"
-        ]
-      }
-    },
-    {
-      "id": "#trustRegistry",
-      "type": "Trust Registry",
-      "serviceEndpoint": {
-        "Integrity": "122041dd7b6443542e75701aa98a0c235951a28a0d851b11564d20022ab11d2589a8",
-        "Profile": "https://raw.githubusercontent.com/andorsk/blog/02e649024ffb090584a69636bb25922a4fe09c8a/sample-profile",
-        "URI": "andor.us"
-      }
-    }
+    "did:web:andor.us#z6MktMThhVuKVXAgGvWwGJHg3q46xhHWqbvP9TpJtpgg9zW4"
   ]
 }
