@@ -12,7 +12,7 @@ export const ProjectLinks: Link[] = [
   {
     url: "https://agentoverlay.com",
     label: "AgentOverlay",
-    organization: "Henosisknot LLC",
+    organization: "Agent Overlay, Inc",
     description:
       "Building the infrastructure for the agentic web - enabling AI agents to discover, connect, and collaborate across decentralized networks.",
   },
