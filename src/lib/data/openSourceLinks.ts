@@ -2,6 +2,42 @@ import { Link } from "./projectLinks";
 
 export const OpenSourceLinks: Link[] = [
   {
+    url: "https://projectnanda.org/",
+    label: "Project NANDA : Bay Area Chapter",
+    organization: "Bay Area Chapter",
+    dates: "2024-Present",
+    role: "Chapter Lead",
+    description:
+      "Leading the Bay Area Chapter of Project NANDA, building the Internet of Agents.",
+  },
+  {
+    url: "https://identity.foundation/working-groups/trusted-agents.html",
+    label: "Trusted AI Agents",
+    organization: "DIF",
+    dates: "2024-Present",
+    role: "Chair",
+    description:
+      "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
+  },
+  {
+    url: "https://agenticinternetworkshop.org/#",
+    label: "Agentic Internet Workshop",
+    organization: "Community",
+    dates: "2024-Present",
+    role: "Organizer",
+    description:
+      "Workshop focused on building the foundational infrastructure for agentic internet systems.",
+  },
+  {
+    url: "https://luma.com/home?period=past&e=evt-0zQJsVa7iC7V3h5",
+    label: "AI Agent Unconference: Lightning Talks & Discussions",
+    organization: "Community",
+    dates: "2024",
+    role: "Organizer",
+    description:
+      "Community unconference featuring lightning talks and discussions about AI agents and their future.",
+  },
+  {
     url: "https://identity.foundation/decentralized-web-node/spec/",
     label: "Decentralized Web Node Working Group",
     organization: "DIF",
@@ -47,8 +83,8 @@ export const OpenSourceLinks: Link[] = [
       "The mission of the Service Discovery Task Force (SDTF) is to develop specifications that enable discoverability of services in a decentralized context. This includes but is not limited to helping ToIP endpoint systems learn about the services that are available to them, and how to interact with them.",
   },
   {
-    url: "https://github.com/decentralized-identity/incubation-labs",
-    label: "Incubation Labs",
+    url: "https://labs.identity.foundation/",
+    label: "DIF Labs",
     organization: "Decentralized Identity Foundation",
     dates: "2024-Present",
     role: "Co-Lead and Founder",

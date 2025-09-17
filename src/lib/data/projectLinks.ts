@@ -10,6 +10,34 @@ export type Link = {
 
 export const ProjectLinks: Link[] = [
   {
+    url: "https://projectnanda.org/",
+    label: "Project NANDA : Bay Area Chapter",
+    organization: "Bay Area Chapter",
+    description:
+      "Leading the Bay Area Chapter of Project NANDA, building the Internet of Agents.",
+  },
+  {
+    url: "https://identity.foundation/working-groups/trusted-agents.html",
+    label: "Trusted AI Agents Working Group",
+    organization: "DIF",
+    description:
+      "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
+  },
+  {
+    url: "https://agenticinternetworkshop.org/#",
+    label: "Agentic Internet Workshop",
+    organization: "Community",
+    description:
+      "Workshop focused on building the foundational infrastructure for agentic internet systems.",
+  },
+  {
+    url: "https://luma.com/home?period=past&e=evt-0zQJsVa7iC7V3h5",
+    label: "AI Agent Unconference: Lightning Talks & Discussions",
+    organization: "Community",
+    description:
+      "Community unconference featuring lightning talks and discussions about AI agents and their future.",
+  },
+  {
     url: "/opensource",
     label: "Open Source Working Groups",
     description:
