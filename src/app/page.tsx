@@ -394,7 +394,7 @@ const FocusAreas = () => {
         <div className="text-center mt-8">
           <p className="text-lg text-gray-700 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
             👉 <em>See my talk on these focus areas here:</em>{" "}
-            <a href="#" className="text-blue-600 hover:underline font-semibold">
+            <a href="https://www.youtube.com/live/SJ8rFKJ8NHw?t=2235s" className="text-blue-600 hover:underline font-semibold">
               Watch on YouTube
             </a>
           </p>
