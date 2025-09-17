@@ -5,16 +5,16 @@ export const OpenSourceLinks: Link[] = [
     url: "https://projectnanda.org/",
     label: "Project NANDA : Bay Area Chapter",
     organization: "Bay Area Chapter",
-    dates: "2024-Present",
+    dates: "2025-Present",
     role: "Chapter Lead",
     description:
       "Leading the Bay Area Chapter of Project NANDA, building the Internet of Agents.",
   },
   {
     url: "https://identity.foundation/working-groups/trusted-agents.html",
-    label: "Trusted AI Agents",
+    label: "Trusted AI Agents WG",
     organization: "DIF",
-    dates: "2024-Present",
+    dates: "2025-Present",
     role: "Chair",
     description:
       "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
@@ -23,7 +23,7 @@ export const OpenSourceLinks: Link[] = [
     url: "https://agenticinternetworkshop.org/#",
     label: "Agentic Internet Workshop",
     organization: "Community",
-    dates: "2024-Present",
+    dates: "2025-Present",
     role: "Organizer",
     description:
       "Workshop focused on building the foundational infrastructure for agentic internet systems.",
