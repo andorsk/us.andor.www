@@ -26,21 +26,21 @@ export const ProjectLinks: Link[] = [
   {
     url: "https://identity.foundation/working-groups/trusted-agents.html",
     label: "Trusted AI Agents Working Group",
-    organization: "DIF",
+    organization: "Decentralized Identity Foundation",
     description:
       "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
   },
   {
     url: "https://agenticinternetworkshop.org/#",
     label: "Agentic Internet Workshop",
-    organization: "Community",
+    organization: "Internet Identity Workshop",
     description:
       "Workshop focused on building the foundational infrastructure for agentic internet systems.",
   },
   {
     url: "https://luma.com/home?period=past&e=evt-0zQJsVa7iC7V3h5",
     label: "AI Agent Unconference: Lightning Talks & Discussions",
-    organization: "Community",
+    organization: "AI Alliance",
     description:
       "Community unconference featuring lightning talks and discussions about AI agents and their future.",
   },
