@@ -485,7 +485,7 @@ const SkillsExpertise = () => {
             <div 
               key={index}
               className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              style={{ animationDelay: `${300 + index * 100}ms` }}
             >
               <div className="flex items-start space-x-4">
                 <div className="text-3xl">{category.icon}</div>
@@ -509,7 +509,7 @@ const SkillsExpertise = () => {
         </div>
         
         <div className="text-center mt-12">
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200/50">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200/50 animate-fade-in-up" style={{ animationDelay: '700ms' }}>
             <p className="text-lg text-gray-700 font-medium">
               🎯 <strong>Founder's Advantage:</strong> Having built companies from the ground up, 
               I understand both the technical depth and business breadth required to succeed in today's market.
@@ -521,18 +521,19 @@ const SkillsExpertise = () => {
   );
 };
 
-// Call to Action Section
+// Call to Action Section with Text Animations
 const CallToAction = () => {
   return (
     <div className="py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-black">
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <h2 className="text-4xl font-bold text-white mb-8">Ready to Build Trusted AI Agents?</h2>
+        <h2 className="text-4xl font-bold text-white mb-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>Ready to Build Trusted AI Agents?</h2>
         
         <a 
           href="https://calendly.com/andor-us/initial-introduction-meeting"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl"
+          className="inline-block bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl animate-fade-in-up"
+          style={{ animationDelay: '300ms' }}
         >
           👉 Book a Consultation
         </a>
