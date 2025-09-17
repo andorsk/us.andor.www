@@ -166,48 +166,48 @@ const HeroBanner = () => {
       <div className="relative z-10 text-center px-6 max-w-4xl">
         <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '200ms' }}>Andor</span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '300ms' }}> Labs </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '400ms' }}>: </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '500ms' }}>Trusted </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '600ms' }}>Agentic </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '700ms' }}>Web </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '800ms' }}>Consulting</span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>Andor </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>Labs </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>: </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '500ms' }}>Trusted </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '600ms' }}>Agentic </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '700ms' }}>Web </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '800ms' }}>Consulting</span>
           </h1>
         </div>
         
         <div className="mb-8">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '900ms' }}>Building </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '1000ms' }}>AI </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '1100ms' }}>Agents </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '1200ms' }}>is </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '1300ms' }}>hard.</span><br />
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1400ms' }}>Building </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1500ms' }}>Trusted </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1600ms' }}>AI </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1700ms' }}>Agents </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1800ms' }}>is </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '1900ms' }}>even </span>
-            <span className="text-green-400 inline-block animate-fade-in-up" style={{ animationDelay: '2000ms' }}>harder.</span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '900ms' }}>Building </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>AI </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '1100ms' }}>Agents </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '1200ms' }}>is </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '1300ms' }}>hard.</span><br />
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1400ms' }}>Building </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1500ms' }}>Trusted </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1600ms' }}>AI </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1700ms' }}>Agents </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1800ms' }}>is </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1900ms' }}>even </span>
+            <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '2000ms' }}>harder.</span>
           </h2>
           <p className="text-xl md:text-2xl text-slate-300 mb-8 leading-relaxed">
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2100ms' }}>I </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2150ms' }}>help </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2200ms' }}>startups, </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2250ms' }}>enterprises, </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2300ms' }}>and </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2350ms' }}>investors </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2400ms' }}>create, </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2450ms' }}>evaluate, </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2500ms' }}>and </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2550ms' }}>govern </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2600ms' }}>AI </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2650ms' }}>Agents </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2700ms' }}>that </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2750ms' }}>can </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2800ms' }}>be </span>
-            <span className="inline-block animate-fade-in-up" style={{ animationDelay: '2850ms' }}>trusted.</span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2100ms' }}>I </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2150ms' }}>help </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2200ms' }}>startups, </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2250ms' }}>enterprises, </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2300ms' }}>and </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2350ms' }}>investors </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2400ms' }}>create, </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2450ms' }}>evaluate, </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2500ms' }}>and </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2550ms' }}>govern </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2600ms' }}>AI </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2650ms' }}>Agents </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2700ms' }}>that </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2750ms' }}>can </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2800ms' }}>be </span>
+            <span className="animate-fade-in-up" style={{ animationDelay: '2850ms' }}>trusted.</span>
           </p>
         </div>
         
