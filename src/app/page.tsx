@@ -181,7 +181,7 @@ const HeroBanner = () => {
         </div>
         
         <a 
-          href="https://calendly.com/andorsk/15min?back=1"
+          href="https://calendly.com/andor-us/initial-introduction-meeting"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-green-500 hover:bg-green-600 text-white text-xl font-semibold py-4 px-8 rounded-lg transition-colors duration-300 transform hover:scale-105"
@@ -529,7 +529,7 @@ const CallToAction = () => {
         <h2 className="text-4xl font-bold text-white mb-8">Ready to Build Trusted AI Agents?</h2>
         
         <a 
-          href="https://calendly.com/andorsk/15min?back=1"
+          href="https://calendly.com/andor-us/initial-introduction-meeting"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl"
