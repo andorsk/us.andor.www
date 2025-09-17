@@ -3,7 +3,7 @@
 import DefaultLayout from "@/layouts/DefaultLayout";
 import React, { useEffect, useRef, useState } from "react";
 
-// Enhanced Animated network nodes component with floating particles
+// Enhanced Animated network nodes component with more connections
 const NetworkAnimation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
@@ -44,25 +44,25 @@ const NetworkAnimation = () => {
     }> = [];
 
     // Create nodes
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 20; i++) {
       nodes.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
-        trusted: i === 9, // One highlighted "trusted" node
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        trusted: i === 9 || i === 15, // Two highlighted "trusted" nodes
         pulse: Math.random() * Math.PI * 2
       });
     }
 
     // Create floating particles
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 40; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        opacity: Math.random() * 0.5 + 0.1,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        opacity: Math.random() * 0.3 + 0.1,
         size: Math.random() * 2 + 1
       });
     }
@@ -92,22 +92,22 @@ const NetworkAnimation = () => {
       nodes.forEach(node => {
         node.x += node.vx;
         node.y += node.vy;
-        node.pulse += 0.05;
+        node.pulse += 0.04;
 
         // Bounce off edges with padding
-        const padding = 20;
+        const padding = 30;
         if (node.x <= padding || node.x >= canvas.width - padding) node.vx *= -1;
         if (node.y <= padding || node.y >= canvas.height - padding) node.vy *= -1;
 
-        // Draw connections with improved visuals
+        // Draw connections with increased connectivity
         nodes.forEach(other => {
           const dist = Math.sqrt((node.x - other.x) ** 2 + (node.y - other.y) ** 2);
-          if (dist < 150) {
-            const opacity = (1 - dist / 150) * 0.4;
+          if (dist < 200) { // Increased connection distance
+            const opacity = (1 - dist / 200) * 0.5; // Increased opacity
             ctx.strokeStyle = node.trusted || other.trusted ? 
               `rgba(34, 197, 94, ${opacity})` : 
-              `rgba(156, 163, 175, ${opacity * 0.6})`;
-            ctx.lineWidth = node.trusted || other.trusted ? 2 : 1;
+              `rgba(156, 163, 175, ${opacity * 0.7})`;
+            ctx.lineWidth = node.trusted || other.trusted ? 2.5 : 1.5; // Thicker lines
             ctx.beginPath();
             ctx.moveTo(node.x, node.y);
             ctx.lineTo(other.x, other.y);
@@ -116,13 +116,13 @@ const NetworkAnimation = () => {
         });
 
         // Draw node with pulsing effect
-        const pulseSize = node.trusted ? 1 + Math.sin(node.pulse) * 0.3 : 1;
-        const nodeSize = (node.trusted ? 8 : 5) * pulseSize;
+        const pulseSize = node.trusted ? 1 + Math.sin(node.pulse) * 0.4 : 1;
+        const nodeSize = (node.trusted ? 10 : 6) * pulseSize; // Larger nodes
         
         // Node glow effect for trusted nodes
         if (node.trusted) {
           ctx.shadowColor = '#22c55e';
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 20;
         } else {
           ctx.shadowBlur = 0;
         }
@@ -152,7 +152,7 @@ const NetworkAnimation = () => {
   return (
     <canvas 
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full opacity-40"
+      className="absolute inset-0 w-full h-full opacity-50"
     />
   );
 };
@@ -160,13 +160,13 @@ const NetworkAnimation = () => {
 // Hero Banner Component
 const HeroBanner = () => {
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-navy-900 overflow-hidden">
       <NetworkAnimation />
       
       <div className="relative z-10 text-center px-6 max-w-4xl">
         <div className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            🌐 Andor Labs : Trusted Agentic Web Consulting
+            Andor Labs : Trusted Agentic Web Consulting
           </h1>
         </div>
         
@@ -180,15 +180,20 @@ const HeroBanner = () => {
           </p>
         </div>
         
-        <button className="bg-green-500 hover:bg-green-600 text-white text-xl font-semibold py-4 px-8 rounded-lg transition-colors duration-300 transform hover:scale-105">
+        <a 
+          href="https://calendly.com/andorsk/15min?back=1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-green-500 hover:bg-green-600 text-white text-xl font-semibold py-4 px-8 rounded-lg transition-colors duration-300 transform hover:scale-105"
+        >
           👉 Book a Consultation
-        </button>
+        </a>
       </div>
     </div>
   );
 };
 
-// Problem Statement Section with Cards
+// Problem Statement Section with Cards and Gradient Background
 const ProblemStatement = () => {
   const challenges = [
     {
@@ -212,7 +217,7 @@ const ProblemStatement = () => {
   ];
 
   return (
-    <div className="py-20 bg-white">
+    <div className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">Why I Exist</h2>
         
@@ -226,7 +231,7 @@ const ProblemStatement = () => {
           {challenges.map((challenge, index) => (
             <div
               key={index}
-              className={`bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 hover:shadow-lg animate-fade-in-up`}
+              className={`bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 hover:shadow-xl hover:bg-white animate-fade-in-up border border-slate-200`}
               style={{ animationDelay: `${challenge.delay}ms` }}
             >
               <div className="text-4xl mb-4">{challenge.icon}</div>
@@ -236,7 +241,7 @@ const ProblemStatement = () => {
           ))}
         </div>
         
-        <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg transform transition-all duration-700 hover:shadow-lg animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-r-lg transform transition-all duration-700 hover:shadow-xl animate-fade-in-up backdrop-blur-sm" style={{ animationDelay: '400ms' }}>
           <p className="text-xl font-semibold text-red-700 italic text-center">
             ⚠️ Without trust, AI Agents risk becoming opaque, unreliable, and even dangerous.
           </p>
@@ -282,10 +287,10 @@ const WhyWorkWithMe = () => {
       delay: "300"
     },
     {
-      icon: "🌐",
+      icon: "🤖",
       title: "Project NANDA",
-      org: "MIT",
-      description: "Building the Internet of Agents",
+      org: "Bay Area Chapter",
+      description: "Leading the Bay Area Chapter",
       color: "blue",
       delay: "400"
     },
@@ -316,7 +321,7 @@ const WhyWorkWithMe = () => {
   ];
 
   return (
-    <div className="py-20 bg-slate-50">
+    <div className="py-20 bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Why Work With Me</h2>
         
@@ -324,7 +329,7 @@ const WhyWorkWithMe = () => {
           {credentials.map((cred, index) => (
             <div
               key={index}
-              className={`bg-white rounded-xl p-6 shadow-md hover:shadow-xl transform transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-pointer animate-fade-in-up group`}
+              className={`bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md hover:shadow-2xl transform transition-all duration-500 hover:-translate-y-3 hover:scale-105 cursor-pointer animate-fade-in-up group border border-slate-200/50`}
               style={{ animationDelay: `${cred.delay}ms` }}
             >
               <div className="text-center">
@@ -340,8 +345,8 @@ const WhyWorkWithMe = () => {
                 <p className="text-gray-600 text-sm leading-relaxed">{cred.description}</p>
               </div>
               
-              {/* Animated border effect */}
-              <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+              {/* Enhanced animated border effect */}
+              <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${
                 cred.color === 'green'
                   ? 'bg-gradient-to-r from-green-400 via-green-500 to-green-600'
                   : 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600'
@@ -383,27 +388,37 @@ const FocusAreas = () => {
         { title: "Communication", description: "Secure, interoperable protocols for agent-to-agent interaction." },
         { title: "Storage", description: "Verifiable, privacy-respecting data management for agents." }
       ]
+    },
+    {
+      title: "Agentic Protocol Development",
+      icon: "📜", 
+      items: [
+        { title: "DIDComm", description: "Secure messaging protocol for decentralized identity." },
+        { title: "Verifiable Credentials", description: "Standards for digital credential exchange." },
+        { title: "Trust Over IP (ToIP)", description: "Protocol stack for internet-scale digital trust." },
+        { title: "OpenID Connect for VCs", description: "Integration of verifiable credentials with OIDC." }
+      ]
     }
   ];
 
   return (
-    <div className="py-20 bg-white">
+    <div className="py-20 bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Where I Focus</h2>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {areas.map((area, index) => (
-            <div key={index} className="bg-slate-50 rounded-lg p-6 hover:shadow-lg transition-shadow">
+            <div key={index} className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50">
               <div className="text-center mb-6">
                 <div className="text-4xl mb-2">{area.icon}</div>
-                <h3 className="text-2xl font-bold text-gray-900">{area.title}</h3>
+                <h3 className="text-xl font-bold text-gray-900">{area.title}</h3>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {area.items.map((item, itemIndex) => (
                   <div key={itemIndex}>
-                    <h4 className="font-semibold text-gray-800 mb-1">{item.title}</h4>
-                    <p className="text-gray-600 text-sm">{item.description}</p>
+                    <h4 className="font-semibold text-gray-800 mb-1 text-sm">{item.title}</h4>
+                    <p className="text-gray-600 text-xs leading-relaxed">{item.description}</p>
                   </div>
                 ))}
               </div>
@@ -424,16 +439,103 @@ const FocusAreas = () => {
   );
 };
 
+// Skills & Expertise Section
+const SkillsExpertise = () => {
+  const skillCategories = [
+    {
+      icon: "💻",
+      title: "Engineering Excellence",
+      description: "Full-stack development, system architecture, and technical leadership",
+      skills: ["Distributed Systems", "Protocol Design", "Security Architecture", "API Design"]
+    },
+    {
+      icon: "👥",
+      title: "Community Building",
+      description: "Creating and nurturing technical communities at scale",
+      skills: ["Technical Evangelism", "Open Source Strategy", "Developer Relations", "Community Management"]
+    },
+    {
+      icon: "🎆",
+      title: "Event Leadership",
+      description: "Organizing and speaking at industry conferences and meetups",
+      skills: ["Conference Speaking", "Workshop Facilitation", "Event Strategy", "Thought Leadership"]
+    },
+    {
+      icon: "🚀",
+      title: "Engineering Leadership",
+      description: "Building and scaling high-performance engineering teams",
+      skills: ["Team Building", "Technical Strategy", "Product Development", "Agile Practices"]
+    }
+  ];
+
+  return (
+    <div className="py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">Skills & Expertise</h2>
+          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+            As an experienced founder, I've built a diverse skillset that allows me to 
+            <strong> go both broad and deep</strong> where required. From hands-on engineering 
+            to strategic leadership, I adapt to what each situation demands.
+          </p>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          {skillCategories.map((category, index) => (
+            <div 
+              key={index}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-start space-x-4">
+                <div className="text-3xl">{category.icon}</div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{category.title}</h3>
+                  <p className="text-gray-600 mb-4 leading-relaxed">{category.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.map((skill, skillIndex) => (
+                      <span 
+                        key={skillIndex}
+                        className="px-3 py-1 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 text-sm font-medium rounded-full hover:from-blue-200 hover:to-indigo-200 transition-colors"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-200/50">
+            <p className="text-lg text-gray-700 font-medium">
+              🎯 <strong>Founder's Advantage:</strong> Having built companies from the ground up, 
+              I understand both the technical depth and business breadth required to succeed in today's market.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Call to Action Section
 const CallToAction = () => {
   return (
-    <div className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-black">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <h2 className="text-4xl font-bold text-white mb-8">Ready to Build Trusted AI Agents?</h2>
         
-        <button className="bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-colors duration-300 transform hover:scale-105 shadow-lg">
+        <a 
+          href="https://calendly.com/andorsk/15min?back=1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-6 px-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl"
+        >
           👉 Book a Consultation
-        </button>
+        </a>
       </div>
     </div>
   );
@@ -447,6 +549,7 @@ export default function Home() {
         <ProblemStatement />
         <WhyWorkWithMe />
         <FocusAreas />
+        <SkillsExpertise />
         <CallToAction />
       </div>
     </DefaultLayout>
