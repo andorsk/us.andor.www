@@ -182,7 +182,9 @@ const HeroBanner = () => {
             <span className="animate-fade-in-up" style={{ animationDelay: '1000ms' }}>AI </span>
             <span className="animate-fade-in-up" style={{ animationDelay: '1100ms' }}>Agents </span>
             <span className="animate-fade-in-up" style={{ animationDelay: '1200ms' }}>is </span>
-            <span className="animate-fade-in-up" style={{ animationDelay: '1300ms' }}>hard.</span><br />
+            <span className="animate-fade-in-up" style={{ animationDelay: '1300ms' }}>hard.</span>
+            <br />
+            <br />
             <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1400ms' }}>Building </span>
             <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1500ms' }}>Trusted </span>
             <span className="text-green-400 animate-fade-in-up" style={{ animationDelay: '1600ms' }}>AI </span>
