@@ -251,7 +251,7 @@ const ProblemStatement = () => {
   ];
 
   return (
-    <div className="py-20 bg-gradient-to-br from-white to-orange-100 animate-gradient-x">
+    <div className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>Challenges Of the Agentic Web</h2>
         
@@ -265,7 +265,7 @@ const ProblemStatement = () => {
           {challenges.map((challenge, index) => (
             <div
               key={index}
-              className={`bg-white rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 hover:shadow-xl animate-fade-in-up border border-slate-200`}
+              className={`bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center transform transition-all duration-500 hover:scale-105 hover:shadow-xl hover:bg-white animate-fade-in-up border border-slate-200`}
               style={{ animationDelay: `${challenge.delay}ms` }}
             >
               <div className="text-4xl mb-4">{challenge.icon}</div>
@@ -287,75 +287,12 @@ const ProblemStatement = () => {
 
 // Project Links Section
 const ProjectLinksSection = () => {
-  // Featured project examples
-  const featuredProjects = [
-    {
-      url: "https://agentoverlay.com",
-      label: "Agent Overlay",
-      organization: "Agent Overlay, Inc",
-      description: "Building the infrastructure for the agentic web - enabling AI agents to discover, connect, and collaborate across decentralized networks.",
-    },
-    {
-      url: "https://identity.foundation/working-groups/trusted-agents.html",
-      label: "Trusted AI Agents WG",
-      organization: "DIF",
-      role: "Chair",
-      description: "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
-    },
-    {
-      url: "https://agenticinternetworkshop.org/#",
-      label: "Agentic Internet Workshop",
-      organization: "Internet Identity Workshop",
-      description: "Workshop focused on building the foundational infrastructure for agentic internet systems.",
-    },
-    {
-      url: "https://projectnanda.org/",
-      label: "Project NANDA : Bay Area Chapter",
-      organization: "Bay Area Chapter",
-      role: "Chapter Lead",
-      description: "Leading the Bay Area Chapter of Project NANDA, building the Internet of Agents.",
-    },
-    {
-      url: "https://labs.identity.foundation/",
-      label: "DIF Labs",
-      organization: "Decentralized Identity Foundation",
-      role: "Co-Lead and Founder",
-      description: "An incubation community within DIF that encourages development and collaboration on new ideas and projects.",
-    },
-  ];
-
-  // Featured open source examples
-  const featuredOpenSource = [
-    {
-      url: "https://identity.foundation/working-groups/trusted-agents.html",
-      label: "Trusted AI Agents WG",
-      organization: "DIF",
-      role: "Chair",
-      description: "Chair of the Trusted AI Agents Working Group at DIF, defining governance standards for AI Agents.",
-    },
-    {
-      url: "https://identity.foundation/decentralized-web-node/spec/",
-      label: "Decentralized Web Node Working Group",
-      organization: "DIF",
-      role: "Co-Chair",
-      description: "A Decentralized Web Node (DWN) is a data storage and message relay mechanism entities can use to locate public or private permissioned data related to a given Decentralized Identifier (DID).",
-    },
-    {
-      url: "https://wiki.trustoverip.org/display/HOME/Trust+Registry+Task+Force",
-      label: "Trust Registry Task Force",
-      organization: "Trust Over IP",
-      role: "Co-Lead",
-      description: "The primary objective of this Task Force is to develop the ToIP Trust Registry Protocol as a ToIP Specification.",
-    },
-  ];
-
   return (
-    <div className="relative py-20 bg-gradient-to-br from-white via-blue-50 to-blue-100 animate-gradient-x overflow-hidden">
-      <NetworkAnimation />
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center animate-fade-in-up" style={{ animationDelay: '100ms' }}>My Work</h2>
+    <div className="py-20 bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50">
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <h2 className="text-4xl font-bold text-gray-900 mb-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>My Work</h2>
         
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-slate-200/50 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">🚀 Projects</h3>
             <p className="text-gray-600 mb-6 leading-relaxed">
@@ -365,7 +302,7 @@ const ProjectLinksSection = () => {
               href="/projects" 
               className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform hover:scale-105"
             >
-              View All Projects
+              View Projects
             </a>
           </div>
           
@@ -378,45 +315,8 @@ const ProjectLinksSection = () => {
               href="/opensource" 
               className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 transform hover:scale-105"
             >
-              View All Open Source
+              View Open Source
             </a>
-          </div>
-        </div>
-
-        {/* Featured Examples */}
-        <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Featured Projects</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...featuredProjects, ...featuredOpenSource].map((project, index) => (
-              <a
-                key={index}
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block bg-white/60 backdrop-blur-sm rounded-lg p-4 hover:bg-white/80 hover:shadow-lg transition-all duration-300 border border-slate-200/50 group"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                      {project.label}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-500">{project.organization || (project as any).affiliation}</span>
-                      {project.role && (
-                        <>
-                          <span className="text-gray-300">•</span>
-                          <span className="text-sm text-gray-500">{project.role}</span>
-                        </>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 line-clamp-2">{project.description}</p>
-                  </div>
-                  <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </div>
-              </a>
-            ))}
           </div>
         </div>
       </div>

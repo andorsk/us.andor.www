@@ -65,6 +65,15 @@ export const ProjectLinks: Link[] = [
       "Part of the team that launched the first Aurora, a camera that processed human patterns at the edge.",
   },
   {
+    url: "https://www.dazzagreenwood.com/p/ai-agents-x-law-initiative",
+    label: "AI Agents x Law Initiative",
+    organization: "Stanford CodeX, MIT Computational Law Report, Stanford HAI Digital Economy Lab, and Consumer Reports Innovation Lab",
+    dates: "2025-Present",
+    role: "Presenter",
+    description:
+      "Initiative focused on building the foundational infrastructure for agentic internet systems.",
+  },
+  {
     url: "https://developer.tbd.website/blog/ssi-console/",
     affiliation: "Benri",
     label: "SSI Console",
