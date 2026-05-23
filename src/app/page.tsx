@@ -419,9 +419,10 @@ const HeroWithChat = () => {
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Parallax background */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-no-repeat"
         style={{
           backgroundImage: "url('/imgs/hero-speaking.jpg')",
+          backgroundPosition: "center center", // Center on mobile and desktop
           transform: `translateY(${scrollY * 0.5}px) scaleX(-1)`,
           filter: "brightness(0.4)"
         }}
@@ -430,18 +431,18 @@ const HeroWithChat = () => {
       {/* Dark overlay - more transparent */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
 
-      {/* Title - Bottom Left */}
-      <div className="absolute bottom-8 left-8 z-10">
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-2 tracking-tight">
+      {/* Title - Top Right on mobile, Bottom Left on desktop */}
+      <div className="absolute top-8 right-8 md:bottom-8 md:left-8 md:top-auto md:right-auto z-10">
+        <h1 className="text-3xl md:text-6xl font-bold text-white mb-2 tracking-tight text-right md:text-left">
           Andor Labs
         </h1>
-        <p className="text-sm md:text-base text-gray-400">
+        <p className="text-xs md:text-base text-gray-400 text-right md:text-left">
           Trusted Agentic Web Consulting
         </p>
       </div>
 
-      {/* Chat Overlay - Center Right */}
-      <div className="absolute inset-0 flex items-center justify-end px-8 z-20">
+      {/* Chat Overlay - Bottom on mobile, Center Right on desktop */}
+      <div className="absolute inset-x-0 bottom-0 md:inset-0 flex items-end md:items-center justify-center md:justify-end px-4 md:px-8 pb-4 md:pb-0 z-20">
         <div className="w-full max-w-md">
           {/* Compact Chat - Expands on interaction */}
           <div className={`bg-black/40 backdrop-blur-sm border border-white/20 rounded-lg overflow-hidden shadow-2xl transition-all duration-300 ${
