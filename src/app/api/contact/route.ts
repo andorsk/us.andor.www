@@ -33,7 +33,7 @@ ${message || "No message provided"}
       to: ["andor@agentoverlay.com"], // Using your verified Resend email
       subject: `New Contact Form Submission from ${name}`,
       text: emailContent,
-      reply_to: email,
+      replyTo: email,
     });
 
     if (error) {
