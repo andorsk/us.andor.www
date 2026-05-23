@@ -180,7 +180,7 @@ const InlineContactForm = () => {
           </svg>
           <span className="font-medium">Message sent!</span>
         </div>
-        <p className="text-sm text-gray-400">Thank you for reaching out. I'll get back to you soon.</p>
+        <p className="text-sm text-gray-400">Thank you for reaching out. I&apos;ll get back to you soon.</p>
       </div>
     );
   }

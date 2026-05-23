@@ -200,7 +200,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 Message Sent!
               </h3>
               <p className="text-sm text-gray-400">
-                Thank you for reaching out. I'll get back to you soon.
+                Thank you for reaching out. I&apos;ll get back to you soon.
               </p>
             </div>
           )}
