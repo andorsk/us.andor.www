@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono"
+});
 
 const APP_NAME = "Andor's Lab";
 const APP_DEFAULT_TITLE = "Andor's Lab";
@@ -76,7 +79,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={jetbrainsMono.className}>{children}</body>
     </html>
   );
 }

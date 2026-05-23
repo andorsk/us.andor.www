@@ -39,3 +39,4 @@ dist
 
 public/sw*
 public/workbox*
+.env.local

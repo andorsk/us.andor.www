@@ -17,7 +17,7 @@ function ContactForm() {
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -25,7 +25,7 @@ function ContactForm() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post(apiURL + "/inquiry", {
@@ -101,8 +101,8 @@ function ContactForm() {
           </label>
           <input
             type="text"
-            name="phone_number"
-            value={formData.phone_number}
+            name="phone"
+            value={formData.phone}
             onChange={handleChange}
             className="shadow text-black appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
           />

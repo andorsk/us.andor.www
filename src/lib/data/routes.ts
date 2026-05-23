@@ -22,6 +22,11 @@ export const homeLinks: HomeLink[] = [
     description: "Learn about &&||",
   },
   {
+    url: "/blog",
+    label: "Blog",
+    description: "Blog",
+  },
+  {
     url: "/projects",
     label: "Projects",
     description: "Some of the projects I've worked on in the past",

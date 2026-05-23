@@ -10,6 +10,13 @@ export type Link = {
 
 export const ProjectLinks: Link[] = [
   {
+    url: "https://hijenny.ai/home",
+    label: "HiJenny",
+    organization: "HiJenny",
+    description:
+      "iOS and web app with multi-agent system across multiple modalities focused on AI-powered home renovation and servicing. Raised $6M from HF0, grew team to 20 people with hundreds of projects created in first 4 weeks. Secured key partnerships like Lowes. Created dual reasoning layer with voice capabilities as part of XAI's Startup Program.",
+  },
+  {
     url: "https://agentoverlay.com",
     label: "AgentOverlay",
     organization: "Agent Overlay, Inc",

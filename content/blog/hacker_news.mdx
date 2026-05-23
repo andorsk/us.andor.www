@@ -1,0 +1,171 @@
+---
+title: "Hacker News"
+date: "2024-10-25"
+author: "andor@andor.us"
+description: "Hacker News Analysis"
+type: "Doc"
+---
+
+Hacker News has become one of my go-to places for discovering fascinating
+articles. The content is always high-quality, and there’s often something
+intriguing to dive into.
+
+However, browsing through all the posts can be a bit overwhelming, and I hate
+missing out on the noteworthy ones. So, I had a thought: Why not analyze Hacker
+News to track how posts evolve over time? What if I could get a notification
+when something has been holding postion for a while?
+
+## Findings
+
+What's interesting is that there seems to be a few ways posts move through HN.
+Sometimes, it's as you would expect. A gradual rise and decline of a post
+ranking.
+
+Like this:
+
+
+But what's interesting, at least to me, is that we also see patterns where posts
+are jumping up and down!
+
+
+## Getting Started
+Rather than building everything from scratch (since this was a
+side project and time was limited), I turned to Large Language Models (LLMs) for
+a quick boost.
+
+With the help of ChatGPT o1-mini, I was able to speed up the development
+process, tweaking scripts as needed along the way. I didn't have a lot of time here.
+
+## Scraping the Data
+The first step was gathering data. I decided to scrape Hacker
+News every 10 minutes, pulling down posts and storing them in an Indexed DB.
+From there, I dumped the data into a SQLite database, which was then pushed to a
+server using a cron job. # Let's Look At Hacker News
+
+Python is fine for this.
+
+## Scraping Script
+
+```python
+import requests
+from bs4 import BeautifulSoup
+import sqlite3
+from datetime import datetime
+
+# Create or connect to SQLite database
+conn = sqlite3.connect('hacker_news.db')
+c = conn.cursor()
+
+# Create table for storing the scraped data
+c.execute('''
+    CREATE TABLE IF NOT EXISTS news (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        rank INTEGER,
+        title TEXT,
+        link TEXT,
+        site TEXT,
+        points INTEGER,
+        author TEXT,
+        comments_count INTEGER,
+        item_id INTEGER,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+''')
+
+def scrape_hacker_news(page=1):
+    url = f'https://news.ycombinator.com/news?p={page}'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Find all rows of news
+    rows = soup.find_all('tr', class_='athing')
+
+    news_data = []
+
+    for row in rows:
+        # Extract the rank
+        rank = int(row.find('span', class_='rank').text.replace('.', ''))
+
+        # Extract the title and link from the current row
+        title_tag = row.find('span', class_='titleline').find('a')
+        title = title_tag.text
+        link = title_tag['href']
+
+        # Extract the site (if available)
+        site_tag = row.find_next_sibling('tr').find('span', class_='sitestr')
+        site = site_tag.text if site_tag else 'N/A'
+
+        # Get the subtext row for points, author, and comments
+        subtext_row = row.find_next_sibling('tr').find('td', class_='subtext')
+
+        # Extract points
+        points_tag = subtext_row.find('span', class_='score')
+        points = int(points_tag.text.replace(' points', '')) if points_tag else 0
+
+        # Extract author, with None check
+        author_tag = subtext_row.find('a', class_='hnuser')
+        author = author_tag.text if author_tag else 'N/A'
+
+        # Extract the number of comments and item ID
+        try:
+            comments_tag = subtext_row.find_all('a')[-1]
+            comments_text = comments_tag.text.split('\xa0')[0]  # Extract comments count from text like "64 comments"
+            comments_count = int(comments_text) if comments_text.isdigit() else 0
+            item_id = int(comments_tag['href'].split('=')[-1])
+        except Exception as e:
+            comments_count = 0
+            item_id = 0
+            comments_text = 'N/A'
+            comments_tag = None
+
+        news_data.append((rank, title, link, site, points, author, comments_count, item_id))
+
+
+    print(f"Scraped {len(news_data)} news from page {page}")
+    # Insert data into SQLite
+    c.executemany('INSERT INTO news (rank, title, link, site, points, author, comments_count, item_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', news_data)
+    conn.commit()
+
+    # Check if there's a 'more' link to continue pagination
+    more_link = soup.find('a', class_='morelink')
+    print("More link found:", more_link is not None)
+    if more_link:
+        next_page = page + 1
+        scrape_hacker_news(next_page)  # Recursive call to scrape the next page
+
+# Function to fetch the history of articles over time
+def fetch_news_history():
+    c.execute('SELECT * FROM news ORDER BY timestamp DESC')
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+# Run the scraper
+if __name__ == '__main__':
+    scrape_hacker_news()
+    fetch_news_history()
+
+# Close the database connection when done
+conn.close()
+```
+
+Sweet. Now for the more interesting part. Analyzing the data.
+
+## Analyzing The Data
+
+Analyzing data pathways individually is realtively easy. Just show them on a graph.
+
+
+```txt
+277539|134|The algorithm is killing Twitter and it's driving me insane|https://hikari.noyu.me/blog/2024-10-02-the-algorithm-is-killing-twitter-and-its-driving-me-insane.html|N/A|22|namukang|22|41743672|2024-10-05 18:20:03
+277757|352|The algorithm is killing Twitter and it's driving me insane|https://hikari.noyu.me/blog/2024-10-02-the-algorithm-is-killing-twitter-and-its-driving-me-insane.html|N/A|20|IrisBMeredith|12|41727021|2024-10-05 18:20:06
+278185|138|The algorithm is killing Twitter and it's driving me insane|https://hikari.noyu.me/blog/2024-10-02-the-algorithm-is-killing-twitter-and-its-driving-me-insane.html|N/A|23|namukang|22|41743672|2024-10-05 18:30:03
+278402|355|The algorithm is killing Twitter and it's driving me insane|https://hikari.noyu.me/blog/2024-10-02-the-algorithm-is-killing-twitter-and-its-driving-me-insane.html|N/A|20|IrisBMeredith|12|41727021|2024-10-05 18:30:05
+````
+
+1. Let's normalize the data to look at from the lens of from birth to death, in hours, what is the pathway among ranks a post takes.
+
+## Notifications
+
+My goal was to have notification on my phone whenre there was an article I didn't want to miss.
+I use slack, so easy answer here. Webhooks.
