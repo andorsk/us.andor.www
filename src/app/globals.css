@@ -3,27 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  /* Terminal-inspired high contrast palette */
+  --foreground: #ffffff;
+  --background: #000000;
+  --muted: #666666;
+  --accent: #ffffff;
+  --border: #333333;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--foreground);
+  background: var(--background);
+  font-variant-ligatures: none; /* Disable ligatures for terminal feel */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
@@ -32,74 +25,48 @@ body {
   }
 }
 
-/* Custom animations for fade-in-up effect */
-@keyframes fadeInUp {
+/* Terminal-inspired aesthetics */
+.terminal-border {
+  border: 1px solid var(--border);
+}
+
+.terminal-box {
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Minimal hover effect */
+.hover-lift {
+  transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Simple fade-in for content */
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 40px, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0;
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
 }
 
-/* Animated gradient background */
-@keyframes gradient-x {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+/* Link underline effect */
+.terminal-link {
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s;
 }
 
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 8s ease infinite;
-}
-
-/* Radial gradient utility */
-.bg-gradient-radial {
-  background: radial-gradient(circle, var(--tw-gradient-stops));
-}
-
-/* Add some hover effects */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
-  }
-}
-
-.pulse-glow {
-  animation: pulse-glow 2s infinite;
-}
-
-.quote-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.25rem; /* Adjust as needed */
-  padding: 1rem;
-  font-style: italic;
-}
-
-.quote-content {
-  margin-bottom: 0.5rem; /* Adjust as needed */
-}
-
-.quote-author {
-  align-self: flex-end;
-  font-weight: bold;
-}
-
-.servicesbg {
-  background: url("/imgs/bitart_wave.png");
+.terminal-link:hover {
+  text-decoration-color: var(--foreground);
 }

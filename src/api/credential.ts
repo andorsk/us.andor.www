@@ -46,7 +46,7 @@ export class Client {
     data: any,
     options: APIFetchOptions = {},
   ): Promise<any> {
-    let headers = {
+    let headers: Record<string, string> = {
       Accept: "application/json",
       "Content-Type": "application/json",
     };
