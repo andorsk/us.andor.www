@@ -283,10 +283,20 @@ What would you like to know?`,
   };
 }
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || ""
-});
+// Initialize OpenAI client lazily to avoid build-time errors when env vars are missing
+let openai: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openai) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
+    }
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+  }
+  return openai;
+}
 
 // Create system prompt from knowledge base
 const SYSTEM_PROMPT = `You are a helpful assistant answering questions about Andor Kesselman's professional work and background.
@@ -372,7 +382,7 @@ export async function POST(request: NextRequest) {
     ];
 
     // Call OpenAI
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAIClient().chat.completions.create({
       model: "gpt-4o-mini",
       messages,
       temperature: 0.7,
