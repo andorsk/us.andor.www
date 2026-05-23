@@ -431,9 +431,9 @@ const HeroWithChat = () => {
       {/* Dark overlay - more transparent */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
 
-      {/* Title - Top Right on mobile, Bottom Left on desktop */}
-      <div className="absolute top-8 right-8 md:bottom-8 md:left-8 md:top-auto md:right-auto z-10">
-        <h1 className="text-3xl md:text-6xl font-bold text-white mb-2 tracking-tight text-right md:text-left">
+      {/* Title - Below header on mobile, Bottom Left on desktop */}
+      <div className="absolute top-20 right-4 md:bottom-8 md:left-8 md:top-auto md:right-auto z-10">
+        <h1 className="text-2xl md:text-6xl font-bold text-white mb-1 md:mb-2 tracking-tight text-right md:text-left">
           Andor Labs
         </h1>
         <p className="text-xs md:text-base text-gray-400 text-right md:text-left">
@@ -441,9 +441,9 @@ const HeroWithChat = () => {
         </p>
       </div>
 
-      {/* Chat Overlay - Bottom on mobile, Center Right on desktop */}
-      <div className="absolute inset-x-0 bottom-0 md:inset-0 flex items-end md:items-center justify-center md:justify-end px-4 md:px-8 pb-4 md:pb-0 z-20">
-        <div className="w-full max-w-md">
+      {/* Chat Overlay - Bottom on mobile with more padding, Center Right on desktop */}
+      <div className="absolute inset-x-0 bottom-0 md:inset-0 flex items-end md:items-center justify-center md:justify-end px-4 md:px-8 pb-6 md:pb-0 z-20">
+        <div className="w-full max-w-md mb-safe">
           {/* Compact Chat - Expands on interaction */}
           <div className={`bg-black/40 backdrop-blur-sm border border-white/20 rounded-lg overflow-hidden shadow-2xl transition-all duration-300 ${
             isExpanded ? 'h-auto' : 'h-auto'
