@@ -32,7 +32,9 @@ export default function ServicePage() {
                   <div className="flex flex-col justify-center w-full">
                     <div className="group rounded-lg border border p-5 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
                       <span
-                        ref={(el) => (serviceRefs.current[index] = el)}
+                        ref={(el) => {
+                          serviceRefs.current[index] = el;
+                        }}
                         className="text-2xl font-bold"
                       >
                         {service.name}
