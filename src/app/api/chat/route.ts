@@ -342,6 +342,86 @@ ${OpenSourceLinks.map(l => `- ${l.label} (${l.url}): ${l.description}`).join('\n
 
 When answering, be conversational and helpful. Include relevant URLs from the knowledge base in your response when appropriate.`;
 
+// Cached responses for common questions (saves OpenAI API costs)
+const CACHED_RESPONSES: Record<string, { response: string; sources: Source[] }> = {
+  "who are you": {
+    response: `I'm Andor Kesselman, a Trusted Agentic Web consultant with over 10 years of engineering and startup experience. I help startups, enterprises, and investors create, evaluate, and govern AI Agents that can be trusted.
+
+Recently, I built [HiJenny](https://hijenny.ai/home) - an AI home renovation assistant with a multi-agent system that raised $6M, grew to 20 people, and secured partnerships like Lowes.
+
+I'm currently:
+- Chair of the Trusted AI Agents Working Group at DIF
+- Technical Steering Committee Chair at DIF
+- Co-Chair of the Decentralized Web Node Working Group at DIF
+- Co-Lead of the Trust Registry Task Force at Trust Over IP
+- Bay Area Chapter Lead of Project NANDA
+- Building [AgentOverlay](https://agentoverlay.com), the infrastructure for the agentic web
+
+My focus is on the critical infrastructure needed for trustworthy AI agents: identity, governance, delegation, and secure communication protocols.`,
+    sources: [
+      { label: "HiJenny", url: "https://hijenny.ai/home" },
+      { label: "AgentOverlay", url: "https://agentoverlay.com" },
+      { label: "DIF Working Groups", url: "https://identity.foundation/working-groups" },
+      { label: "LinkedIn", url: "https://linkedin.com/in/andorsk" },
+      { label: "GitHub", url: "https://github.com/andorsk" }
+    ]
+  },
+  "what have you done": {
+    response: `I've built several impactful projects in AI agents and decentralized identity:
+
+**Recent Highlights:**
+- **[HiJenny](https://hijenny.ai/home)** - AI home renovation assistant. Raised $6M from HF0, grew to 20-person team, secured Lowes partnership, and processed hundreds of projects in the first 4 weeks
+- **[AgentOverlay](https://agentoverlay.com)** - Building infrastructure for the agentic web
+- **Project NANDA** (Bay Area Chapter Lead) - Building the Internet of Agents
+- **DIF Trusted AI Agents WG** (Chair) - Defining governance standards for AI Agents
+- **DIF Labs** (Co-Founder) - Incubation community for decentralized identity ideas
+- **Pathr.ai** (Founding Engineer) - Spatial intelligence and retail analytics
+- **Benri** (CTO/Co-Founder) - SSI Console and Web5 tools
+- **Zion** (Former CTO) - Peer-governed social network
+
+I specialize in agentic identity, governance, delegation, and the infrastructure needed for trusted AI systems.`,
+    sources: [
+      { label: "HiJenny", url: "https://hijenny.ai/home" },
+      { label: "AgentOverlay", url: "https://agentoverlay.com" },
+      { label: "GitHub Projects", url: "https://github.com/andorsk" },
+      { label: "All Projects", url: "https://andor.us/projects" }
+    ]
+  },
+  "how do i contact you": {
+    response: `I'd love to connect! Here are the best ways to reach me:
+
+**Email:** contact@andor.us
+
+**Schedule a Call:** [Book a consultation on Calendly](https://calendly.com/andor-us/initial-introduction-meeting)
+
+**Connect:**
+- [LinkedIn](https://linkedin.com/in/andorsk)
+- [GitHub](https://github.com/andorsk)
+
+Whether you're interested in AI agent consulting, technical due diligence, or collaboration on identity/governance standards, feel free to reach out!`,
+    sources: [
+      { label: "Email", url: "mailto:contact@andor.us" },
+      { label: "Calendly", url: "https://calendly.com/andor-us/initial-introduction-meeting" },
+      { label: "LinkedIn", url: "https://linkedin.com/in/andorsk" },
+      { label: "GitHub", url: "https://github.com/andorsk" }
+    ]
+  }
+};
+
+// Function to check if a message matches a cached response
+function getCachedResponse(message: string): { response: string; sources: Source[] } | null {
+  const normalizedMessage = message.toLowerCase().trim()
+    .replace(/[?!.,]/g, '') // Remove punctuation
+    .replace(/\s+/g, ' '); // Normalize whitespace
+
+  for (const [key, value] of Object.entries(CACHED_RESPONSES)) {
+    if (normalizedMessage.includes(key) || normalizedMessage === key) {
+      return value;
+    }
+  }
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -352,6 +432,13 @@ export async function POST(request: NextRequest) {
         { error: "Invalid message" },
         { status: 400 }
       );
+    }
+
+    // Check for cached response first (instant, free)
+    const cached = getCachedResponse(message);
+    if (cached) {
+      console.log("Returning cached response for:", message);
+      return NextResponse.json(cached);
     }
 
     // Check if OpenAI API key is configured
