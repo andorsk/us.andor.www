@@ -40,8 +40,8 @@ export const cv = {
       location: "San Francisco",
       tag: "HF0 W26",
       bullets: [
-        "Lead a 15+ engineer team in a 27+ person company. Raised $7M, including $1M+ brought in from my own network.",
-        "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation, with 1,000+ homes on the platform.",
+        "Lead a 15+ engineer team in a 27+ person company, including building a 10+ person team in Poland. Raised $7M, including $1M+ brought in from my own network.",
+        "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation. Shipped the iOS app; 1,000+ homes on the platform.",
         "AI calling system capable of millions of calls per hour, with human operator controls.",
         "Home-specific context and reasoning layer built on ontology and topology. Computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, human in the loop, RL, voice-first evals.",
         "Brought in the Lowe's partnership. XAI Startup Program.",
@@ -53,13 +53,19 @@ export const cv = {
       title: "Founder & CEO",
       dates: "Jun 2025 – Jan 2026",
       location: "Palo Alto",
-      bullets: ["Built a runtime agentic policy decision point (PDP) that decides, live, what an AI agent may do."],
+      bullets: [
+        "Built a runtime agentic policy decision point (PDP) that decides, live, what an AI agent may do.",
+        "Secured key paying clients across multiple contracts, then moved to co-found HiJenny on a venture-backed opportunity.",
+      ],
     },
     {
       org: "Andor Labs",
       title: "Fractional CTO",
       dates: "Jul 2023 – Jul 2024",
-      bullets: ["Stabilized engineering and product for early-stage startups; technical due diligence for M&A."],
+      bullets: [
+        "Built the Ayra Association (ayra.forum), an international trust organization, from the ground up alongside another CTO, and led its technical workstream.",
+        "Stabilized engineering and product for early-stage startups; technical due diligence for M&A.",
+      ],
     },
     {
       org: "Benri.io",

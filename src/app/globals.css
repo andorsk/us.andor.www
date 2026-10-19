@@ -138,4 +138,10 @@ body {
   .cv .space-y-7 > * + * { margin-top: 6pt !important; }
   .cv p, .cv li, .cv dd, .cv dt { line-height: 1.25 !important; }
   .cv .cv-contact { font-size: 9.5pt !important; }
+  /* Undo on-screen handwriting line heights so headers sit tight to their content. */
+  .cv .cv-h2, .cv .cv-org, .cv .cv-role > div, .cv h1 { line-height: 1.2 !important; }
+  .cv .cv-role > div:nth-child(2) { margin-top: 1pt; }
+  .cv dl > div + div { margin-top: 1pt !important; }
+  .cv dl > div, .cv header p { line-height: 1.3 !important; }
+  .cv .cv-tag { padding: 0 3pt !important; }
 }
