@@ -21,10 +21,10 @@ export const cv = {
     { label: "Web", text: "andor.us", url: "https://andor.us" },
   ],
   summary:
-    "Multi-founder CTO with 10+ years taking AI and multi-agent systems from zero to production. Co-founded HiJenny, one of 10 companies selected from 45,000 applications (a 0.02% acceptance rate) to HF0 (W26), the world's most exclusive incubator. Raised $7M, built a 27+ person company with 15+ engineers, and put 1,000+ homes on the platform. Founding engineer through acquisition at Pathr.ai, and technical advisor through acquisition at Losci. Founder and chair of agent-trust standards at the Decentralized Identity Foundation.",
+    "Multi-founder CTO with 10+ years taking AI and multi-agent systems from zero to production. Co-founded HiJenny, one of 10 companies selected from 45,000 applications (a 0.02% acceptance rate) to HF0 (W26), the world's most exclusive incubator. Raised $7M ($4.5M of it in 2 weeks), built a 27+ person company with 15+ engineers, and put 1,000+ homes on the platform. Founding engineer through acquisition at Pathr.ai, and technical advisor through acquisition at Losci. Founder and chair of agent-trust standards at the Decentralized Identity Foundation.",
   impact: [
     "Selected for HF0 W26: 10 slots from 45,000 applications, a 0.02% acceptance rate.",
-    "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year, bringing in $1M+ from my own network.",
+    "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M ($4.5M in 2 weeks), bringing in $1M+ from my own network.",
     "Brought in HiJenny's Lowe's partnership, a key partnership for the fundraise and our competitive moat.",
     "Architected an AI calling system capable of millions of calls per hour, with human operator controls.",
     "Built an AI intern program from scratch: 3 converted to full-time engineers (all master's and PhD grads), and alumni went on to NVIDIA, Wasmer, and others. Graduates recommended it to their friends, creating a recruiting flywheel.",
@@ -40,7 +40,7 @@ export const cv = {
       location: "San Francisco",
       tag: "HF0 W26",
       bullets: [
-        "Lead a 15+ engineer team in a 27+ person company, including building a 10+ person team in Poland. Raised $7M, including $1M+ brought in from my own network.",
+        "Lead a 15+ engineer team in a 27+ person company, including building a 10+ person team in Poland. Raised $7M, with $4.5M in 2 weeks and $1M+ brought in from my own network.",
         "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation. Shipped the iOS app; 1,000+ homes on the platform.",
         "AI calling system capable of millions of calls per hour, with human operator controls.",
         "Home-specific context and reasoning layer built on ontology and topology. Computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, human in the loop, RL, voice-first evals.",
