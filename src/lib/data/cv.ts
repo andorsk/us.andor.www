@@ -44,7 +44,8 @@ export const cv = {
         "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation. Shipped the iOS app; 1,000+ homes on the platform.",
         "AI calling system capable of millions of calls per hour, with human operator controls.",
         "Home-specific context and reasoning layer built on ontology and topology. Computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, human in the loop, RL, voice-first evals.",
-        "Brought in the Lowe's partnership, key to the fundraise and our competitive moat. XAI Startup Program.",
+        "Brought in the Lowe's partnership, key to the fundraise and our competitive moat.",
+        "Part of the xAI Startup Program.",
       ],
     },
     {
