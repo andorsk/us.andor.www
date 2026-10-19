@@ -27,6 +27,7 @@ export const cv = {
     "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year, bringing in $1M+ from my own network.",
     "Brought in HiJenny's Lowe's partnership.",
     "Architected an AI calling system capable of millions of calls per hour, with human operator controls.",
+    "Built an AI intern program from scratch: 3 converted to full-time engineers (all master's and PhD grads), and alumni went on to NVIDIA, Wasmer, and others.",
     "Two exits as an early technical leader: Pathr.ai and Losci, both acquired.",
     "Founded DIF's Trusted AI Agents WG; chaired DIF's Technical Steering Committee 2023–2026.",
   ],
@@ -121,7 +122,7 @@ export const cv = {
     "Towards Agentic Intelligence: Architectures for Multi-Agent AI Systems",
   ],
   skills: [
-    { label: "Leadership", items: "0→1 engineering orgs, hiring, fundraising, M&A diligence" },
+    { label: "Leadership", items: "0→1 engineering orgs, building competitive AI-focused teams, R&D, hiring, fundraising, M&A diligence" },
     { label: "AI", items: "multi-agent systems, voice and duplex models, computer vision, RL, evals" },
     { label: "Trust", items: "identity, delegation, runtime policy" },
     { label: "Stack", items: "Go, Python, TypeScript, Rust, GCP/AWS, Kubernetes, Terraform" },
