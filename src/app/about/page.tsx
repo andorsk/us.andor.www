@@ -24,7 +24,7 @@ export default function About() {
       <main className="mx-auto max-w-2xl px-5 sm:text-xl">
         <section className="mt-14 flex flex-col-reverse gap-8 sm:mt-20 sm:flex-row sm:items-start">
           <div className="flex-1">
-            <div className="nb-write text-base text-paper-muted" style={at(0.2)}>lab notes · about</div>
+            <div className="nb-write text-base text-paper-muted" style={at(0.2)}>lab notes · about · Presidio, San Francisco</div>
             <h1 className="nb-write mt-1 font-hand text-6xl font-bold leading-none text-white sm:text-7xl" style={at(0.4)}>
               Andor
             </h1>

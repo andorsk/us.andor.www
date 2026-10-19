@@ -13,7 +13,7 @@ export type Role = {
 export const cv = {
   name: "Andor Kesselman",
   headline: "Co-Founder & CTO · aligning a world full of agents with a world full of humans",
-  location: "San Francisco Bay Area",
+  location: "Presidio, San Francisco",
   contact: [
     { label: "Email", text: "andor@andor.us", url: "mailto:andor@andor.us" },
     { label: "Phone", text: "310-936-8535", url: "tel:+13109368535" },
@@ -21,9 +21,9 @@ export const cv = {
     { label: "Web", text: "andor.us", url: "https://andor.us" },
   ],
   summary:
-    "Multi-founder CTO with 10+ years taking AI and multi-agent systems from zero to production. Co-founded HiJenny, one of 10 companies selected from 45,000 applications to HF0 (W26), the world's most exclusive incubator. Raised $7M, built a 27+ person company with 15+ engineers, and put 1,000+ homes on the platform. Founding engineer through acquisition at Pathr.ai, and technical advisor through acquisition at Losci. Founder and chair of agent-trust standards at the Decentralized Identity Foundation.",
+    "Multi-founder CTO with 10+ years taking AI and multi-agent systems from zero to production. Co-founded HiJenny, one of 10 companies selected from 45,000 applications (a 0.02% acceptance rate) to HF0 (W26), the world's most exclusive incubator. Raised $7M, built a 27+ person company with 15+ engineers, and put 1,000+ homes on the platform. Founding engineer through acquisition at Pathr.ai, and technical advisor through acquisition at Losci. Founder and chair of agent-trust standards at the Decentralized Identity Foundation.",
   impact: [
-    "Selected for HF0 W26: 10 slots from 45,000 applications.",
+    "Selected for HF0 W26: 10 slots from 45,000 applications, a 0.02% acceptance rate.",
     "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year, bringing in $1M+ from my own network.",
     "Brought in HiJenny's Lowe's partnership.",
     "Architected an AI calling system capable of millions of calls per hour, with human operator controls.",
