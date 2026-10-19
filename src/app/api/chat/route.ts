@@ -118,7 +118,7 @@ My focus is on the critical infrastructure needed for trustworthy AI agents: ide
       lowerQuestion.includes("experience")) {
 
     const projectHighlights = [
-      "HiJenny - AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. HF0 W26 batch, raised $7M, built a team of 15+ engineers in a 27+ person company. Built an agentic team and a home-specific context/reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured Lowes partnership, part of XAI's Startup Program",
+      "HiJenny - AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. HF0 W26 batch, raised $7M, built a team of 15+ engineers in a 27+ person company. Built an agentic team and a home-specific context/reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured Lowe's partnership, part of the xAI Startup Program",
       "AgentOverlay - Building infrastructure for the agentic web",
       "Project NANDA (Bay Area Chapter Lead) - Building the Internet of Agents",
       "DIF Trusted AI Agents Working Group (Chair) - Defining governance standards for AI Agents",

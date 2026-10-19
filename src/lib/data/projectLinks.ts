@@ -14,7 +14,7 @@ export const ProjectLinks: Link[] = [
     label: "HiJenny",
     organization: "HiJenny",
     description:
-      "AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. Part of the HF0 W26 batch, raised $7M, and built a team of 15+ engineers within a company of 27+ people. Built an agentic team and a home-specific context and reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured key partnerships like Lowes and joined XAI's Startup Program.",
+      "AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. Part of the HF0 W26 batch, raised $7M, and built a team of 15+ engineers within a company of 27+ people. Built an agentic team and a home-specific context and reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured key partnerships like Lowe's and joined the xAI Startup Program.",
   },
   {
     url: "https://agentoverlay.com",
