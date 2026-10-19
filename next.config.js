@@ -9,13 +9,21 @@ const { withContentlayer } = require("next-contentlayer");
 
 const webpack = require("webpack");
 
+// STATIC_EXPORT=true builds a static site for GitHub Pages (see .github/workflows/deploy.yml).
+// Redirects aren't supported in a static export.
+const isStaticExport = process.env.STATIC_EXPORT === "true";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  async redirects() {
-    return [{ source: "/blog/about", destination: "/about", permanent: true }];
-  },
-  // output: "export",
+  output: isStaticExport ? "export" : undefined,
+  ...(isStaticExport
+    ? {}
+    : {
+        async redirects() {
+          return [{ source: "/blog/about", destination: "/about", permanent: true }];
+        },
+      }),
   images: {
     unoptimized: true,
   },
