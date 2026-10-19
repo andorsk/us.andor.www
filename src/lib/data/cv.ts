@@ -25,9 +25,9 @@ export const cv = {
   impact: [
     "Selected for HF0 W26: 10 slots from 45,000 applications, a 0.02% acceptance rate.",
     "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year, bringing in $1M+ from my own network.",
-    "Brought in HiJenny's Lowe's partnership.",
+    "Brought in HiJenny's Lowe's partnership, a key partnership for the fundraise and our competitive moat.",
     "Architected an AI calling system capable of millions of calls per hour, with human operator controls.",
-    "Built an AI intern program from scratch: 3 converted to full-time engineers (all master's and PhD grads), and alumni went on to NVIDIA, Wasmer, and others.",
+    "Built an AI intern program from scratch: 3 converted to full-time engineers (all master's and PhD grads), and alumni went on to NVIDIA, Wasmer, and others. Graduates recommended it to their friends, creating a recruiting flywheel.",
     "Two exits as an early technical leader: Pathr.ai and Losci, both acquired.",
     "Founded DIF's Trusted AI Agents WG; chaired DIF's Technical Steering Committee 2023–2026.",
   ],
@@ -44,7 +44,7 @@ export const cv = {
         "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation. Shipped the iOS app; 1,000+ homes on the platform.",
         "AI calling system capable of millions of calls per hour, with human operator controls.",
         "Home-specific context and reasoning layer built on ontology and topology. Computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, human in the loop, RL, voice-first evals.",
-        "Brought in the Lowe's partnership. XAI Startup Program.",
+        "Brought in the Lowe's partnership, key to the fundraise and our competitive moat. XAI Startup Program.",
       ],
     },
     {
@@ -54,7 +54,7 @@ export const cv = {
       dates: "Jun 2025 – Jan 2026",
       location: "Palo Alto",
       bullets: [
-        "Built a runtime agentic policy decision point (PDP) that decides, live, what an AI agent may do.",
+        "Built a runtime agentic policy decision point (PDP) that decides, live, what an AI agent may do. Worked closely with agentic gateway technology.",
         "Secured key paying clients across multiple contracts, then moved to co-found HiJenny on a venture-backed opportunity.",
       ],
     },
@@ -83,7 +83,6 @@ export const cv = {
       tag: "Acquired",
       bullets: [
         "Spatial intelligence platform. Built the ML pipelines, then led engineering through SensorLayer v1 and v2.",
-        "Inventor of R-K Diagrams, a topological graph method (arXiv 2201.06923).",
       ],
     },
     {
@@ -116,7 +115,7 @@ export const cv = {
   ],
   research: [
     {
-      text: "R-K Diagrams: A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis (arXiv 2201.06923)",
+      text: "Inventor of R-K Diagrams (independent research): A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis (arXiv 2201.06923)",
       url: "https://arxiv.org/abs/2201.06923",
     },
     { text: "AI Agents x Law, Stanford CodeX (2025)", url: "https://www.dazzagreenwood.com/p/ai-agents-x-law-initiative" },

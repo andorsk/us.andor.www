@@ -13,43 +13,49 @@ export type Milestone = {
   stamp?: string;
 };
 
-// One throughline: systems that understand people → systems people can trust → agents that act for people.
+// The andorvector: one direction through every role. Systems that understand people →
+// systems people can trust → agents that act for people.
 export const timeline: Milestone[] = [
-  { when: "'14", name: "Claremont McKenna", note: "Technology Policy. Fell for the overlap of technology and human behavior." },
+  { when: "2014", name: "Claremont McKenna", note: "B.A., Science, Technology & Society and Public Policy Analysis." },
   {
+    when: "2014–17",
     name: "RetailNext",
     url: "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/snapdragon_retailnext_case_study_0.pdf",
-    note: "Helped launch Aurora, a camera that processed human patterns at the edge.",
+    note: "Analyst → R&D Engineer. Helped launch Aurora, a camera that processed human patterns at the edge.",
   },
   {
+    when: "2019–23",
     name: "Pathr.ai",
     url: "https://pathr.ai/products-technology/",
-    note: "Led engineering on spatial intelligence: SensorLayer v1 and v2.",
+    note: "Founding Engineer → Principal Engineer; led engineering on spatial intelligence (SensorLayer v1 and v2).",
     stamp: "Acquired",
   },
+  { when: "2021–23", name: "Losci", note: "Technical Advisor. A retail digital twin built on my technology.", stamp: "Acquired" },
   {
-    name: "R-K Diagrams",
-    url: "https://arxiv.org/abs/2201.06923",
-    note: "Invented a topological graph method for finding the shape of complex data.",
-    stamp: "Inventor",
-  },
-  { name: "Losci", note: "Advisor to a digital twin for retail stores, built on my technology.", stamp: "Acquired" },
-  {
-    name: "Decentralized identity",
-    url: "/opensource",
-    note: "Chair of DIF's Trusted AI Agents WG and Technical Steering Committee, trust registries at Trust Over IP, CTO at Zion.",
-  },
-  {
+    when: "2022–24",
     name: "Benri",
     url: "https://developer.tbd.website/blog/ssi-console/",
-    note: "Founder and CTO. Decentralized, portable data stores: Decentralized Web Nodes, SSI Console, a Web5 protocol registry.",
-    stamp: "Founder / CTO",
+    note: "Co-Founder & CTO. Decentralized, portable data stores: Decentralized Web Nodes, SSI Console, a Web5 protocol registry.",
+    stamp: "Bootstrapped",
+  },
+  {
+    when: "2023–24",
+    name: "Andor Labs",
+    url: "https://ayra.forum",
+    note: "Fractional CTO. Built the Ayra Association, an international trust organization, from the ground up alongside another CTO.",
+  },
+  {
+    when: "2025",
+    name: "Agent Overlay",
+    url: "https://agentoverlay.com",
+    note: "Founder & CEO. A runtime policy decision point for agents; paying clients across multiple contracts.",
+    stamp: "Bootstrapped",
   },
   {
     when: "now",
     name: "HiJenny",
     url: "https://www.hijenny.ai",
-    note: "Building a personal assistant for homes and families. HF0 W26, raised $7M, 27+ people. Alongside: AgentOverlay and the Ayra Forum.",
+    note: "Co-Founder & CTO. A personal assistant for homes and families. HF0 W26, raised $7M, 27+ people.",
     stamp: "HF0 W26",
   },
 ];
@@ -64,10 +70,11 @@ export const questions = [
 ];
 
 export const howIWork = [
-  "0 → 1 CTO, more than once.",
-  "Built HiJenny's engineering team to 15+.",
-  "Called in when engineering teams vanish: I stabilize the product and get it shipping again.",
-  "I help write the standards, not just follow them.",
+  "0 → 1 CTO. The companies I've built have been acquired on the strength of their IP.",
+  "I build AI + human teams that scale what each person can do.",
+  "Speed is king.",
+  "Novelty matters more than ever.",
+  "I've automated most of my own workflows, so I can work from anywhere, on the go.",
 ];
 
 export const offTheClock = [
@@ -76,3 +83,10 @@ export const offTheClock = [
   { label: "d2-mode for Emacs", url: "https://github.com/andorsk/d2-mode" },
   { label: "my mother-in-law's recipes", url: "https://mangaloremom.com/en/" },
 ];
+
+export const dog = {
+  name: "Legend",
+  breed: "giant schnauzer",
+  url: "https://www.instagram.com/legend.logs/",
+  photo: "/imgs/legend.jpg",
+};

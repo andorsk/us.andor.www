@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { social } from "@/lib/data/home";
-import { thesis, timeline, questions, howIWork, offTheClock } from "@/lib/data/about";
+import { thesis, timeline, questions, howIWork, offTheClock, dog } from "@/lib/data/about";
 
 export const metadata: Metadata = {
   title: "About",
@@ -43,13 +43,13 @@ export default function About() {
         </section>
 
         <section className="mt-16">
-          <Heading delay={2}>the throughline</Heading>
+          <Heading delay={2}>the andorvector</Heading>
           <p className="nb-write mt-2 text-base text-paper-muted" style={at(2.2)}>
-            systems that understand people → systems people can trust → agents that act for people
+            my eigenvector: systems that understand people → systems people can trust → agents that act for people
           </p>
           <ol className="relative mt-8 space-y-6 border-l-2 border-dashed border-white/25 pl-6">
             {timeline.map((m, i) => (
-              <li key={m.name} className="nb-write relative" style={at(2.4 + i * 0.2)}>
+              <li key={m.name} className="nb-write relative" style={at(2.4 + i * 0.15)}>
                 <span className="absolute -left-[1.95rem] top-2 h-3 w-3 rounded-full border-2 border-paper-accent bg-paper-bg" aria-hidden />
                 <div className="flex flex-wrap items-baseline gap-x-3">
                   {m.when && <span className="text-base text-paper-muted">{m.when}</span>}
@@ -99,8 +99,20 @@ export default function About() {
 
         <section className="mt-16">
           <Heading delay={6.8}>off the clock</Heading>
-          <p className="nb-write mt-4 leading-relaxed text-paper-body" style={at(7)}>
-            {offTheClock.map((o, i) => (
+          <div className="nb-write mt-4 flex items-center gap-5" style={at(7)}>
+            <a href={dog.url} target="_blank" rel="noopener noreferrer" className="shrink-0 -rotate-3 bg-[#f4f1ea] p-1.5 pb-5 shadow-lg">
+              <img src={dog.photo} alt={`${dog.name}, a ${dog.breed}`} className="h-20 w-20 object-cover" />
+            </a>
+            <p className="leading-relaxed text-paper-body">
+              Meet my dog{" "}
+              <a href={dog.url} target="_blank" rel="noopener noreferrer" className="text-paper-accent">
+                {dog.name}
+              </a>
+              , a {dog.breed} with his own Instagram.
+            </p>
+          </div>
+          <p className="nb-write mt-4 leading-relaxed text-paper-body" style={at(7.2)}>
+            Also: {offTheClock.map((o, i) => (
               <span key={o.url}>
                 <a href={o.url} target="_blank" rel="noopener noreferrer" className="underline decoration-white/30 underline-offset-4">
                   {o.label}
