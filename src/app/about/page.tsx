@@ -114,7 +114,10 @@ export default function About() {
         <section className="mt-16">
           <Heading delay={7.4}>say hi</Heading>
           <p className="nb-write mt-4 leading-relaxed text-paper-body" style={at(7.6)}>
-            Especially if you&apos;re building agents, working on agent identity or delegation standards, or need a CTO-level hand.
+            Especially if you&apos;re building agents, working on agent identity or delegation standards, or need a CTO-level hand.{" "}
+            <a href="/cv" className="whitespace-nowrap text-paper-accent">
+              read my CV →
+            </a>
           </p>
           <ul className="nb-write mt-4 space-y-1 text-base text-paper-muted" style={at(7.8)}>
             {social.map((s) => (

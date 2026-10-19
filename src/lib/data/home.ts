@@ -80,6 +80,7 @@ export const nav = [
   { label: "About", url: "/about" },
   { label: "Projects", url: "/projects" },
   { label: "Open Source", url: "/opensource" },
+  { label: "CV", url: "/cv" },
 ];
 
 export const social = [
