@@ -108,7 +108,7 @@ export const cv = {
     },
   ] as Role[],
   standards: [
-    "Decentralized Identity Foundation: Trusted AI Agents WG, Founder & Chair (2025–) · DIF Labs, Founder & Chair (2024–26) · Technical Steering Committee Chair (2023–26) · Decentralized Web Node WG Chair (2022–25)",
+    "Decentralized Identity Foundation: Trusted AI Agents WG, Founder & Chair (2025–) · DIF Labs, Founder & Chair: started DIF's lab for experimentation (2024–26) · Technical Steering Committee Chair (2023–26) · Decentralized Web Node WG Chair (2022–25)",
     "Trust Over IP: Trust Registry Task Force Chair (2023–26)",
     "Ayra Association: Lead of Technical Workstream (2024–25)",
     "Agentic Internet Workshop: Co-Founder (2025–)",
