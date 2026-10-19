@@ -8,6 +8,7 @@ const Projects = () => {
   return (
     <div>
       <GridBoxLayout
+        title="Projects"
         header={header}
         links={ProjectLinks.map((item) => {
           return {

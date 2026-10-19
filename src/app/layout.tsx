@@ -1,15 +1,25 @@
 import type { Metadata, Viewport } from "next";
 
-import { JetBrains_Mono } from "next/font/google";
+import { Caveat, JetBrains_Mono, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono"
 });
+const hand = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-hand",
+});
+const print = Patrick_Hand({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-print",
+});
 
-const APP_NAME = "Andor's Lab";
-const APP_DEFAULT_TITLE = "Andor's Lab";
+const APP_NAME = "Andor Labs";
+const APP_DEFAULT_TITLE = "Andor Labs";
 const APP_TITLE_TEMPLATE = "%s - PWA App";
 const APP_DESCRIPTION = "web5, ai, and random";
 
@@ -77,13 +87,13 @@ export default function RootLayout({
         />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#0c0c0c" />
       </head>
-      <body className={jetbrainsMono.className}>{children}</body>
+      <body className={`${jetbrainsMono.variable} ${hand.variable} ${print.variable} font-print`}>{children}</body>
     </html>
   );
 }
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#0c0c0c",
 };

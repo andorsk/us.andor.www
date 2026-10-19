@@ -17,14 +17,9 @@ export const homeLinks: HomeLink[] = [
     icon: "/icons/icon-512x512.png",
   },
   {
-    url: "/blog/about",
+    url: "/about",
     label: "About",
     description: "Learn about &&||",
-  },
-  {
-    url: "/blog",
-    label: "Blog",
-    description: "Blog",
   },
   {
     url: "/projects",
@@ -40,11 +35,6 @@ export const homeLinks: HomeLink[] = [
     url: "/contact",
     label: "Contact",
     description: "Contact Me",
-  },
-  {
-    url: "/services",
-    label: "Services",
-    description: "Services I Offer",
   },
   {
     url: "/blog/testimonials",

@@ -2,21 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Notebook theme: handwriting on black graph paper. */
 :root {
-  /* Terminal-inspired high contrast palette */
-  --foreground: #ffffff;
-  --background: #000000;
-  --muted: #666666;
-  --accent: #ffffff;
-  --border: #333333;
+  --foreground: #ecebe6;
+  --background: #0c0c0c;
+  --muted: #9c998f;
+  --accent: #fbb040;
+  --border: rgba(255, 255, 255, 0.15);
+  --grid: rgba(255, 255, 255, 0.06);
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-variant-ligatures: none; /* Disable ligatures for terminal feel */
+  background-color: var(--background);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  font-size: 1.125rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  a:hover {
+    color: var(--accent);
+  }
+  ::selection {
+    background: rgba(251, 176, 64, 0.35);
+  }
 }
 
 @layer utilities {
@@ -25,48 +41,54 @@ body {
   }
 }
 
-/* Terminal-inspired aesthetics */
-.terminal-border {
-  border: 1px solid var(--border);
+/* Blog / doc content: handwritten headings, amber links. */
+.mdx h1,
+.mdx h2,
+.mdx h3 {
+  font-family: var(--font-hand), cursive;
+  font-weight: 700;
+  color: #fff;
 }
+.mdx h1 { font-size: 3rem; line-height: 1; }
+.mdx h2 { font-size: 2.4rem; line-height: 1.1; }
+.mdx h3 { font-size: 1.9rem; }
+.mdx a { color: var(--accent); }
+.mdx p, .mdx li { color: #cfccc3; }
+.mdx code, .mdx pre { font-family: var(--font-mono), monospace; }
 
-.terminal-box {
-  border: 1px solid var(--border);
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.8);
+/* Ink write-on: each line reveals left to right. The inset overshoots the box so
+   handwriting that leans past its edges isn't clipped. */
+@keyframes nb-write {
+  from { clip-path: inset(-0.3em 100% -0.3em -0.3em); }
+  to { clip-path: inset(-0.3em -0.3em -0.3em -0.3em); }
 }
-
-/* Minimal hover effect */
-.hover-lift {
-  transition: transform 0.2s ease;
+@keyframes nb-draw {
+  to { stroke-dashoffset: 0; }
 }
-
-.hover-lift:hover {
-  transform: translateY(-2px);
+@keyframes nb-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
-/* Simple fade-in for content */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
+.nb-write {
+  clip-path: inset(-0.3em 100% -0.3em -0.3em);
+  animation: nb-write 0.9s ease-out forwards;
+}
+.nb-fade {
+  opacity: 0;
+  animation: nb-fade 0.6s ease-out forwards;
+}
+.nb-draw {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: nb-draw 1s ease-in-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nb-write,
+  .nb-fade,
+  .nb-draw {
+    animation: none;
+    clip-path: none;
     opacity: 1;
+    stroke-dashoffset: 0;
   }
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease-out;
-}
-
-/* Link underline effect */
-.terminal-link {
-  text-decoration: underline;
-  text-decoration-color: var(--muted);
-  text-underline-offset: 4px;
-  transition: text-decoration-color 0.2s;
-}
-
-.terminal-link:hover {
-  text-decoration-color: var(--foreground);
 }

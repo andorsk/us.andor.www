@@ -10,18 +10,18 @@ export type Link = {
 
 export const ProjectLinks: Link[] = [
   {
-    url: "https://hijenny.ai/home",
+    url: "https://www.hijenny.ai",
     label: "HiJenny",
     organization: "HiJenny",
     description:
-      "iOS and web app with multi-agent system across multiple modalities focused on AI-powered home renovation and servicing. Raised $6M from HF0, grew team to 20 people with hundreds of projects created in first 4 weeks. Secured key partnerships like Lowes. Created dual reasoning layer with voice capabilities as part of XAI's Startup Program.",
+      "AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. Part of the HF0 W26 batch, raised $7M, and built a team of 15+ engineers within a company of 27+ people. Built an agentic team and a home-specific context and reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured key partnerships like Lowes and joined XAI's Startup Program.",
   },
   {
     url: "https://agentoverlay.com",
     label: "AgentOverlay",
     organization: "Agent Overlay, Inc",
     description:
-      "Building the infrastructure for the agentic web - enabling AI agents to discover, connect, and collaborate across decentralized networks.",
+      "A small runtime agentic PDP (policy decision point) that decides, live, what an AI agent is allowed to do. Part of building the infrastructure for the agentic web.",
   },
   {
     url: "https://projectnanda.org/",
@@ -62,7 +62,7 @@ export const ProjectLinks: Link[] = [
     label: "SensorLayer v1.0 and v2.0",
     affiliation: "Pathr.ai",
     description:
-      "Pathr.ai is transforming how companies understand their physical locations – through the power of spatial intelligence. I led engineering while I was there. ",
+      "Pathr.ai is transforming how companies understand their physical locations – through the power of spatial intelligence. I led engineering while I was there. Pathr.ai was later acquired.",
   },
   {
     url: "https://www.qualcomm.com/content/dam/qcomm-martech/dm-assets/documents/snapdragon_retailnext_case_study_0.pdf",

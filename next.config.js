@@ -12,6 +12,9 @@ const webpack = require("webpack");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [{ source: "/blog/about", destination: "/about", permanent: true }];
+  },
   // output: "export",
   images: {
     unoptimized: true,
