@@ -13,7 +13,7 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: "About",
-          href: "/blog/about",
+          href: "/about",
         },
       ],
     },
@@ -22,7 +22,7 @@ export const docsConfig: DocsConfig = {
       items: [
         {
           title: "About",
-          href: "/blog/about",
+          href: "/about",
           disabled: true,
         },
       ],

@@ -8,34 +8,41 @@ type Link = {
 };
 
 type GridBoxLayoutProps = {
+  title?: string;
   header: string;
   links: Link[];
   children?: React.ReactNode;
 };
 
+// Notebook list: each link is a numbered entry with a stamped sublabel.
 export const GridBoxLayout = (props: GridBoxLayoutProps) => {
   return (
     <DocumentLayout>
-      <div className="flex w-full flex-col items-center py-10 text-center">
-        <div className="opacity-50 text-sm">{props.header}</div>
-        <div className="grid w-full grid-cols-1 md:grid-cols-3 text-center py-5">
+      <main className="mx-auto max-w-3xl px-5 pt-12 sm:pt-16">
+        {props.title && <h1 className="font-hand text-5xl font-bold text-white sm:text-6xl">{props.title}</h1>}
+        <p className="mt-3 text-base text-paper-muted">{props.header}</p>
+        <ul className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2">
           {props.links.map((item, index) => (
-            <a
-              key={index}
-              href={item.url}
-              className="group rounded-lg border border-transparent p-5 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="flex h-full flex-col items-center justify-center">
-                <h2 className={`mb-3 text-2xl font-semibold`}>{item.label} </h2>
-                <p className={`mb-5 text-sm opacity-50`}> {item.sublabel} </p>
-                <p className={`m-0 text-sm opacity-50`}>{item.description}</p>
-              </div>
-            </a>
+            <li key={index}>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="group block hover:text-inherit">
+                <div className="flex flex-wrap items-baseline gap-x-3">
+                  <span className="text-sm text-paper-muted">no. {String(index + 1).padStart(2, "0")}</span>
+                  <span className="font-hand text-3xl font-bold leading-tight text-white group-hover:text-paper-accent">
+                    {item.label}
+                  </span>
+                </div>
+                {item.sublabel?.trim() && (
+                  <span className="mt-1 inline-block -rotate-1 rounded-md border-2 border-paper-stamp px-1.5 text-sm text-paper-stamp">
+                    {item.sublabel}
+                  </span>
+                )}
+                <p className="mt-2 text-base leading-relaxed text-paper-body">{item.description}</p>
+              </a>
+            </li>
           ))}
-        </div>
-      </div>
+        </ul>
+        {props.children}
+      </main>
     </DocumentLayout>
   );
 };

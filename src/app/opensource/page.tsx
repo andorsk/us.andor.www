@@ -8,6 +8,7 @@ const OpenSource = () => {
   return (
     <div>
       <GridBoxLayout
+        title="Open Source"
         header={header}
         links={OpenSourceLinks.map((item) => {
           return {

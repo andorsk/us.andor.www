@@ -27,7 +27,7 @@ const KNOWLEDGE_BASE = {
   experience: {
     years: "10+",
     highlights: [
-      "Built HiJenny - AI home renovation assistant, raised $6M, grew to 20-person team with hundreds of projects",
+      "Built HiJenny - AI personal assistant for homes and families (tasks, inventory, home services, renovation, and more), HF0 W26, raised $7M, grew to 27+ people with 15+ engineers",
       "Chair of the Trusted AI Agents Working Group at DIF",
       "Co-Chair of Decentralized Web Node Working Group at DIF",
       "Technical Steering Committee Chair at DIF",
@@ -90,7 +90,7 @@ function generateResponse(question: string): ResponseWithSources {
     return {
       response: `I'm Andor Kesselman, a Trusted Agentic Web consultant with over 10 years of engineering startup experience. I help startups, enterprises, and investors create, evaluate, and govern AI Agents that can be trusted.
 
-Recently, I built HiJenny - an AI home renovation assistant with a multi-agent system that raised $6M, grew to 20 people, and secured partnerships like Lowes.
+Recently, I built HiJenny - an AI personal assistant for homes and families (tasks, inventory, home services, renovation, and more) from the HF0 W26 batch that raised $7M and grew to 27+ people, including 15+ engineers. We built an agentic team and a home-specific context/reasoning layer leveraging ontology and topology, plus computer vision, voice pipelines, duplex models, agentic orchestration, and delegation frameworks.
 
 I'm currently:
 - Chair of the Trusted AI Agents Working Group at the Decentralized Identity Foundation (DIF)
@@ -102,7 +102,7 @@ I'm currently:
 
 My focus is on the critical infrastructure needed for trustworthy AI agents: identity, governance, delegation, and secure communication protocols.`,
       sources: [
-        { label: "HiJenny", url: "https://hijenny.ai/home" },
+        { label: "HiJenny", url: "https://www.hijenny.ai" },
         { label: "DIF Trusted AI Agents WG", url: "https://identity.foundation/working-groups/trusted-agents.html" },
         { label: "AgentOverlay", url: "https://agentoverlay.com" },
         { label: "LinkedIn Profile", url: "https://linkedin.com/in/andorsk" },
@@ -118,7 +118,7 @@ My focus is on the critical infrastructure needed for trustworthy AI agents: ide
       lowerQuestion.includes("experience")) {
 
     const projectHighlights = [
-      "HiJenny - AI home renovation assistant with multi-agent system. Raised $6M from HF0, grew to 20-person team, secured Lowes partnership. Created dual reasoning layer, part of XAI's Startup Program",
+      "HiJenny - AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. HF0 W26 batch, raised $7M, built a team of 15+ engineers in a 27+ person company. Built an agentic team and a home-specific context/reasoning layer leveraging ontology and topology. Built computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, and more. Secured Lowes partnership, part of XAI's Startup Program",
       "AgentOverlay - Building infrastructure for the agentic web",
       "Project NANDA (Bay Area Chapter Lead) - Building the Internet of Agents",
       "DIF Trusted AI Agents Working Group (Chair) - Defining governance standards for AI Agents",
@@ -139,7 +139,7 @@ ${projectHighlights.map(p => `- ${p}`).join('\n')}
 
 I've also contributed to many open-source specifications and tools in the decentralized identity space, including work on DIDComm, Verifiable Credentials, Trust Over IP protocols, and more.`,
       sources: [
-        { label: "HiJenny", url: "https://hijenny.ai/home" },
+        { label: "HiJenny", url: "https://www.hijenny.ai" },
         { label: "Full Project Portfolio", url: "https://andor.us/projects" },
         { label: "Open Source Work", url: "https://andor.us/opensource" },
         { label: "AgentOverlay", url: "https://agentoverlay.com" },
@@ -197,7 +197,6 @@ ${KNOWLEDGE_BASE.expertise.map(e => `- ${e}`).join('\n')}
 
 I help organizations navigate the complex challenges of building AI agents that can be trusted, focusing on identity, delegation, policy management, and secure communication.`,
       sources: [
-        { label: "Services Page", url: "https://andor.us/services" },
         { label: "DIF Trusted AI Agents", url: "https://identity.foundation/working-groups/trusted-agents.html" },
         { label: "Book Consultation", url: "https://calendly.com/andor-us/initial-introduction-meeting" }
       ]
@@ -347,7 +346,7 @@ const CACHED_RESPONSES: Record<string, { response: string; sources: Source[] }> 
   "who are you": {
     response: `I'm Andor Kesselman, a Trusted Agentic Web consultant with over 10 years of engineering and startup experience. I help startups, enterprises, and investors create, evaluate, and govern AI Agents that can be trusted.
 
-Recently, I built [HiJenny](https://hijenny.ai/home) - an AI home renovation assistant with a multi-agent system that raised $6M, grew to 20 people, and secured partnerships like Lowes.
+Recently, I built [HiJenny](https://www.hijenny.ai) - an AI personal assistant for homes and families (tasks, inventory, home services, renovation, and more) from the HF0 W26 batch that raised $7M and grew to 27+ people, including 15+ engineers. We built an agentic team and a home-specific context/reasoning layer leveraging ontology and topology, plus computer vision, voice pipelines, duplex models, agentic orchestration, and delegation frameworks.
 
 I'm currently:
 - Chair of the Trusted AI Agents Working Group at DIF
@@ -359,7 +358,7 @@ I'm currently:
 
 My focus is on the critical infrastructure needed for trustworthy AI agents: identity, governance, delegation, and secure communication protocols.`,
     sources: [
-      { label: "HiJenny", url: "https://hijenny.ai/home" },
+      { label: "HiJenny", url: "https://www.hijenny.ai" },
       { label: "AgentOverlay", url: "https://agentoverlay.com" },
       { label: "DIF Working Groups", url: "https://identity.foundation/working-groups" },
       { label: "LinkedIn", url: "https://linkedin.com/in/andorsk" },
@@ -370,7 +369,7 @@ My focus is on the critical infrastructure needed for trustworthy AI agents: ide
     response: `I've built several impactful projects in AI agents and decentralized identity:
 
 **Recent Highlights:**
-- **[HiJenny](https://hijenny.ai/home)** - AI home renovation assistant. Raised $6M from HF0, grew to 20-person team, secured Lowes partnership, and processed hundreds of projects in the first 4 weeks
+- **[HiJenny](https://www.hijenny.ai)** - AI personal assistant for homes and families, handling tasks, inventory, home services, renovation, and more. HF0 W26 batch, raised $7M, built a team of 15+ engineers in a 27+ person company. Built an agentic team and a home-specific context/reasoning layer (ontology + topology). Also computer vision, voice pipelines, duplex models, agentic orchestration, and delegation frameworks
 - **[AgentOverlay](https://agentoverlay.com)** - Building infrastructure for the agentic web
 - **Project NANDA** (Bay Area Chapter Lead) - Building the Internet of Agents
 - **DIF Trusted AI Agents WG** (Chair) - Defining governance standards for AI Agents
@@ -381,7 +380,7 @@ My focus is on the critical infrastructure needed for trustworthy AI agents: ide
 
 I specialize in agentic identity, governance, delegation, and the infrastructure needed for trusted AI systems.`,
     sources: [
-      { label: "HiJenny", url: "https://hijenny.ai/home" },
+      { label: "HiJenny", url: "https://www.hijenny.ai" },
       { label: "AgentOverlay", url: "https://agentoverlay.com" },
       { label: "GitHub Projects", url: "https://github.com/andorsk" },
       { label: "All Projects", url: "https://andor.us/projects" }
@@ -449,7 +448,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
           response: "I'm here to answer questions about my work in trusted AI agents, decentralized identity, and my professional experience. I don't have information about other topics. Feel free to ask about my projects, expertise, or how to get in touch!",
           sources: [
-            { label: "About Me", url: "https://andor.us/blog/about" },
+            { label: "About Me", url: "https://andor.us/about" },
             { label: "Contact", url: "mailto:contact@andor.us" }
           ]
         });
