@@ -92,3 +92,56 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* CV print/export: plain, ATS-friendly page (white paper, sans, no grid). */
+@media print {
+  @page {
+    margin: 0.55in 0.6in;
+  }
+  body {
+    background: #fff !important;
+    color: #111 !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-size: 10pt;
+  }
+  .cv {
+    max-width: none !important;
+    padding: 0 !important;
+    font-size: 9.5pt !important;
+  }
+  .cv *,
+  .cv a {
+    color: #111 !important;
+    font-family: inherit !important;
+    text-decoration: none !important;
+    animation: none !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .cv .cv-h1 { font-size: 20pt !important; font-weight: 700; }
+  .cv header { margin-top: 0 !important; }
+  .cv header p { margin-top: 3pt !important; }
+  .cv .cv-h2 {
+    font-size: 11.5pt !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid #999;
+    padding-bottom: 2pt;
+  }
+  .cv .cv-section { margin-top: 9pt !important; }
+  .cv .cv-section > div { margin-top: 5pt !important; }
+  .cv .cv-org { font-size: 11pt !important; }
+  .cv .cv-tag { border: 1px solid #555 !important; font-size: 8pt !important; }
+  .cv .cv-role { break-inside: avoid; }
+  .cv ol, .cv ul { margin-top: 2pt !important; }
+  .cv li { margin-top: 1pt !important; }
+  .cv .space-y-7 > * + * { margin-top: 6pt !important; }
+  .cv p, .cv li, .cv dd, .cv dt { line-height: 1.25 !important; }
+  .cv .cv-contact { font-size: 9.5pt !important; }
+  /* Undo on-screen handwriting line heights so headers sit tight to their content. */
+  .cv .cv-h2, .cv .cv-org, .cv .cv-role > div, .cv h1 { line-height: 1.2 !important; }
+  .cv .cv-role > div:nth-child(2) { margin-top: 1pt; }
+  .cv dl > div + div { margin-top: 1pt !important; }
+  .cv dl > div, .cv header p { line-height: 1.3 !important; }
+  .cv .cv-tag { padding: 0 3pt !important; }
+}

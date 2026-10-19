@@ -22,7 +22,7 @@ export const work: Work[] = [
   {
     name: "AgentOverlay",
     url: "https://agentoverlay.com",
-    tag: "Founder",
+    tag: "Founder · Bootstrapped",
     line: "A small runtime policy decision point (PDP) for agents. It decides, in the moment, what an agent is allowed to do.",
     stack: ["Runtime Authorization", "Agent Policy", "Delegation"],
   },
@@ -43,7 +43,7 @@ export const work: Work[] = [
   {
     name: "Benri",
     url: "https://developer.tbd.website/blog/ssi-console/",
-    tag: "Founder / CTO",
+    tag: "Founder / CTO · Bootstrapped",
     line: "Decentralized, portable data stores: your data travels with you, not with the app.",
     stack: ["Decentralized Web Nodes", "SSI Console", "Web5 Protocols"],
   },
@@ -80,6 +80,7 @@ export const nav = [
   { label: "About", url: "/about" },
   { label: "Projects", url: "/projects" },
   { label: "Open Source", url: "/opensource" },
+  { label: "CV", url: "/cv" },
 ];
 
 export const social = [
