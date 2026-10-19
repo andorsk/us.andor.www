@@ -100,8 +100,12 @@ export default function CV() {
 
         <Section title="Research & speaking">
           <ul className="list-disc space-y-1 pl-5 text-paper-body marker:text-paper-muted">
-            {cv.research.map((s) => (
-              <li key={s}>{s}</li>
+            {cv.research.map((r) => (
+              <li key={r.url}>
+                <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-paper-accent underline decoration-white/30 underline-offset-4">
+                  {r.text}
+                </a>
+              </li>
             ))}
           </ul>
         </Section>

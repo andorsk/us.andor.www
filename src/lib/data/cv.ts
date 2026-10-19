@@ -24,7 +24,8 @@ export const cv = {
     "Multi-founder CTO with 10+ years taking AI and multi-agent systems from zero to production. Co-founded HiJenny, one of 10 companies selected from 45,000 applications to HF0 (W26), the world's most exclusive incubator. Raised $7M, built a 27+ person company with 15+ engineers, and put 1,000+ homes on the platform. Founding engineer through acquisition at Pathr.ai, and technical advisor through acquisition at Losci. Founder and chair of agent-trust standards at the Decentralized Identity Foundation.",
   impact: [
     "Selected for HF0 W26: 10 slots from 45,000 applications.",
-    "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year.",
+    "Built HiJenny's engineering org to 15+ engineers (27+ company) and raised $7M in under a year, bringing in $1M+ from my own network.",
+    "Brought in HiJenny's Lowe's partnership.",
     "Architected an AI calling system capable of millions of calls per hour, with human operator controls.",
     "Two exits as an early technical leader: Pathr.ai and Losci, both acquired.",
     "Founded DIF's Trusted AI Agents WG; chaired DIF's Technical Steering Committee 2023–2026.",
@@ -38,11 +39,11 @@ export const cv = {
       location: "San Francisco",
       tag: "HF0 W26",
       bullets: [
-        "Lead a 15+ engineer team in a 27+ person company. Raised $7M.",
+        "Lead a 15+ engineer team in a 27+ person company. Raised $7M, including $1M+ brought in from my own network.",
         "AI personal assistant for homes and families covering tasks, inventory, home services, and renovation, with 1,000+ homes on the platform.",
         "AI calling system capable of millions of calls per hour, with human operator controls.",
         "Home-specific context and reasoning layer built on ontology and topology. Computer vision, voice pipelines, duplex models, agentic orchestration, delegation frameworks, human in the loop, RL, voice-first evals.",
-        "Lowes partnership; XAI Startup Program.",
+        "Brought in the Lowe's partnership. XAI Startup Program.",
       ],
     },
     {
@@ -107,9 +108,12 @@ export const cv = {
     "Project NANDA: Bay Area Chapter (2025–26)",
   ],
   research: [
-    "R-K Diagrams: A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis (arXiv 2201.06923)",
-    "AI Agents x Law, Stanford CodeX (2025)",
-    "AI Agent Unconference, organizer (2024)",
+    {
+      text: "R-K Diagrams: A Novel Approach to Topological Graph Theory with R-K Diagrams and Gravitational Wave Analysis (arXiv 2201.06923)",
+      url: "https://arxiv.org/abs/2201.06923",
+    },
+    { text: "AI Agents x Law, Stanford CodeX (2025)", url: "https://www.dazzagreenwood.com/p/ai-agents-x-law-initiative" },
+    { text: "AI Agent Unconference, organizer (2024)", url: "https://luma.com/home?period=past&e=evt-0zQJsVa7iC7V3h5" },
   ],
   education: [
     "Claremont McKenna College: B.A., Science, Technology & Society and Public Policy Analysis (2011–2014)",
@@ -136,7 +140,7 @@ export function cvMarkdown(): string {
     lines.push(`### ${r.org}: ${r.title}`, `_${meta}_`, "", ...r.bullets.map((b) => `- ${b}`), "");
   }
   lines.push("## Standards & leadership", "", ...cv.standards.map((s) => `- ${s}`), "");
-  lines.push("## Research & speaking", "", ...cv.research.map((s) => `- ${s}`), "");
+  lines.push("## Research & speaking", "", ...cv.research.map((r) => `- [${r.text}](${r.url})`), "");
   lines.push("## Education & certifications", "", ...cv.education.map((s) => `- ${s}`), "");
   lines.push("## Skills", "", ...cv.skills.map((s) => `- **${s.label}:** ${s.items}`), "");
   lines.push("## Languages", "", cv.languages, "");
