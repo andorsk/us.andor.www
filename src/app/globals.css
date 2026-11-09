@@ -145,3 +145,26 @@ body {
   .cv dl > div, .cv header p { line-height: 1.3 !important; }
   .cv .cv-tag { padding: 0 3pt !important; }
 }
+
+/* Shared pages (/s/<slug>): long-form content written by Anton, in the notebook style. */
+.share-article { line-height: 1.75; }
+.share-article > * + * { margin-top: 1.1em; }
+.share-article h1, .share-article h2, .share-article h3 { color: #fff; margin-top: 1.6em; }
+.share-article h4 { color: #fff; font-weight: 700; margin-top: 1.4em; }
+.share-article ul { list-style: none; padding-left: 0; }
+.share-article ul > li { position: relative; padding-left: 1.4em; }
+.share-article ul > li::before { content: "–"; position: absolute; left: 0; color: var(--accent); }
+.share-article ol { list-style: decimal; padding-left: 1.4em; }
+.share-article ol > li::marker { color: var(--accent); }
+.share-article li + li { margin-top: 0.35em; }
+.share-article strong { color: #fff; }
+.share-article a { text-decoration: underline; text-decoration-style: wavy; text-underline-offset: 4px; }
+.share-article blockquote { border-left: 2px dashed var(--accent); padding-left: 1em; color: var(--muted); font-style: italic; }
+.share-article hr { border: 0; border-top: 1px dashed rgba(255, 255, 255, 0.2); margin: 2em 0; }
+.share-article code { font-family: var(--font-mono), monospace; font-size: 0.85em; background: rgba(255, 255, 255, 0.06); padding: 0.1em 0.35em; border-radius: 4px; color: #ecebe6; }
+.share-article pre { background: rgba(255, 255, 255, 0.04); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 1em 1.1em; overflow-x: auto; font-size: 0.85em; }
+.share-article pre code { background: none; padding: 0; }
+.share-article table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; font-size: 0.9em; }
+.share-article th, .share-article td { border: 1px dashed rgba(255, 255, 255, 0.2); padding: 0.4em 0.75em; text-align: left; }
+.share-article th { color: #fff; }
+.share-article img { max-width: 100%; height: auto; border-radius: 6px; }
