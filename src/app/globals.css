@@ -190,4 +190,7 @@ body {
 .cp-md code { font-family: var(--font-mono), monospace; font-size: 0.85em; }
 .cp-md table { display: block; overflow-x: auto; font-size: 0.9rem; }
 @media (min-width: 768px) { .cp-md { font-size: 1.05rem; } }
-@media (max-width: 767px) { .has-tabbar body { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }
+@media (max-width: 767px) {
+  .has-tabbar body { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  .has-tabbar footer { display: none; } /* the tab bar replaces the footer on the control plane */
+}

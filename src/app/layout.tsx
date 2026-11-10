@@ -96,4 +96,5 @@ export default function RootLayout({
 
 export const viewport: Viewport = {
   themeColor: "#0c0c0c",
+  viewportFit: "cover", // lets the phone tab bar sit above the home indicator (safe-area insets)
 };

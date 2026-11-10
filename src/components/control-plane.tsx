@@ -4,14 +4,16 @@
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept in localStorage.
 import { useCallback, useEffect, useState } from "react";
-import { CalendarDays, Check, ListChecks, LogOut, MessageCircle, Sun, X } from "lucide-react";
+import { CalendarDays, Check, ChevronRight, ListChecks, LogOut, MessageCircle, Sun, X } from "lucide-react";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
 const API = process.env.NEXT_PUBLIC_ANTON_API || "https://ubuntu-dev.tail89681.ts.net";
 const KEY = "anton:session";
 
-type Summary = { text: string; period: string; created_at: string } | null;
+type Item = { title: string; why: string; details: string; url: string };
+type Structured = { agenda: Item[]; news: Item[]; events: Item[] };
+type Summary = { text: string; period: string; created_at: string; data?: Structured | null } | null;
 type Feed = { daily_briefing: Summary; weekly_briefing: Summary; digest: Summary; weekly_review: Summary };
 type Ticket = { id: string; title: string; url: string; state: string; priority?: string; due?: string | null };
 
@@ -105,7 +107,7 @@ function SignIn({ status }: { status: string }) {
   return (
     <div className="mt-6 max-w-md">
       <h1 className="font-hand text-5xl font-bold leading-none text-white sm:text-6xl">sign in</h1>
-      <p className="mt-4 text-paper-body">This page is private. Anton will send a one-time sign-in link to its owner.</p>
+      <p className="mt-4 text-paper-body">Private. Anton emails a one-time sign-in link to andor@andor.us.</p>
       <button
         className={`${btn} mt-6`}
         disabled={busy}
@@ -114,7 +116,7 @@ function SignIn({ status }: { status: string }) {
           try {
             const r = await fetch(`${API}/api/login/start`, { method: "POST" });
             const d = await r.json().catch(() => ({}));
-            setMsg(r.ok ? "Sent. Open the link from Slack on this device." : d.error || "Couldn't send a link.");
+            setMsg(r.ok ? "Sent. Open the email on this device and tap the link." : d.error || "Couldn't send a link.");
           } catch {
             setMsg("Couldn't reach Anton.");
           } finally {
@@ -152,13 +154,6 @@ const TABS: { id: Tab; label: string; Icon: typeof Sun }[] = [
   { id: "tickets", label: "tickets", Icon: ListChecks },
   { id: "week", label: "week", Icon: CalendarDays },
 ];
-
-// Split a daily briefing into the action part (plan + watch-outs) and the news part.
-function splitBriefing(text: string): { plan: string; news: string } {
-  const lines = text.split("\n");
-  const i = lines.findIndex((l) => /news/i.test(l) && /^\s*([*#_]|\*\*)/.test(l));
-  return i < 0 ? { plan: text, news: "" } : { plan: lines.slice(0, i).join("\n"), news: lines.slice(i).join("\n") };
-}
 
 function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [feed, setFeed] = useState<Feed | null>(null);
@@ -224,7 +219,6 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
   const daily = feed?.daily_briefing;
   const weekly = feed?.weekly_briefing;
-  const parts = daily ? splitBriefing(daily.text) : null;
 
   const refreshBtn = (kind: "daily" | "weekly", s: Summary) => (
     <>
@@ -237,20 +231,10 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
   const today = (
     <Section title="today" right={refreshBtn("daily", daily ?? null)}>
-      {parts ? (
-        <>
-          {parts.plan.trim() ? (
-            <Markdown className="cp-md">{slackToMarkdown(parts.plan)}</Markdown>
-          ) : (
-            <p className="text-paper-muted">Nothing you need to do today.</p>
-          )}
-          {parts.news ? (
-            <details className="mt-4 rounded-md border border-dashed border-white/15 px-3 py-2">
-              <summary className="cursor-pointer select-none text-paper-accent">news &amp; interesting</summary>
-              <Markdown className="cp-md mt-2">{slackToMarkdown(parts.news)}</Markdown>
-            </details>
-          ) : null}
-        </>
+      {daily?.data ? (
+        <Briefing data={daily.data} />
+      ) : daily ? (
+        <Markdown className="cp-md">{slackToMarkdown(daily.text)}</Markdown>
       ) : (
         <p className="text-paper-muted">No briefing yet. Hit refresh, or wait for the morning one.</p>
       )}
@@ -291,7 +275,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       <div className="md:hidden">
         {tab === "today" ? today : null}
         {tab === "chat" ? (
-          <div className="mt-4 h-[calc(100dvh-14rem)] min-h-[20rem]">
+          <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem]">
             <AntonChat api={api} fill />
           </div>
         ) : null}
@@ -299,7 +283,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
         {tab === "week" ? week : null}
       </div>
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-dashed border-white/20 bg-paper-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Control plane sections"
       >
         {TABS.map(({ id, label, Icon }) => (
@@ -331,6 +315,49 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
           <AntonChat api={api} fill />
         </div>
       </div>
+    </div>
+  );
+}
+
+function Briefing({ data }: { data: Structured }) {
+  const groups: [string, Item[]][] = [
+    ["agenda", data.agenda],
+    ["news", data.news],
+    ["events", data.events],
+  ];
+  if (!groups.some(([, items]) => items.length)) return <p className="text-paper-muted">Nothing for today.</p>;
+  return (
+    <div className="space-y-5">
+      {groups.map(([name, items]) =>
+        items.length ? (
+          <div key={name}>
+            <h3 className="mb-1 text-sm uppercase tracking-widest text-paper-accent">{name}</h3>
+            <ul className="divide-y divide-dashed divide-white/10">
+              {items.map((it, i) => (
+                <li key={i}>
+                  <details className="group py-2">
+                    <summary className="flex cursor-pointer list-none items-start gap-2 [&::-webkit-details-marker]:hidden">
+                      <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-paper-muted transition group-open:rotate-90" />
+                      <span className="min-w-0">
+                        <span className="block text-base leading-snug text-white">{it.title}</span>
+                        <span className="block text-sm leading-snug text-paper-muted">{it.why}</span>
+                      </span>
+                    </summary>
+                    <div className="ml-6 mt-2 text-sm leading-relaxed text-paper-body">
+                      {it.details}
+                      {it.url ? (
+                        <a href={it.url} target="_blank" rel="noopener noreferrer" className="ml-1 whitespace-nowrap text-paper-accent underline decoration-dotted underline-offset-2">
+                          open ↗
+                        </a>
+                      ) : null}
+                    </div>
+                  </details>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null,
+      )}
     </div>
   );
 }
