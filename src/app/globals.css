@@ -168,3 +168,9 @@ body {
 .share-article th, .share-article td { border: 1px dashed rgba(255, 255, 255, 0.2); padding: 0.4em 0.75em; text-align: left; }
 .share-article th { color: #fff; }
 .share-article img { max-width: 100%; height: auto; border-radius: 6px; }
+
+/* prompt-kit loader animation (typing dots) */
+@keyframes typing {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-2px); opacity: 1; }
+}

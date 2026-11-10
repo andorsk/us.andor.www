@@ -11,6 +11,9 @@
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.5",
     "@heroicons/react": "^2.1.1",
+    "@radix-ui/react-avatar": "^1.3.1",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-tooltip": "^1.4.1",
     "@web5/api": "^0.8.4",
     "ai": "^6.0.191",
     "axios": "^1.7.2",
@@ -19,6 +22,7 @@
     "crypto-browserify": "^3.12.0",
     "gray-matter": "^4.0.3",
     "jsqr": "^1.4.0",
+    "marked": "^18.2.0",
     "mdast-util-toc": "^7.0.0",
     "next": "14.1.2",
     "next-auth": "^4.24.6",
@@ -28,8 +32,11 @@
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
     "remark": "^15.0.1",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^3.0.1",
+    "remark-gfm-v4": "npm:remark-gfm@4.0.1",
     "resend": "^6.12.3",
     "shiki": "^1.1.7",
     "sodium-native": "^4.0.10",
@@ -37,6 +44,7 @@
     "tailwind-merge": "^2.2.1",
     "three": "^0.162.0",
     "use-debounce": "^10.0.0",
+    "use-stick-to-bottom": "^1.1.6",
     "zod": "^4.4.3"
   },
   "devDependencies": {

@@ -3,7 +3,9 @@
 // Andor's control plane: Anton's daily plan & news, open tickets, chat, push notifications.
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept in localStorage.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
+import { Markdown } from "@/components/ui/markdown";
 
 const API = process.env.NEXT_PUBLIC_ANTON_API || "https://ubuntu-dev.tail89681.ts.net";
 const KEY = "anton:session";
@@ -11,36 +13,6 @@ const KEY = "anton:session";
 type Summary = { text: string; period: string; created_at: string } | null;
 type Feed = { daily_briefing: Summary; weekly_briefing: Summary; digest: Summary; weekly_review: Summary };
 type Ticket = { id: string; title: string; url: string; state: string; priority?: string; due?: string | null };
-type Msg = { role: "user" | "assistant"; content: string };
-
-// Slack mrkdwn → HTML. Escapes first; only http(s) links become anchors.
-function mrkdwn(src: string): string {
-  const esc = src.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const inline = (s: string) =>
-    s
-      .replace(/&lt;(https?:\/\/[^|&\s]+(?:&amp;[^|&\s]+)*)\|([^&]+?)&gt;/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>')
-      .replace(/&lt;(https?:\/\/[^&\s]+(?:&amp;[^&\s]+)*)&gt;/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
-      .replace(/`([^`]+)`/g, "<code>$1</code>")
-      .replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,:;!?]|$)/g, "$1<strong>$2</strong>")
-      .replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,:;!?]|$)/g, "$1<em>$2</em>");
-  const out: string[] = [];
-  let list = false;
-  for (const raw of esc.split("\n")) {
-    const line = raw.trimEnd();
-    const bullet = line.match(/^\s*(?:•|-|◦|\d+\.)\s+(.*)$/);
-    if (bullet) {
-      if (!list) out.push("<ul>");
-      list = true;
-      out.push(`<li>${inline(bullet[1])}</li>`);
-      continue;
-    }
-    if (list) out.push("</ul>");
-    list = false;
-    if (line.trim()) out.push(`<p>${inline(line)}</p>`);
-  }
-  if (list) out.push("</ul>");
-  return out.join("");
-}
 
 function ago(iso?: string) {
   if (!iso) return "";
@@ -231,6 +203,10 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       </div>
       {err ? <p className="mt-4 text-paper-stamp">{err}</p> : null}
 
+      <Section title="ask anton">
+        <AntonChat api={api} />
+      </Section>
+
       <Section
         title="today"
         right={
@@ -243,7 +219,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
         }
       >
         {daily ? (
-          <article className="mdx share-article" dangerouslySetInnerHTML={{ __html: mrkdwn(daily.text) }} />
+          <Markdown className="share-article">{slackToMarkdown(daily.text)}</Markdown>
         ) : (
           <p className="text-paper-muted">No briefing yet. Hit refresh, or wait for the morning one.</p>
         )}
@@ -253,9 +229,6 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
         <Tickets api={api} tickets={tickets} setTickets={setTickets} />
       </Section>
 
-      <Section title="ask anton">
-        <Chat api={api} />
-      </Section>
 
       <Section
         title="week ahead"
@@ -269,7 +242,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
         }
       >
         {weekly ? (
-          <Collapsible html={mrkdwn(weekly.text)} />
+          <Collapsible text={weekly.text} />
         ) : (
           <p className="text-paper-muted">Comes every Sunday evening.</p>
         )}
@@ -277,21 +250,20 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
       {feed?.digest ? (
         <Section title="inbox digest" right={ago(feed.digest.created_at)}>
-          <Collapsible html={mrkdwn(feed.digest.text)} />
+          <Collapsible text={feed.digest.text} />
         </Section>
       ) : null}
     </div>
   );
 }
 
-function Collapsible({ html }: { html: string }) {
+function Collapsible({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <article
-        className={`mdx share-article ${open ? "" : "max-h-64 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent)]"}`}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className={open ? "" : "max-h-64 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent)]"}>
+        <Markdown className="share-article">{slackToMarkdown(text)}</Markdown>
+      </div>
       <button className={`${quiet} mt-2`} onClick={() => setOpen(!open)}>
         {open ? "less" : "more"}
       </button>
@@ -336,72 +308,6 @@ function Tickets({ api, tickets, setTickets }: { api: Api; tickets: Ticket[] | n
         </li>
       ))}
     </ul>
-  );
-}
-
-function Chat({ api }: { api: Api }) {
-  const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [text, setText] = useState("");
-  const [busy, setBusy] = useState(false);
-  const end = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    api("/api/chat")
-      .then((d) => setMsgs((d.messages as Msg[]).slice(-12)))
-      .catch(() => {});
-  }, [api]);
-  useEffect(() => end.current?.scrollIntoView({ block: "nearest" }), [msgs]);
-
-  const send = async () => {
-    const m = text.trim();
-    if (!m || busy) return;
-    setText("");
-    setMsgs((x) => [...x, { role: "user", content: m }]);
-    setBusy(true);
-    try {
-      const d = await api("/api/chat", { method: "POST", body: JSON.stringify({ message: m }) });
-      setMsgs((x) => [...x, { role: "assistant", content: d.reply }]);
-    } catch (e) {
-      setMsgs((x) => [...x, { role: "assistant", content: `⚠️ ${(e as Error).message}` }]);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div>
-      <div className="max-h-[28rem] space-y-3 overflow-y-auto">
-        {msgs.map((m, i) =>
-          m.role === "user" ? (
-            <p key={i} className="ml-auto max-w-[85%] rounded-md border border-dashed border-white/20 px-3 py-2 text-right text-paper-body">
-              {m.content}
-            </p>
-          ) : (
-            <article key={i} className="mdx share-article max-w-[95%]" dangerouslySetInnerHTML={{ __html: mrkdwn(m.content) }} />
-          ),
-        )}
-        {busy ? <p className="text-paper-muted">anton is thinking…</p> : null}
-        <div ref={end} />
-      </div>
-      <form
-        className="mt-4 flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void send();
-        }}
-      >
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="ask about email, calendar, tickets, anything…"
-          aria-label="Message Anton"
-          className="min-w-0 flex-1 rounded-md border border-dashed border-white/30 bg-transparent px-3 py-2 text-base text-white placeholder:text-paper-muted focus:border-paper-accent focus:outline-none"
-        />
-        <button type="submit" className={btn} disabled={busy || !text.trim()}>
-          send
-        </button>
-      </form>
-    </div>
   );
 }
 

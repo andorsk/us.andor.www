@@ -26,6 +26,18 @@ const config: Config = {
           DEFAULT: "rgba(255,255,255,0.05)",
           foreground: "#9c998f",
         },
+        // shadcn / prompt-kit tokens, mapped onto the notebook palette.
+        background: "#0c0c0c",
+        foreground: "#ecebe6",
+        border: "rgba(255,255,255,0.2)",
+        input: "rgba(255,255,255,0.3)",
+        ring: "#fbb040",
+        primary: { DEFAULT: "#fbb040", foreground: "#0c0c0c" },
+        secondary: { DEFAULT: "rgba(255,255,255,0.06)", foreground: "#ecebe6" },
+        accent: { DEFAULT: "rgba(251,176,64,0.14)", foreground: "#fbb040" },
+        destructive: { DEFAULT: "#ef5b5b", foreground: "#0c0c0c" },
+        card: { DEFAULT: "#141414", foreground: "#ecebe6" },
+        popover: { DEFAULT: "#141414", foreground: "#ecebe6" },
         navy: {
           50: '#f0f4ff',
           100: '#e0e7ff',
