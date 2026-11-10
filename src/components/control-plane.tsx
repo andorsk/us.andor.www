@@ -4,6 +4,7 @@
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept in localStorage.
 import { useCallback, useEffect, useState } from "react";
+import { CalendarDays, Check, ListChecks, LogOut, MessageCircle, Sun, X } from "lucide-react";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -134,7 +135,7 @@ type Api = (path: string, init?: RequestInit) => Promise<any>;
 
 function Section({ title, right, children }: { title: string; right?: React.ReactNode; children: React.ReactNode }) {
   return (
-    <section className="mt-12">
+    <section className="mt-6 md:mt-12">
       <div className="flex items-baseline justify-between gap-3 border-b border-dashed border-white/20 pb-2">
         <h2 className="font-hand text-3xl font-bold text-paper-accent">{title}</h2>
         <div className="text-base text-paper-muted">{right}</div>
@@ -144,11 +145,27 @@ function Section({ title, right, children }: { title: string; right?: React.Reac
   );
 }
 
+type Tab = "today" | "chat" | "tickets" | "week";
+const TABS: { id: Tab; label: string; Icon: typeof Sun }[] = [
+  { id: "today", label: "today", Icon: Sun },
+  { id: "chat", label: "chat", Icon: MessageCircle },
+  { id: "tickets", label: "tickets", Icon: ListChecks },
+  { id: "week", label: "week", Icon: CalendarDays },
+];
+
+// Split a daily briefing into the action part (plan + watch-outs) and the news part.
+function splitBriefing(text: string): { plan: string; news: string } {
+  const lines = text.split("\n");
+  const i = lines.findIndex((l) => /news/i.test(l) && /^\s*([*#_]|\*\*)/.test(l));
+  return i < 0 ? { plan: text, news: "" } : { plan: lines.slice(0, i).join("\n"), news: lines.slice(i).join("\n") };
+}
+
 function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [tickets, setTickets] = useState<Ticket[] | null>(null);
   const [err, setErr] = useState("");
   const [running, setRunning] = useState("");
+  const [tab, setTab] = useState<Tab>("today");
 
   const load = useCallback(async () => {
     setErr("");
@@ -162,8 +179,26 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   }, [api]);
 
   useEffect(() => {
+    // Leave room under the page for the phone tab bar.
+    document.documentElement.classList.add("has-tabbar");
+    return () => document.documentElement.classList.remove("has-tabbar");
+  }, []);
+
+  useEffect(() => {
     void load();
+    try {
+      const saved = sessionStorage.getItem("anton:tab") as Tab | null;
+      if (saved && TABS.some((t) => t.id === saved)) setTab(saved);
+    } catch {}
   }, [load]);
+
+  const pick = (t: Tab) => {
+    setTab(t);
+    try {
+      sessionStorage.setItem("anton:tab", t);
+    } catch {}
+    window.scrollTo({ top: 0 });
+  };
 
   const refresh = async (kind: "daily" | "weekly") => {
     setRunning(kind);
@@ -189,70 +224,113 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
   const daily = feed?.daily_briefing;
   const weekly = feed?.weekly_briefing;
+  const parts = daily ? splitBriefing(daily.text) : null;
 
-  return (
-    <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-hand text-5xl font-bold leading-none text-white sm:text-6xl">control plane</h1>
-        <div className="flex gap-4">
-          <PushToggle api={api} />
-          <button className={quiet} onClick={signOut}>
-            sign out
-          </button>
-        </div>
-      </div>
-      {err ? <p className="mt-4 text-paper-stamp">{err}</p> : null}
+  const refreshBtn = (kind: "daily" | "weekly", s: Summary) => (
+    <>
+      {s ? `${ago(s.created_at)} · ` : ""}
+      <button className={quiet} disabled={!!running} onClick={() => refresh(kind)}>
+        {running === kind ? "working…" : "refresh"}
+      </button>
+    </>
+  );
 
-      <Section title="ask anton">
-        <AntonChat api={api} />
+  const today = (
+    <Section title="today" right={refreshBtn("daily", daily ?? null)}>
+      {parts ? (
+        <>
+          {parts.plan.trim() ? (
+            <Markdown className="cp-md">{slackToMarkdown(parts.plan)}</Markdown>
+          ) : (
+            <p className="text-paper-muted">Nothing you need to do today.</p>
+          )}
+          {parts.news ? (
+            <details className="mt-4 rounded-md border border-dashed border-white/15 px-3 py-2">
+              <summary className="cursor-pointer select-none text-paper-accent">news &amp; interesting</summary>
+              <Markdown className="cp-md mt-2">{slackToMarkdown(parts.news)}</Markdown>
+            </details>
+          ) : null}
+        </>
+      ) : (
+        <p className="text-paper-muted">No briefing yet. Hit refresh, or wait for the morning one.</p>
+      )}
+    </Section>
+  );
+  const ticketsSection = (
+    <Section title="tickets" right={tickets ? `${tickets.length} open` : ""}>
+      <Tickets api={api} tickets={tickets} setTickets={setTickets} />
+    </Section>
+  );
+  const week = (
+    <>
+      <Section title="week ahead" right={refreshBtn("weekly", weekly ?? null)}>
+        {weekly ? <Collapsible text={weekly.text} /> : <p className="text-paper-muted">Comes every Sunday evening.</p>}
       </Section>
-
-      <Section
-        title="today"
-        right={
-          <>
-            {daily ? `${ago(daily.created_at)} · ` : ""}
-            <button className={quiet} disabled={!!running} onClick={() => refresh("daily")}>
-              {running === "daily" ? "working…" : "refresh"}
-            </button>
-          </>
-        }
-      >
-        {daily ? (
-          <Markdown className="share-article">{slackToMarkdown(daily.text)}</Markdown>
-        ) : (
-          <p className="text-paper-muted">No briefing yet. Hit refresh, or wait for the morning one.</p>
-        )}
-      </Section>
-
-      <Section title="tickets" right={tickets ? `${tickets.length} open` : ""}>
-        <Tickets api={api} tickets={tickets} setTickets={setTickets} />
-      </Section>
-
-
-      <Section
-        title="week ahead"
-        right={
-          <>
-            {weekly ? `${ago(weekly.created_at)} · ` : ""}
-            <button className={quiet} disabled={!!running} onClick={() => refresh("weekly")}>
-              {running === "weekly" ? "working…" : "refresh"}
-            </button>
-          </>
-        }
-      >
-        {weekly ? (
-          <Collapsible text={weekly.text} />
-        ) : (
-          <p className="text-paper-muted">Comes every Sunday evening.</p>
-        )}
-      </Section>
-
       {feed?.digest ? (
         <Section title="inbox digest" right={ago(feed.digest.created_at)}>
           <Collapsible text={feed.digest.text} />
         </Section>
       ) : null}
+    </>
+  );
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="font-hand text-3xl font-bold leading-none text-white sm:text-5xl">control plane</h1>
+        <div className="flex items-center gap-3 text-sm">
+          <PushToggle api={api} />
+          <button className="p-1 text-paper-muted hover:text-paper-accent" onClick={signOut} aria-label="Sign out" title="Sign out">
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+      {err ? <p className="mt-3 text-base text-paper-stamp">{err}</p> : null}
+
+      {/* Phone: one pane at a time, bottom tab bar. */}
+      <div className="md:hidden">
+        {tab === "today" ? today : null}
+        {tab === "chat" ? (
+          <div className="mt-4 h-[calc(100dvh-14rem)] min-h-[20rem]">
+            <AntonChat api={api} fill />
+          </div>
+        ) : null}
+        {tab === "tickets" ? ticketsSection : null}
+        {tab === "week" ? week : null}
+      </div>
+      <nav
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-dashed border-white/20 bg-paper-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        aria-label="Control plane sections"
+      >
+        {TABS.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            onClick={() => pick(id)}
+            aria-current={tab === id ? "page" : undefined}
+            className={`relative flex flex-col items-center gap-0.5 py-2.5 text-xs ${tab === id ? "text-paper-accent" : "text-paper-muted"}`}
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+            {id === "tickets" && tickets?.length ? (
+              <span className="absolute right-[28%] top-1.5 rounded-full bg-paper-stamp px-1.5 text-[10px] leading-4 text-black">
+                {tickets.length}
+              </span>
+            ) : null}
+          </button>
+        ))}
+      </nav>
+
+      {/* Desktop: today + tickets on the left, chat pinned on the right. */}
+      <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-10">
+        <div>
+          {today}
+          {ticketsSection}
+          {week}
+        </div>
+        <div className="sticky top-4 mt-12 h-[calc(100vh-6rem)] self-start">
+          <AntonChat api={api} fill />
+        </div>
+      </div>
     </div>
   );
 }
@@ -262,7 +340,7 @@ function Collapsible({ text }: { text: string }) {
   return (
     <div>
       <div className={open ? "" : "max-h-64 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent)]"}>
-        <Markdown className="share-article">{slackToMarkdown(text)}</Markdown>
+        <Markdown className="cp-md">{slackToMarkdown(text)}</Markdown>
       </div>
       <button className={`${quiet} mt-2`} onClick={() => setOpen(!open)}>
         {open ? "less" : "more"}
@@ -289,22 +367,35 @@ function Tickets({ api, tickets, setTickets }: { api: Api; tickets: Ticket[] | n
   return (
     <ul className="divide-y divide-dashed divide-white/10">
       {tickets.map((t) => (
-        <li key={t.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 py-2">
-          <a href={t.url} target="_blank" rel="noopener noreferrer" className="font-mono text-base text-paper-muted hover:text-paper-accent">
-            {t.id}
-          </a>
-          <span className="min-w-0 flex-1 text-paper-body">
-            {t.title}
-            {t.due ? <span className="ml-2 text-base text-paper-stamp">due {t.due}</span> : null}
-          </span>
-          <span className="flex gap-3">
-            <button className={quiet} disabled={busy === t.id} onClick={() => act(t, "done")}>
-              done
-            </button>
-            <button className={quiet} disabled={busy === t.id} onClick={() => act(t, "canceled")}>
-              drop
-            </button>
-          </span>
+        <li key={t.id} className={`flex items-center gap-2 py-2.5 ${busy === t.id ? "opacity-40" : ""}`}>
+          <div className="min-w-0 flex-1">
+            <div className="text-base leading-snug text-paper-body sm:text-lg">{t.title}</div>
+            <div className="mt-0.5 flex gap-2 text-xs text-paper-muted">
+              <a href={t.url} target="_blank" rel="noopener noreferrer" className="font-mono hover:text-paper-accent">
+                {t.id}
+              </a>
+              {t.priority && t.priority !== "No priority" ? <span>{t.priority.toLowerCase()}</span> : null}
+              {t.due ? <span className="text-paper-stamp">due {t.due}</span> : null}
+            </div>
+          </div>
+          <button
+            className="rounded-md p-2.5 text-paper-muted hover:bg-white/5 hover:text-paper-accent"
+            disabled={busy === t.id}
+            onClick={() => act(t, "done")}
+            aria-label={`Mark ${t.id} done`}
+            title="Done"
+          >
+            <Check className="h-5 w-5" />
+          </button>
+          <button
+            className="rounded-md p-2.5 text-paper-muted hover:bg-white/5 hover:text-paper-stamp"
+            disabled={busy === t.id}
+            onClick={() => act(t, "canceled")}
+            aria-label={`Drop ${t.id}`}
+            title="Drop"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </li>
       ))}
     </ul>

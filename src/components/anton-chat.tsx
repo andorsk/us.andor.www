@@ -47,7 +47,7 @@ async function toPhoto(file: File): Promise<Photo> {
   }
 }
 
-export default function AntonChat({ api }: { api: Api }) {
+export default function AntonChat({ api, fill = false }: { api: Api; fill?: boolean }) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [text, setText] = useState("");
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -92,8 +92,8 @@ export default function AntonChat({ api }: { api: Api }) {
 
   return (
     <FileUpload onFilesAdded={addFiles} accept="image/*" multiple>
-      <div className="flex flex-col gap-3">
-        <ChatContainerRoot className="max-h-[32rem] min-h-[6rem] flex-1">
+      <div className={`flex flex-col gap-3 ${fill ? "h-full" : ""}`}>
+        <ChatContainerRoot className={`flex-col ${fill ? "min-h-0 flex-1" : "max-h-[32rem] min-h-[6rem] flex-1"}`}>
           <ChatContainerContent className="space-y-4 py-2">
             {msgs.length === 0 && !busy ? (
               <p className="text-paper-muted">Ask about your email, calendar, tickets or anything else. You can attach photos.</p>
@@ -111,7 +111,7 @@ export default function AntonChat({ api }: { api: Api }) {
                       </div>
                     ) : null}
                     {m.content ? (
-                      <MessageContent className="border border-dashed border-white/20 bg-transparent px-3 py-2 text-paper-body">
+                      <MessageContent className="border border-dashed border-white/20 bg-transparent px-3 py-2 text-base text-paper-body">
                         {m.content}
                       </MessageContent>
                     ) : null}
@@ -119,7 +119,7 @@ export default function AntonChat({ api }: { api: Api }) {
                 </Message>
               ) : (
                 <Message key={i}>
-                  <MessageContent markdown className="share-article max-w-[95%] bg-transparent p-0 text-paper-body">
+                  <MessageContent markdown className="cp-md max-w-[95%] bg-transparent p-0 text-paper-body">
                     {slackToMarkdown(m.content)}
                   </MessageContent>
                 </Message>
@@ -160,6 +160,7 @@ export default function AntonChat({ api }: { api: Api }) {
             </div>
           ) : null}
           <PromptInputTextarea placeholder="ask anton…" className="text-base text-white placeholder:text-paper-muted" />
+          {/* text-base (16px) keeps iOS Safari from zooming into the field */}
           <PromptInputActions className="flex items-center justify-between pt-2">
             <PromptInputAction tooltip="Attach photos">
               <FileUploadTrigger asChild>

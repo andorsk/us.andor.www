@@ -174,3 +174,20 @@ body {
   0%, 100% { transform: translateY(0); opacity: 0.5; }
   50% { transform: translateY(-2px); opacity: 1; }
 }
+
+/* Control plane (andor.us/me): compact markdown for briefings and chat, readable on a phone. */
+.cp-md { font-size: 1rem; line-height: 1.45; color: #cfccc3; overflow-wrap: anywhere; }
+.cp-md p { margin: 0.35rem 0; }
+.cp-md ul, .cp-md ol { margin: 0.35rem 0; padding-left: 1.1rem; }
+.cp-md ul { list-style: disc; }
+.cp-md ol { list-style: decimal; }
+.cp-md li { margin: 0.25rem 0; padding-left: 0.1rem; }
+.cp-md li::marker { color: #fbb040; }
+.cp-md strong { color: #ecebe6; font-weight: 700; }
+.cp-md em { color: #9c998f; }
+.cp-md a { color: #fbb040; text-decoration: underline dotted; text-underline-offset: 3px; }
+.cp-md h1, .cp-md h2, .cp-md h3 { color: #fbb040; font-weight: 700; margin: 0.9rem 0 0.3rem; font-size: 1.05rem; }
+.cp-md code { font-family: var(--font-mono), monospace; font-size: 0.85em; }
+.cp-md table { display: block; overflow-x: auto; font-size: 0.9rem; }
+@media (min-width: 768px) { .cp-md { font-size: 1.05rem; } }
+@media (max-width: 767px) { .has-tabbar body { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); } }

@@ -12,7 +12,7 @@ export default function MePage() {
   return (
     <DefaultLayout>
       <main className="mx-auto max-w-3xl px-5 sm:text-xl">
-        <section className="mt-14 sm:mt-20">
+        <section className="mt-4 sm:mt-10">
           <ControlPlane />
         </section>
       </main>
