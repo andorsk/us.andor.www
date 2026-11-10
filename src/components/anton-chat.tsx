@@ -203,10 +203,9 @@ export default function AntonChat({ api, fill = false }: { api: Api; fill?: bool
   );
 }
 
-export function MicButton({ voice }: { voice: ReturnType<typeof useDictation> }) {
+export function MicButton({ voice, bare = false }: { voice: ReturnType<typeof useDictation>; bare?: boolean }) {
   if (!voice.supported) return null;
-  return (
-    <PromptInputAction tooltip={voice.listening ? "Stop listening" : "Speak"}>
+  const button = (
       <Button
         type="button"
         variant="ghost"
@@ -217,6 +216,7 @@ export function MicButton({ voice }: { voice: ReturnType<typeof useDictation> })
       >
         {voice.listening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
       </Button>
-    </PromptInputAction>
   );
+  // Outside a PromptInput there's no tooltip provider, so render the plain button.
+  return bare ? button : <PromptInputAction tooltip={voice.listening ? "Stop listening" : "Speak"}>{button}</PromptInputAction>;
 }

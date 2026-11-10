@@ -1,11 +1,12 @@
 "use client";
 
-// Andor's control plane: Anton's daily plan & news, open tickets, chat, push notifications.
+// Andor's dashboard at /me: Anton's daily plan & news, open tickets, chat, push notifications.
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept in localStorage.
 import { useCallback, useEffect, useState } from "react";
-import { CalendarDays, Check, ChevronRight, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, X } from "lucide-react";
+import { Bell, CalendarDays, Check, ChevronRight, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, X } from "lucide-react";
 import WorkPanel from "@/components/work-panel";
+import InboxPanel from "@/components/inbox-panel";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -239,6 +240,12 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [err, setErr] = useState("");
   const [running, setRunning] = useState("");
   const [tab, setTab] = useState<Tab>("today");
+  const [notes, setNotes] = useState(false);
+  const [unread, setUnread] = useState(0);
+  const markRead = useCallback(() => setUnread(0), []);
+  useEffect(() => {
+    api("/api/notifications").then((d) => setUnread(d.unread)).catch(() => {});
+  }, [api]);
 
   const load = useCallback(async () => {
     setErr("");
@@ -267,6 +274,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
   const pick = (t: Tab) => {
     setTab(t);
+    setNotes(false);
     try {
       sessionStorage.setItem("anton:tab", t);
     } catch {}
@@ -349,42 +357,47 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
     </Section>
   );
   const inbox = (
-    <Section
-      title="inbox"
-      right={
-        <>
-          {feed?.digest ? `${ago(feed.digest.created_at)} · ` : ""}
-          <button className={quiet} disabled={!!running} onClick={runDigest}>
-            {running === "digest" ? "working…" : "refresh"}
-          </button>
-        </>
-      }
-    >
-      {feed?.digest?.data ? (
-        <Inbox data={feed.digest.data as DigestData} />
-      ) : feed?.digest ? (
-        <Collapsible text={feed.digest.text} />
-      ) : (
-        <p className="text-paper-muted">No digest yet. Hit refresh.</p>
-      )}
+    <Section title="inbox">
+      <InboxPanel api={api} />
+      {feed?.digest?.data && ((feed.digest.data as DigestData).invites.length || (feed.digest.data as DigestData).money.length) ? (
+        <details className="mt-6">
+          <summary className="cursor-pointer select-none text-sm uppercase tracking-widest text-paper-muted">
+            invites &amp; money · {ago(feed.digest.created_at)}{" "}
+            <button className="ml-2 normal-case tracking-normal underline decoration-dotted underline-offset-4" disabled={!!running}
+              onClick={(e) => { e.preventDefault(); void runDigest(); }}>
+              {running === "digest" ? "working…" : "refresh"}
+            </button>
+          </summary>
+          <div className="mt-3">
+            <Inbox data={{ ...(feed.digest.data as DigestData), emails: [], waiting: [] }} extrasOnly />
+          </div>
+        </details>
+      ) : null}
     </Section>
   );
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="font-hand text-3xl font-bold leading-none text-white sm:text-5xl">control plane</h1>
+      <div className="flex items-center justify-end gap-3">
         <div className="flex items-center gap-3 text-sm">
           <PushToggle api={api} />
+          <button className="relative p-1 text-paper-muted hover:text-paper-accent" onClick={() => setNotes(!notes)}
+            aria-label="Notifications" title="Notifications" aria-expanded={notes}>
+            <Bell className={`h-5 w-5 ${notes ? "text-paper-accent" : ""}`} />
+            {unread ? (
+              <span className="absolute -right-1 -top-1 rounded-full bg-paper-stamp px-1 text-[10px] leading-4 text-black">{unread}</span>
+            ) : null}
+          </button>
           <button className="p-1 text-paper-muted hover:text-paper-accent" onClick={signOut} aria-label="Sign out" title="Sign out">
             <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>
       {err ? <p className="mt-3 text-base text-paper-stamp">{err}</p> : null}
+      {notes ? <Notifications api={api} onClose={() => setNotes(false)} onRead={markRead} /> : null}
 
       {/* Phone: one pane at a time, bottom tab bar. */}
-      <div className="md:hidden">
+      <div className={notes ? "hidden" : "md:hidden"}>
         {tab === "today" ? today : null}
         {tab === "chat" ? (
           <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem]">
@@ -423,7 +436,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       </nav>
 
       {/* Desktop: today + tickets on the left, chat pinned on the right. */}
-      <div className="hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-10">
+      <div className={notes ? "hidden" : "hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-10"}>
         <div>
           {today}
           {ticketsSection}
@@ -509,15 +522,17 @@ function Group({ name, count, children }: { name: string; count?: number; childr
 const pill = "rounded border border-white/20 px-1.5 text-[11px] leading-4 text-paper-muted";
 const action = "rounded-md border border-white/20 px-2.5 py-1 text-sm text-paper-body hover:border-paper-accent hover:text-paper-accent";
 
-function Inbox({ data }: { data: DigestData }) {
+function Inbox({ data, extrasOnly = false }: { data: DigestData; extrasOnly?: boolean }) {
   const order: Record<string, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
   const emails = [...data.emails].sort((a, b) => (order[a.priority] ?? 9) - (order[b.priority] ?? 9));
   return (
     <div className="space-y-5">
-      <p className="text-sm text-paper-muted">
-        {emails.length} need you · {data.scanned} triaged
-      </p>
-      {emails.length ? (
+      {extrasOnly ? null : (
+        <p className="text-sm text-paper-muted">
+          {emails.length} need you · {data.scanned} triaged
+        </p>
+      )}
+      {extrasOnly ? null : emails.length ? (
         <Group name="needs you" count={emails.length}>
           {emails.map((e, i) => (
             <li key={i}>
@@ -708,5 +723,59 @@ function PushToggle({ api }: { api: Api }) {
     <button className={quiet} disabled={state === "busy"} onClick={state === "on" ? disable : enable}>
       {state === "on" ? "notifications on" : state === "busy" ? "…" : "turn on notifications"}
     </button>
+  );
+}
+
+const EMOJI: Record<string, string> = {
+  hourglass: "⏳", hourglass_flowing_sand: "⏳", calendar: "📅", spiral_calendar_pad: "🗓️", inbox_tray: "📥", email: "✉️",
+  white_check_mark: "✅", warning: "⚠️", bell: "🔔", money_with_wings: "💸", moneybag: "💰", sunrise: "🌅", wave: "👋",
+};
+const emojify = (s: string) => s.replace(/:([a-z0-9_+-]+):/g, (m, k) => EMOJI[k] ?? "");
+
+type Note = { id: number; title: string; body: string; full: string; tag: string; delivered: number; created_at: string; read_at: string | null };
+
+function Notifications({ api, onClose, onRead }: { api: Api; onClose: () => void; onRead: () => void }) {
+  const [rows, setRows] = useState<Note[] | null>(null);
+  useEffect(() => {
+    api("/api/notifications")
+      .then((d) => {
+        setRows(d.notifications);
+        if (d.unread) api("/api/notifications/read", { method: "POST" }).then(onRead).catch(() => {});
+      })
+      .catch(() => setRows([]));
+  }, [api, onRead]);
+  return (
+    <Section title="notifications" right={<button className={quiet} onClick={onClose}>close</button>}>
+      {!rows ? (
+        <p className="text-paper-muted">loading…</p>
+      ) : !rows.length ? (
+        <p className="text-paper-muted">Nothing yet. Every push Anton sends shows up here.</p>
+      ) : (
+        <ul className="space-y-2">
+          {rows.map((n) => (
+            <li key={n.id}>
+              <details className="group rounded-lg border border-dashed border-white/15 bg-white/[0.02] px-3 py-2.5">
+                <summary className="flex cursor-pointer list-none items-start gap-2.5 [&::-webkit-details-marker]:hidden">
+                  <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${n.read_at ? "bg-white/20" : "bg-paper-accent"}`} />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="truncate text-base text-white">{n.title}</span>
+                      <span className="shrink-0 text-xs text-paper-muted">{ago(n.created_at)}</span>
+                    </span>
+                    <span className="block truncate text-sm text-paper-muted group-open:hidden">{emojify(n.body).replace(/[*_]/g, "")}</span>
+                  </span>
+                </summary>
+                <div className="ml-[18px] mt-2">
+                  <Markdown className="cp-md">{slackToMarkdown(emojify(n.full || n.body))}</Markdown>
+                  <p className="mt-2 text-xs text-paper-muted">
+                    {n.tag} · {new Date(n.created_at).toLocaleString()} · {n.delivered ? `delivered to ${n.delivered} device${n.delivered > 1 ? "s" : ""}` : "not delivered (no device subscribed)"}
+                  </p>
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }
