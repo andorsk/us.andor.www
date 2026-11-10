@@ -415,7 +415,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       </div>
       <nav
         className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-6 border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
-        aria-label="Control plane sections"
+        aria-label="Sections"
       >
         {TABS.map(({ id, label, Icon }) => (
           <button

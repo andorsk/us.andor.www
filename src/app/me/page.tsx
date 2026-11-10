@@ -3,7 +3,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import ControlPlane from "@/components/control-plane";
 
 export const metadata: Metadata = {
-  title: "control plane",
+  title: "Anton",
   robots: { index: false, follow: false },
 };
 
