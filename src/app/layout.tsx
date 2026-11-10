@@ -20,7 +20,7 @@ const print = Patrick_Hand({
 
 const APP_NAME = "Anton, son of Andor"; // installed PWA name (opens the control plane)
 const APP_DEFAULT_TITLE = "Andor Labs";
-const APP_TITLE_TEMPLATE = "%s - PWA App";
+const APP_TITLE_TEMPLATE = "%s · andor.us";
 const APP_DESCRIPTION = "web5, ai, and random";
 
 export const metadata: Metadata = {
