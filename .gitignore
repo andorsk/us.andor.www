@@ -40,3 +40,6 @@ dist
 public/sw*
 public/workbox*
 .env.local
+
+# next-pwa custom worker bundle (generated)
+public/worker-*.js
