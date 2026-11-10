@@ -46,7 +46,12 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
               {s.label.toLowerCase()}: {s.text}
             </a>
           ))}
-          <span className="sm:ml-auto">© {new Date().getFullYear()} Henosisknot LLC</span>
+          <span className="sm:ml-auto">
+            © {new Date().getFullYear()} Henosisknot LLC
+            <Link href="/me" aria-label="sign in" title="sign in" className="ml-2 opacity-30 transition hover:text-paper-accent hover:opacity-100">
+              ·
+            </Link>
+          </span>
         </div>
       </footer>
     </div>
