@@ -13,6 +13,7 @@
 }
 
 html {
+  color-scheme: dark;
   background-color: #0c0c0c; /* no white strip under the page / behind the phone's nav bar */
 }
 

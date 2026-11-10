@@ -96,5 +96,6 @@ export default function RootLayout({
 
 export const viewport: Viewport = {
   themeColor: "#0c0c0c",
+  colorScheme: "dark", // system bars (incl. Android's bottom nav bar) follow the dark page
   viewportFit: "cover", // lets the phone tab bar sit above the home indicator (safe-area insets)
 };
