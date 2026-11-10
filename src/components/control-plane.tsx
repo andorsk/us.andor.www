@@ -4,7 +4,8 @@
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept in localStorage.
 import { useCallback, useEffect, useState } from "react";
-import { CalendarDays, Check, ChevronRight, ListChecks, LogOut, MessageCircle, Sun, X } from "lucide-react";
+import { CalendarDays, Check, ChevronRight, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, X } from "lucide-react";
+import WorkPanel from "@/components/work-panel";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -13,7 +14,17 @@ const KEY = "anton:session";
 
 type Item = { title: string; why: string; details: string; url: string };
 type Structured = { agenda: Item[]; news: Item[]; events: Item[] };
-type Summary = { text: string; period: string; created_at: string; data?: Structured | null } | null;
+type DigestEmail = {
+  priority: string; category: string; subject: string; from: string; summary: string; link: string;
+  draft: boolean; acked: boolean; tickets: { id: string; url: string }[];
+};
+type DigestData = {
+  scanned: number; emails: DigestEmail[];
+  invites: { title: string; when: string; from: string; link: string }[];
+  money: { kind: string; vendor: string; amount: number | null; currency: string | null; due: string | null; link: string }[];
+  waiting: { to: string; subject: string; since: string }[];
+};
+type Summary = { text: string; period: string; created_at: string; data?: any } | null;
 type Feed = { daily_briefing: Summary; weekly_briefing: Summary; digest: Summary; weekly_review: Summary };
 type Ticket = { id: string; title: string; url: string; state: string; priority?: string; due?: string | null };
 
@@ -59,7 +70,8 @@ export default function ControlPlane() {
   );
 
   useEffect(() => {
-    document.title = "control plane - Andor Labs";
+    document.title = "Anton, son of Andor";
+    void navigator.storage?.persist?.().catch(() => {});
     const token = new URLSearchParams(location.hash.slice(1)).get("login");
     let saved: string | null = null;
     try {
@@ -86,7 +98,18 @@ export default function ControlPlane() {
   }, []);
 
   if (!ready) return <p className="mt-6 text-paper-muted">…</p>;
-  if (!session) return <SignIn status={status} />;
+  if (!session)
+    return (
+      <SignIn
+        status={status}
+        onSession={(sess) => {
+          try {
+            localStorage.setItem(KEY, sess);
+          } catch {}
+          setSession(sess);
+        }}
+      />
+    );
   return (
     <Dashboard
       api={api}
@@ -101,33 +124,86 @@ export default function ControlPlane() {
   );
 }
 
-function SignIn({ status }: { status: string }) {
+function SignIn({ status, onSession }: { status: string; onSession: (s: string) => void }) {
   const [msg, setMsg] = useState(status);
   const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [code, setCode] = useState("");
+
+  const send = async () => {
+    setBusy(true);
+    try {
+      const r = await fetch(`${API}/api/login/start`, { method: "POST" });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok || r.status === 429) setSent(true);
+      setMsg(r.ok ? "Code sent to andor@andor.us." : d.error || "Couldn't send a code.");
+    } catch {
+      setMsg("Couldn't reach Anton.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verify = async (value: string) => {
+    setBusy(true);
+    try {
+      const r = await fetch(`${API}/api/login/finish`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: value }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.session) onSession(d.session);
+      else setMsg(d.error || "That code didn't work.");
+    } catch {
+      setMsg("Couldn't reach Anton.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="mt-6 max-w-md">
       <h1 className="font-hand text-5xl font-bold leading-none text-white sm:text-6xl">sign in</h1>
-      <p className="mt-4 text-paper-body">Private. Anton emails a one-time sign-in link to andor@andor.us.</p>
-      <button
-        className={`${btn} mt-6`}
-        disabled={busy}
-        onClick={async () => {
-          setBusy(true);
-          try {
-            const r = await fetch(`${API}/api/login/start`, { method: "POST" });
-            const d = await r.json().catch(() => ({}));
-            setMsg(r.ok ? "Sent. Open the email on this device and tap the link." : d.error || "Couldn't send a link.");
-          } catch {
-            setMsg("Couldn't reach Anton.");
-          } finally {
-            setBusy(false);
-          }
-        }}
-      >
-        {busy ? "sending…" : "send me a sign-in link"}
-      </button>
+      <p className="mt-4 text-paper-body">Private. Anton emails a 6-digit code to andor@andor.us.</p>
+      {sent ? (
+        <form
+          className="mt-6 flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void verify(code);
+          }}
+        >
+          <input
+            value={code}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "").slice(0, 6);
+              setCode(v);
+              if (v.length === 6) void verify(v);
+            }}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder="123456"
+            aria-label="Sign-in code"
+            autoFocus
+            className="w-40 rounded-md border border-dashed border-white/30 bg-transparent px-3 py-2 text-center font-mono text-xl tracking-[0.3em] text-white placeholder:text-paper-muted focus:border-paper-accent focus:outline-none"
+          />
+          <button type="submit" className={btn} disabled={busy || code.length !== 6}>
+            {busy ? "…" : "sign in"}
+          </button>
+        </form>
+      ) : (
+        <button className={`${btn} mt-6`} disabled={busy} onClick={send}>
+          {busy ? "sending…" : "email me a code"}
+        </button>
+      )}
       <p role="status" className="mt-3 min-h-[1.5em] text-base text-paper-muted">
         {msg}
+        {sent ? (
+          <button className={`${quiet} ml-3`} disabled={busy} onClick={send}>
+            resend
+          </button>
+        ) : null}
       </p>
     </div>
   );
@@ -147,11 +223,13 @@ function Section({ title, right, children }: { title: string; right?: React.Reac
   );
 }
 
-type Tab = "today" | "chat" | "tickets" | "week";
+type Tab = "today" | "chat" | "inbox" | "tickets" | "work" | "week";
 const TABS: { id: Tab; label: string; Icon: typeof Sun }[] = [
   { id: "today", label: "today", Icon: Sun },
   { id: "chat", label: "chat", Icon: MessageCircle },
+  { id: "inbox", label: "inbox", Icon: Mail },
   { id: "tickets", label: "tickets", Icon: ListChecks },
+  { id: "work", label: "work", Icon: Terminal },
   { id: "week", label: "week", Icon: CalendarDays },
 ];
 
@@ -217,6 +295,26 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
     }
   };
 
+  const runDigest = async () => {
+    setRunning("digest");
+    try {
+      const before = feed?.digest?.created_at;
+      await api("/api/digest", { method: "POST" });
+      for (let i = 0; i < 40; i++) {
+        await new Promise((r) => setTimeout(r, 5000));
+        const f: Feed = await api("/api/feed");
+        if (f.digest?.created_at && f.digest.created_at !== before) {
+          setFeed(f);
+          break;
+        }
+      }
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setRunning("");
+    }
+  };
+
   const daily = feed?.daily_briefing;
   const weekly = feed?.weekly_briefing;
 
@@ -232,7 +330,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const today = (
     <Section title="today" right={refreshBtn("daily", daily ?? null)}>
       {daily?.data ? (
-        <Briefing data={daily.data} />
+        <Briefing data={daily.data as Structured} />
       ) : daily ? (
         <Markdown className="cp-md">{slackToMarkdown(daily.text)}</Markdown>
       ) : (
@@ -246,16 +344,30 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
     </Section>
   );
   const week = (
-    <>
-      <Section title="week ahead" right={refreshBtn("weekly", weekly ?? null)}>
-        {weekly ? <Collapsible text={weekly.text} /> : <p className="text-paper-muted">Comes every Sunday evening.</p>}
-      </Section>
-      {feed?.digest ? (
-        <Section title="inbox digest" right={ago(feed.digest.created_at)}>
-          <Collapsible text={feed.digest.text} />
-        </Section>
-      ) : null}
-    </>
+    <Section title="week ahead" right={refreshBtn("weekly", weekly ?? null)}>
+      {weekly ? <Collapsible text={weekly.text} /> : <p className="text-paper-muted">Comes every Sunday evening.</p>}
+    </Section>
+  );
+  const inbox = (
+    <Section
+      title="inbox"
+      right={
+        <>
+          {feed?.digest ? `${ago(feed.digest.created_at)} · ` : ""}
+          <button className={quiet} disabled={!!running} onClick={runDigest}>
+            {running === "digest" ? "working…" : "refresh"}
+          </button>
+        </>
+      }
+    >
+      {feed?.digest?.data ? (
+        <Inbox data={feed.digest.data as DigestData} />
+      ) : feed?.digest ? (
+        <Collapsible text={feed.digest.text} />
+      ) : (
+        <p className="text-paper-muted">No digest yet. Hit refresh.</p>
+      )}
+    </Section>
   );
 
   return (
@@ -280,10 +392,16 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
           </div>
         ) : null}
         {tab === "tickets" ? ticketsSection : null}
+        {tab === "inbox" ? inbox : null}
+        {tab === "work" ? (
+          <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem]">
+            <WorkPanel api={api} fill />
+          </div>
+        ) : null}
         {tab === "week" ? week : null}
       </div>
       <nav
-        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-6 border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
         aria-label="Control plane sections"
       >
         {TABS.map(({ id, label, Icon }) => (
@@ -309,6 +427,10 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
         <div>
           {today}
           {ticketsSection}
+          <Section title="work">
+            <WorkPanel api={api} />
+          </Section>
+          {inbox}
           {week}
         </div>
         <div className="sticky top-4 mt-12 h-[calc(100vh-6rem)] self-start">
@@ -358,6 +480,117 @@ function Briefing({ data }: { data: Structured }) {
           </div>
         ) : null,
       )}
+    </div>
+  );
+}
+
+const DOT: Record<string, string> = { urgent: "bg-paper-stamp", high: "bg-paper-accent", normal: "bg-sky-400/70", low: "bg-white/25" };
+
+function when(iso: string) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return iso.length <= 10
+    ? d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })
+    : d.toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+function Group({ name, count, children }: { name: string; count?: number; children: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="mb-1 text-sm uppercase tracking-widest text-paper-accent">
+        {name}
+        {count ? <span className="ml-2 text-paper-muted">{count}</span> : null}
+      </h3>
+      <ul className="divide-y divide-dashed divide-white/10">{children}</ul>
+    </div>
+  );
+}
+
+const pill = "rounded border border-white/20 px-1.5 text-[11px] leading-4 text-paper-muted";
+const action = "rounded-md border border-white/20 px-2.5 py-1 text-sm text-paper-body hover:border-paper-accent hover:text-paper-accent";
+
+function Inbox({ data }: { data: DigestData }) {
+  const order: Record<string, number> = { urgent: 0, high: 1, normal: 2, low: 3 };
+  const emails = [...data.emails].sort((a, b) => (order[a.priority] ?? 9) - (order[b.priority] ?? 9));
+  return (
+    <div className="space-y-5">
+      <p className="text-sm text-paper-muted">
+        {emails.length} need you · {data.scanned} triaged
+      </p>
+      {emails.length ? (
+        <Group name="needs you" count={emails.length}>
+          {emails.map((e, i) => (
+            <li key={i}>
+              <details className="group py-2">
+                <summary className="flex cursor-pointer list-none items-start gap-2.5 [&::-webkit-details-marker]:hidden">
+                  <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${DOT[e.priority] ?? DOT.low}`} title={e.priority} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-base leading-snug text-white">{e.subject || "(no subject)"}</span>
+                    <span className="flex items-center gap-1.5 text-sm text-paper-muted">
+                      <span className="truncate">{e.from}</span>
+                      {e.category === "linkedin_outreach" ? <span className={pill}>linkedin</span> : null}
+                      {e.draft ? <span className={pill}>draft</span> : null}
+                      {e.acked ? <span className={pill}>acked</span> : null}
+                    </span>
+                  </span>
+                  <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-paper-muted transition group-open:rotate-90" />
+                </summary>
+                <div className="ml-[18px] mt-2 space-y-2">
+                  <p className="text-sm leading-relaxed text-paper-body">{e.summary}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <a className={action} href={e.link} target="_blank" rel="noopener noreferrer">open in gmail</a>
+                    {e.draft ? (
+                      <a className={action} href="https://mail.google.com/mail/u/0/#drafts" target="_blank" rel="noopener noreferrer">review draft</a>
+                    ) : null}
+                    {e.tickets.map((t) => (
+                      <a key={t.id} className={action} href={t.url} target="_blank" rel="noopener noreferrer">{t.id}</a>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))}
+        </Group>
+      ) : (
+        <p className="text-paper-muted">Inbox zero on things that need you.</p>
+      )}
+      {data.invites.length ? (
+        <Group name="invites to answer" count={data.invites.length}>
+          {data.invites.map((v, i) => (
+            <li key={i} className="py-2">
+              <a href={v.link || undefined} target="_blank" rel="noopener noreferrer" className="block">
+                <span className="block truncate text-base text-white">{v.title}</span>
+                <span className="block truncate text-sm text-paper-muted">{when(v.when)} · {v.from}</span>
+              </a>
+            </li>
+          ))}
+        </Group>
+      ) : null}
+      {data.money.length ? (
+        <Group name="money" count={data.money.length}>
+          {data.money.map((m, i) => (
+            <li key={i} className="flex items-baseline justify-between gap-3 py-2">
+              <a href={m.link} target="_blank" rel="noopener noreferrer" className="min-w-0 truncate text-base text-white">
+                {m.vendor || m.kind}
+              </a>
+              <span className="shrink-0 text-sm text-paper-muted">
+                {m.amount != null ? `${m.currency || "$"} ${m.amount.toLocaleString()}` : m.kind}
+                {m.due ? <span className="ml-2 text-paper-stamp">due {when(m.due)}</span> : null}
+              </span>
+            </li>
+          ))}
+        </Group>
+      ) : null}
+      {data.waiting.length ? (
+        <Group name="waiting on" count={data.waiting.length}>
+          {data.waiting.map((w, i) => (
+            <li key={i} className="py-2">
+              <span className="block truncate text-base text-white">{w.to}</span>
+              <span className="block truncate text-sm text-paper-muted">{w.subject} · since {when(w.since)}</span>
+            </li>
+          ))}
+        </Group>
+      ) : null}
     </div>
   );
 }

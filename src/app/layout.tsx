@@ -18,7 +18,7 @@ const print = Patrick_Hand({
   variable: "--font-print",
 });
 
-const APP_NAME = "Andor Labs";
+const APP_NAME = "Anton, son of Andor"; // installed PWA name (opens the control plane)
 const APP_DEFAULT_TITLE = "Andor Labs";
 const APP_TITLE_TEMPLATE = "%s - PWA App";
 const APP_DESCRIPTION = "web5, ai, and random";
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: APP_DEFAULT_TITLE,
+    statusBarStyle: "black-translucent",
+    title: "Anton",
     // startUpImage: [],
   },
   formatDetection: {
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    siteName: APP_NAME,
+    siteName: "Andor Labs",
     title: {
       default: APP_DEFAULT_TITLE,
       template: APP_TITLE_TEMPLATE,

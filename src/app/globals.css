@@ -12,6 +12,10 @@
   --grid: rgba(255, 255, 255, 0.06);
 }
 
+html {
+  background-color: #0c0c0c; /* no white strip under the page / behind the phone's nav bar */
+}
+
 body {
   color: var(--foreground);
   background-color: var(--background);

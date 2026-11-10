@@ -2,7 +2,8 @@
 
 // Chat with Anton, built from prompt-kit components (shadcn registry): ChatContainer, Message,
 // PromptInput, FileUpload, Loader. Photos are downscaled in the browser and sent to Anton (Claude vision).
-import { ImagePlus, X, ArrowUp } from "lucide-react";
+import { ImagePlus, X, ArrowUp, Mic, MicOff } from "lucide-react";
+import { useDictation } from "@/hooks/use-dictation";
 import { useEffect, useState } from "react";
 import { ChatContainerContent, ChatContainerRoot, ChatContainerScrollAnchor } from "@/components/ui/chat-container";
 import { FileUpload, FileUploadContent, FileUploadTrigger } from "@/components/ui/file-upload";
@@ -52,6 +53,7 @@ export default function AntonChat({ api, fill = false }: { api: Api; fill?: bool
   const [text, setText] = useState("");
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [busy, setBusy] = useState(false);
+  const voice = useDictation((t) => setText((x) => (x ? `${x} ${t}` : t)));
 
   useEffect(() => {
     api("/api/chat")
@@ -162,18 +164,25 @@ export default function AntonChat({ api, fill = false }: { api: Api; fill?: bool
           <PromptInputTextarea placeholder="ask anton…" className="text-base text-white placeholder:text-paper-muted" />
           {/* text-base (16px) keeps iOS Safari from zooming into the field */}
           <PromptInputActions className="flex items-center justify-between pt-2">
-            <PromptInputAction tooltip="Attach photos">
-              <FileUploadTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-paper-muted hover:text-paper-accent" aria-label="Attach photos">
-                  <ImagePlus className="h-4 w-4" />
-                </Button>
-              </FileUploadTrigger>
-            </PromptInputAction>
+            <div className="flex items-center gap-1">
+              <PromptInputAction tooltip="Attach photos">
+                <FileUploadTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full text-paper-muted hover:text-paper-accent" aria-label="Attach photos">
+                    <ImagePlus className="h-5 w-5" />
+                  </Button>
+                </FileUploadTrigger>
+              </PromptInputAction>
+              <MicButton voice={voice} />
+              {voice.listening ? <span className="truncate text-sm text-paper-muted">{voice.interim || "listening…"}</span> : null}
+            </div>
             <PromptInputAction tooltip="Send">
               <Button
                 size="icon"
-                className="h-8 w-8 rounded-full"
-                onClick={send}
+                className="h-9 w-9 rounded-full"
+                onClick={() => {
+                  voice.stop();
+                  void send();
+                }}
                 disabled={busy || (!text.trim() && !photos.length)}
                 aria-label="Send"
               >
@@ -191,5 +200,23 @@ export default function AntonChat({ api, fill = false }: { api: Api; fill?: bool
         </div>
       </FileUploadContent>
     </FileUpload>
+  );
+}
+
+export function MicButton({ voice }: { voice: ReturnType<typeof useDictation> }) {
+  if (!voice.supported) return null;
+  return (
+    <PromptInputAction tooltip={voice.listening ? "Stop listening" : "Speak"}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={voice.toggle}
+        aria-label={voice.listening ? "Stop voice input" : "Voice input"}
+        className={`h-9 w-9 rounded-full ${voice.listening ? "animate-pulse bg-paper-stamp/20 text-paper-stamp" : "text-paper-muted hover:text-paper-accent"}`}
+      >
+        {voice.listening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+      </Button>
+    </PromptInputAction>
   );
 }

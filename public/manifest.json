@@ -1,6 +1,6 @@
 {
-  "name": "Andor Labs",
-  "short_name": "Andor's PWA App",
+  "name": "Anton, son of Andor",
+  "short_name": "Anton",
   "icons": [
     {
       "src": "/icons/android-chrome-192x192.png",
@@ -19,9 +19,12 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#FFFFFF",
-  "background_color": "#FFFFFF",
-  "start_url": "/",
+  "theme_color": "#0c0c0c",
+  "background_color": "#0c0c0c",
+  "start_url": "/me",
   "display": "standalone",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "scope": "/",
+  "id": "/me",
+  "description": "Andor's control plane: agenda, news, tickets and chat with Anton."
 }
