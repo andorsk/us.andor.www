@@ -25,6 +25,6 @@
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
-  "id": "/me",
+  "id": "/",
   "description": "Andor's control plane: agenda, news, tickets and chat with Anton."
 }
