@@ -26,5 +26,40 @@
   "orientation": "portrait",
   "scope": "/",
   "id": "/",
-  "description": "Andor's control plane: agenda, news, tickets and chat with Anton."
+  "description": "Andor's control plane: agenda, news, tickets and chat with Anton.",
+  "shortcuts": [
+    {
+      "name": "My QR code",
+      "short_name": "My QR",
+      "url": "/me#qr",
+      "icons": [
+        {
+          "src": "/icons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "People",
+      "short_name": "People",
+      "url": "/me#/connections",
+      "icons": [
+        {
+          "src": "/icons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Inbox",
+      "short_name": "Inbox",
+      "url": "/me#/inbox",
+      "icons": [
+        {
+          "src": "/icons/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }

@@ -5,11 +5,12 @@
 // which is exchanged for a 30-day session token kept on the device (see tokenStore).
 import { useCallback, useEffect, useState } from "react";
 import {
-  Bell, CalendarDays, Check, ChevronRight, LayoutGrid, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
+  Bell, CalendarDays, Check, ChevronRight, LayoutGrid, QrCode, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
 } from "lucide-react";
 import WorkPanel from "@/components/work-panel";
 import InboxPanel from "@/components/inbox-panel";
 import ConnectionsPanel from "@/components/connections-panel";
+import { QRCodeSVG } from "qrcode.react";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -310,6 +311,10 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [running, setRunning] = useState("");
   const [tab, setTab] = useState<Tab>("today");
   const [more, setMore] = useState(false);
+  const [qr, setQr] = useState(false);
+  useEffect(() => {
+    if (location.hash === "#qr") setQr(true); // the installed app's "My QR" shortcut
+  }, []);
   const [pins, setPins] = usePins();
   const [yourMove, setYourMove] = useState(0);
   const [notes, setNotes] = useState(false);
@@ -495,6 +500,9 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       <div className="flex items-center justify-between gap-3">
         <div className="ml-auto flex items-center gap-3 text-sm">
           <PushToggle api={api} />
+          <button className="p-1 text-paper-muted hover:text-paper-accent" onClick={() => setQr(true)} aria-label="My QR code" title="My QR code">
+            <QrCode className="h-5 w-5" />
+          </button>
           <button className="relative p-1 text-paper-muted hover:text-paper-accent" onClick={() => setNotes(!notes)}
             aria-label="Notifications" title="Notifications" aria-expanded={notes}>
             <Bell className={`h-5 w-5 ${notes ? "text-paper-accent" : ""}`} />
@@ -509,6 +517,7 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       </div>
       {err ? <p className="mt-3 text-base text-paper-stamp">{err}</p> : null}
       {notes ? <Notifications api={api} onClose={() => setNotes(false)} onRead={markRead} /> : null}
+      {qr ? <MyQr onClose={() => { setQr(false); if (location.hash === "#qr") history.replaceState(null, "", location.pathname); }} /> : null}
 
       <div className={notes ? "hidden" : "md:grid md:grid-cols-[10rem_minmax(0,1fr)] md:gap-8 lg:grid-cols-[10rem_minmax(0,1fr)_22rem]"}>
         {/* Desktop: sidebar of every section, grouped. */}
@@ -564,6 +573,20 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
           {offBar && !more ? SECTIONS.find((t) => t.id === tab)?.label : "more"}
         </button>
       </nav>
+    </div>
+  );
+}
+
+// Full-screen QR for people to scan: opens andor.us/connect (save Andor's contact or leave theirs).
+function MyQr({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-5 bg-paper-bg px-6" onClick={onClose}>
+      <p className="font-hand text-5xl font-bold text-paper-accent">connect with Andor</p>
+      <div className="rounded-2xl bg-white p-5">
+        <QRCodeSVG value="https://andor.us/connect" size={260} level="M" />
+      </div>
+      <p className="text-paper-muted">andor.us/connect</p>
+      <button className="mt-2 flex items-center gap-1 text-paper-muted hover:text-paper-accent"><X className="h-4 w-4" /> close</button>
     </div>
   );
 }
