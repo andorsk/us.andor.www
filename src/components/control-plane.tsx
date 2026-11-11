@@ -2,7 +2,7 @@
 
 // Andor's dashboard at /me: Anton's daily plan & news, open tickets, chat, push notifications.
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
-// which is exchanged for a 30-day session token kept in localStorage.
+// which is exchanged for a 30-day session token kept on the device (see tokenStore).
 import { useCallback, useEffect, useState } from "react";
 import { Bell, CalendarDays, Check, ChevronRight, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, X } from "lucide-react";
 import WorkPanel from "@/components/work-panel";
@@ -46,6 +46,56 @@ const btn =
   "rounded-md border border-paper-accent px-3 py-1.5 text-base text-paper-accent transition hover:bg-paper-accent hover:text-black disabled:opacity-50";
 const quiet = "text-base text-paper-muted underline decoration-dotted underline-offset-4 hover:text-paper-accent";
 
+// The session token is kept in three places (localStorage, IndexedDB and a first-party cookie) so that
+// losing one (storage eviction, a browser clearing one store) doesn't sign the phone out.
+const IDB = "anton";
+function idb<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest): Promise<T | undefined> {
+  return new Promise((resolve) => {
+    try {
+      const open = indexedDB.open(IDB, 1);
+      open.onupgradeneeded = () => open.result.createObjectStore("kv");
+      open.onerror = () => resolve(undefined);
+      open.onsuccess = () => {
+        try {
+          const req = fn(open.result.transaction("kv", mode).objectStore("kv"));
+          req.onsuccess = () => resolve(req.result as T);
+          req.onerror = () => resolve(undefined);
+        } catch {
+          resolve(undefined);
+        }
+      };
+    } catch {
+      resolve(undefined);
+    }
+  });
+}
+const tokenStore = {
+  async load(): Promise<string | null> {
+    let t: string | null = null;
+    try {
+      t = localStorage.getItem(KEY);
+    } catch {}
+    if (!t) t = (await idb<string>("readonly", (s) => s.get(KEY))) ?? null;
+    if (!t) t = document.cookie.match(/(?:^|; )anton_session=([^;]+)/)?.[1] ?? null;
+    if (t) void tokenStore.save(t); // heal whichever copies were lost
+    return t;
+  },
+  async save(t: string) {
+    try {
+      localStorage.setItem(KEY, t);
+    } catch {}
+    document.cookie = `anton_session=${t}; path=/; max-age=${400 * 86400}; secure; samesite=strict`;
+    await idb("readwrite", (s) => s.put(t, KEY));
+  },
+  async clear() {
+    try {
+      localStorage.removeItem(KEY);
+    } catch {}
+    document.cookie = "anton_session=; path=/; max-age=0; secure; samesite=strict";
+    await idb("readwrite", (s) => s.delete(KEY));
+  },
+};
+
 export default function ControlPlane() {
   const [session, setSession] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -58,10 +108,12 @@ export default function ControlPlane() {
         headers: { "Content-Type": "application/json", ...(session ? { Authorization: `Bearer ${session}` } : {}) },
       });
       if (r.status === 401 && session) {
-        try {
-          localStorage.removeItem(KEY);
-        } catch {}
-        setSession(null);
+        // Only sign out if Anton itself confirms the session is gone (not a stray 401 from elsewhere).
+        const check = await fetch(API + "/api/me", { headers: { Authorization: `Bearer ${session}` } }).catch(() => null);
+        if (check?.status === 401) {
+          await tokenStore.clear();
+          setSession(null);
+        }
       }
       const data = await r.json().catch(() => ({}));
       if (!r.ok && r.status !== 202) throw new Error(data.error || `HTTP ${r.status}`);
@@ -74,27 +126,23 @@ export default function ControlPlane() {
     document.title = "Anton, son of Andor";
     void navigator.storage?.persist?.().catch(() => {});
     const token = new URLSearchParams(location.hash.slice(1)).get("login");
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem(KEY);
-    } catch {}
     if (token) {
       history.replaceState(null, "", location.pathname);
       fetch(`${API}/api/login/finish`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) })
         .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
         .then(({ ok, d }) => {
           if (ok && d.session) {
-            try {
-              localStorage.setItem(KEY, d.session);
-            } catch {}
+            void tokenStore.save(d.session);
             setSession(d.session);
           } else setStatus(d.error || "That link didn't work.");
         })
         .catch(() => setStatus("Couldn't reach Anton."))
         .finally(() => setReady(true));
     } else {
-      setSession(saved);
-      setReady(true);
+      tokenStore.load().then((saved) => {
+        setSession(saved);
+        setReady(true);
+      });
     }
   }, []);
 
@@ -104,9 +152,7 @@ export default function ControlPlane() {
       <SignIn
         status={status}
         onSession={(sess) => {
-          try {
-            localStorage.setItem(KEY, sess);
-          } catch {}
+          void tokenStore.save(sess);
           setSession(sess);
         }}
       />
@@ -116,9 +162,7 @@ export default function ControlPlane() {
       api={api}
       signOut={() => {
         void api("/api/logout", { method: "POST" }).catch(() => {});
-        try {
-          localStorage.removeItem(KEY);
-        } catch {}
+        void tokenStore.clear();
         setSession(null);
       }}
     />
