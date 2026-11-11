@@ -245,7 +245,7 @@ function FollowCard({ f, onOpen }: { f: Followup; onOpen: (thread: string) => vo
   );
 }
 
-function ThreadView({ api, id, onBack }: { api: Api; id: string; onBack: () => void }) {
+export function ThreadView({ api, id, onBack }: { api: Api; id: string; onBack: () => void }) {
   const [t, setT] = useState<Thread | null>(null);
   const [body, setBody] = useState("");
   const [instruction, setInstruction] = useState("");

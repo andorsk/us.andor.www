@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function MePage() {
   return (
     <DefaultLayout>
-      <main className="mx-auto max-w-3xl px-5 sm:text-xl">
+      <main className="mx-auto max-w-3xl px-5 sm:text-xl md:max-w-5xl lg:max-w-7xl">
         <section className="mt-4 sm:mt-10">
           <ControlPlane />
         </section>

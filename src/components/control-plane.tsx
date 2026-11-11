@@ -4,9 +4,12 @@
 // Talks to Anton's API (owner only). Sign-in: Anton DMs a one-time link on Slack (#login=<token>),
 // which is exchanged for a 30-day session token kept on the device (see tokenStore).
 import { useCallback, useEffect, useState } from "react";
-import { Bell, CalendarDays, Check, ChevronRight, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, X } from "lucide-react";
+import {
+  Bell, CalendarDays, Check, ChevronRight, LayoutGrid, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
+} from "lucide-react";
 import WorkPanel from "@/components/work-panel";
 import InboxPanel from "@/components/inbox-panel";
+import ConnectionsPanel from "@/components/connections-panel";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
 
@@ -268,15 +271,37 @@ function Section({ title, right, children }: { title: string; right?: React.Reac
   );
 }
 
-type Tab = "today" | "chat" | "inbox" | "tickets" | "work" | "week";
-const TABS: { id: Tab; label: string; Icon: typeof Sun }[] = [
-  { id: "today", label: "today", Icon: Sun },
-  { id: "chat", label: "chat", Icon: MessageCircle },
-  { id: "inbox", label: "inbox", Icon: Mail },
-  { id: "tickets", label: "tickets", Icon: ListChecks },
-  { id: "work", label: "work", Icon: Terminal },
-  { id: "week", label: "week", Icon: CalendarDays },
+// Every section of the dashboard. Add new areas here: they show up in the desktop sidebar and the phone's
+// "more" sheet automatically, and can be pinned to the phone's bottom bar.
+type Tab = "today" | "week" | "inbox" | "connections" | "chat" | "tickets" | "work";
+const GROUPS = ["daily", "people", "build"] as const;
+const SECTIONS: { id: Tab; label: string; Icon: typeof Sun; group: (typeof GROUPS)[number] }[] = [
+  { id: "today", label: "today", Icon: Sun, group: "daily" },
+  { id: "week", label: "week", Icon: CalendarDays, group: "daily" },
+  { id: "inbox", label: "inbox", Icon: Mail, group: "people" },
+  { id: "connections", label: "people", Icon: Users, group: "people" },
+  { id: "chat", label: "chat", Icon: MessageCircle, group: "people" },
+  { id: "tickets", label: "tickets", Icon: ListChecks, group: "build" },
+  { id: "work", label: "work", Icon: Terminal, group: "build" },
 ];
+const PIN_MAX = 4;
+const DEFAULT_PINS: Tab[] = ["today", "inbox", "connections", "chat"];
+
+function usePins(): [Tab[], (p: Tab[]) => void] {
+  const [pins, set] = useState<Tab[]>(DEFAULT_PINS);
+  useEffect(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem("anton:nav-pins") || "null");
+      if (Array.isArray(s) && s.length) set(s);
+    } catch {}
+  }, []);
+  return [pins, (p: Tab[]) => {
+    set(p);
+    try {
+      localStorage.setItem("anton:nav-pins", JSON.stringify(p));
+    } catch {}
+  }];
+}
 
 function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [feed, setFeed] = useState<Feed | null>(null);
@@ -284,11 +309,17 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
   const [err, setErr] = useState("");
   const [running, setRunning] = useState("");
   const [tab, setTab] = useState<Tab>("today");
+  const [more, setMore] = useState(false);
+  const [pins, setPins] = usePins();
+  const [yourMove, setYourMove] = useState(0);
   const [notes, setNotes] = useState(false);
   const [unread, setUnread] = useState(0);
   const markRead = useCallback(() => setUnread(0), []);
   useEffect(() => {
     api("/api/notifications").then((d) => setUnread(d.unread)).catch(() => {});
+    api("/api/connections")
+      .then((d) => setYourMove(d.connections.filter((c: { move: string | null }) => c.move === "you").length))
+      .catch(() => {});
   }, [api]);
 
   const load = useCallback(async () => {
@@ -310,18 +341,36 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
 
   useEffect(() => {
     void load();
-    try {
-      const saved = sessionStorage.getItem("anton:tab") as Tab | null;
-      if (saved && TABS.some((t) => t.id === saved)) setTab(saved);
-    } catch {}
   }, [load]);
+
+  // The open section lives in the URL (#/inbox), so links from pings and the back gesture work.
+  useEffect(() => {
+    const fromHash = () => {
+      const id = location.hash.replace(/^#\/?/, "") as Tab;
+      if (SECTIONS.some((t) => t.id === id)) {
+        setTab(id);
+        return true;
+      }
+      return false;
+    };
+    if (!fromHash()) {
+      try {
+        const saved = sessionStorage.getItem("anton:tab") as Tab | null;
+        if (saved && SECTIONS.some((t) => t.id === saved)) setTab(saved);
+      } catch {}
+    }
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
 
   const pick = (t: Tab) => {
     setTab(t);
     setNotes(false);
+    setMore(false);
     try {
       sessionStorage.setItem("anton:tab", t);
     } catch {}
+    if (location.hash !== `#/${t}`) history.pushState(null, "", `#/${t}`);
     window.scrollTo({ top: 0 });
   };
 
@@ -420,10 +469,31 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
     </Section>
   );
 
+  const connections = (
+    <Section title="people">
+      <ConnectionsPanel api={api} />
+    </Section>
+  );
+  const full = (node: React.ReactNode) => (
+    <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem] md:h-[calc(100vh-8rem)]">{node}</div>
+  );
+  const panes: Record<Tab, React.ReactNode> = {
+    today,
+    week,
+    inbox,
+    connections,
+    chat: full(<AntonChat api={api} fill />),
+    tickets: ticketsSection,
+    work: full(<WorkPanel api={api} fill />),
+  };
+  const badges: Partial<Record<Tab, number>> = { tickets: tickets?.length ?? 0, connections: yourMove };
+  const bar = pins.filter((id) => SECTIONS.some((t) => t.id === id)).slice(0, PIN_MAX);
+  const offBar = !bar.includes(tab);
+
   return (
     <div>
-      <div className="flex items-center justify-end gap-3">
-        <div className="flex items-center gap-3 text-sm">
+      <div className="flex items-center justify-between gap-3">
+        <div className="ml-auto flex items-center gap-3 text-sm">
           <PushToggle api={api} />
           <button className="relative p-1 text-paper-muted hover:text-paper-accent" onClick={() => setNotes(!notes)}
             aria-label="Notifications" title="Notifications" aria-expanded={notes}>
@@ -440,61 +510,105 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
       {err ? <p className="mt-3 text-base text-paper-stamp">{err}</p> : null}
       {notes ? <Notifications api={api} onClose={() => setNotes(false)} onRead={markRead} /> : null}
 
-      {/* Phone: one pane at a time, bottom tab bar. */}
-      <div className={notes ? "hidden" : "md:hidden"}>
-        {tab === "today" ? today : null}
-        {tab === "chat" ? (
-          <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem]">
+      <div className={notes ? "hidden" : "md:grid md:grid-cols-[10rem_minmax(0,1fr)] md:gap-8 lg:grid-cols-[10rem_minmax(0,1fr)_22rem]"}>
+        {/* Desktop: sidebar of every section, grouped. */}
+        <nav className="sticky top-4 mt-12 hidden self-start md:block" aria-label="Sections">
+          {GROUPS.map((g) => (
+            <div key={g} className="mb-5">
+              <p className="mb-1 text-xs uppercase tracking-widest text-paper-muted/70">{g}</p>
+              {SECTIONS.filter((t) => t.group === g).map(({ id, label, Icon }) => (
+                <button key={id} onClick={() => pick(id)} aria-current={tab === id ? "page" : undefined}
+                  className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-base ${tab === id ? "bg-white/5 text-paper-accent" : "text-paper-muted hover:text-white"}`}>
+                  <Icon className="h-4 w-4" />
+                  <span className="flex-1">{label}</span>
+                  {badges[id] ? <span className="rounded-full bg-paper-stamp px-1.5 text-[10px] leading-4 text-black">{badges[id]}</span> : null}
+                </button>
+              ))}
+            </div>
+          ))}
+        </nav>
+        <div className="min-w-0">{panes[tab]}</div>
+        {/* Wide screens: chat stays beside whatever section is open. */}
+        {tab !== "chat" ? (
+          <div className="sticky top-4 mt-12 hidden h-[calc(100vh-6rem)] self-start lg:block">
             <AntonChat api={api} fill />
           </div>
         ) : null}
-        {tab === "tickets" ? ticketsSection : null}
-        {tab === "inbox" ? inbox : null}
-        {tab === "work" ? (
-          <div className="mt-4 h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[18rem]">
-            <WorkPanel api={api} fill />
-          </div>
-        ) : null}
-        {tab === "week" ? week : null}
       </div>
+
+      {/* Phone: pinned sections in the bottom bar, everything else under "more". */}
+      {more ? (
+        <MoreSheet tab={tab} pins={bar} setPins={setPins} badges={badges} pick={pick} onClose={() => setMore(false)} />
+      ) : null}
       <nav
-        className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-6 border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 grid border-t border-white/15 bg-paper-bg pb-[env(safe-area-inset-bottom)] md:hidden"
+        style={{ gridTemplateColumns: `repeat(${bar.length + 1}, minmax(0, 1fr))` }}
         aria-label="Sections"
       >
-        {TABS.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            onClick={() => pick(id)}
-            aria-current={tab === id ? "page" : undefined}
-            className={`relative flex flex-col items-center gap-0.5 py-2.5 text-xs ${tab === id ? "text-paper-accent" : "text-paper-muted"}`}
-          >
-            <Icon className="h-5 w-5" />
-            {label}
-            {id === "tickets" && tickets?.length ? (
-              <span className="absolute right-[28%] top-1.5 rounded-full bg-paper-stamp px-1.5 text-[10px] leading-4 text-black">
-                {tickets.length}
-              </span>
-            ) : null}
-          </button>
-        ))}
+        {bar.map((id) => {
+          const { label, Icon } = SECTIONS.find((t) => t.id === id)!;
+          return (
+            <button key={id} onClick={() => pick(id)} aria-current={tab === id && !more ? "page" : undefined}
+              className={`relative flex flex-col items-center gap-0.5 py-2.5 text-xs ${tab === id && !more ? "text-paper-accent" : "text-paper-muted"}`}>
+              <Icon className="h-5 w-5" />
+              {label}
+              {badges[id] ? (
+                <span className="absolute right-[22%] top-1.5 rounded-full bg-paper-stamp px-1.5 text-[10px] leading-4 text-black">{badges[id]}</span>
+              ) : null}
+            </button>
+          );
+        })}
+        <button onClick={() => setMore(!more)} aria-expanded={more}
+          className={`relative flex flex-col items-center gap-0.5 py-2.5 text-xs ${more || offBar ? "text-paper-accent" : "text-paper-muted"}`}>
+          <LayoutGrid className="h-5 w-5" />
+          {offBar && !more ? SECTIONS.find((t) => t.id === tab)?.label : "more"}
+        </button>
       </nav>
-
-      {/* Desktop: today + tickets on the left, chat pinned on the right. */}
-      <div className={notes ? "hidden" : "hidden md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:gap-10"}>
-        <div>
-          {today}
-          {ticketsSection}
-          <Section title="work">
-            <WorkPanel api={api} />
-          </Section>
-          {inbox}
-          {week}
-        </div>
-        <div className="sticky top-4 mt-12 h-[calc(100vh-6rem)] self-start">
-          <AntonChat api={api} fill />
-        </div>
-      </div>
     </div>
+  );
+}
+
+function MoreSheet({ tab, pins, setPins, badges, pick, onClose }: {
+  tab: Tab; pins: Tab[]; setPins: (p: Tab[]) => void; badges: Partial<Record<Tab, number>>; pick: (t: Tab) => void;
+  onClose: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const toggle = (id: Tab) =>
+    setPins(pins.includes(id) ? pins.filter((x) => x !== id) : pins.length >= PIN_MAX ? pins : [...pins, id]);
+  return (
+    <>
+      <button className="fixed inset-0 z-40 bg-black/50 md:hidden" aria-label="Close" onClick={onClose} />
+      <div className="fixed inset-x-0 bottom-[calc(3.75rem+env(safe-area-inset-bottom))] z-50 rounded-t-2xl border-t border-white/15 bg-paper-bg px-5 pb-4 pt-3 md:hidden">
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-white/20" />
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-sm uppercase tracking-widest text-paper-muted">{editing ? `pick up to ${PIN_MAX} for the bar` : "all sections"}</p>
+          <button className="text-sm text-paper-accent" onClick={() => setEditing(!editing)}>{editing ? "done" : "edit bar"}</button>
+        </div>
+        {GROUPS.map((g) => (
+          <div key={g} className="mt-3">
+            <p className="mb-1.5 text-xs uppercase tracking-widest text-paper-muted/70">{g}</p>
+            <div className="grid grid-cols-4 gap-2">
+              {SECTIONS.filter((t) => t.group === g).map(({ id, label, Icon }) => {
+                const pinned = pins.includes(id);
+                return (
+                  <button key={id} onClick={() => (editing ? toggle(id) : pick(id))}
+                    className={`relative flex flex-col items-center gap-1 rounded-xl border py-3 text-xs ${
+                      editing ? (pinned ? "border-paper-accent text-paper-accent" : "border-white/10 text-paper-muted")
+                        : tab === id ? "border-paper-accent/60 text-paper-accent" : "border-white/10 text-paper-body"}`}>
+                    <Icon className="h-5 w-5" />
+                    {label}
+                    {editing && pinned ? <Check className="absolute right-1.5 top-1.5 h-3.5 w-3.5" /> : null}
+                    {!editing && badges[id] ? (
+                      <span className="absolute right-1.5 top-1.5 rounded-full bg-paper-stamp px-1.5 text-[10px] leading-4 text-black">{badges[id]}</span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 
