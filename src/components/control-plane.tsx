@@ -5,7 +5,7 @@
 // which is exchanged for a 30-day session token kept on the device (see tokenStore).
 import { useCallback, useEffect, useState } from "react";
 import {
-  Bell, CalendarDays, Check, ChevronRight, LayoutGrid, QrCode, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
+  Bell, Bot, CalendarDays, Check, ChevronRight, LayoutGrid, QrCode, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
 } from "lucide-react";
 import WorkPanel from "@/components/work-panel";
 import InboxPanel from "@/components/inbox-panel";
@@ -807,6 +807,7 @@ function Collapsible({ text }: { text: string }) {
 
 function Tickets({ api, tickets, setTickets }: { api: Api; tickets: Ticket[] | null; setTickets: (t: Ticket[]) => void }) {
   const [busy, setBusy] = useState("");
+  const [working, setWorking] = useState<string[]>([]);
   if (!tickets) return <p className="text-paper-muted">loading…</p>;
   if (!tickets.length) return <p className="text-paper-muted">Nothing open. Nice.</p>;
   const act = async (t: Ticket, state: "done" | "canceled") => {
@@ -818,6 +819,14 @@ function Tickets({ api, tickets, setTickets }: { api: Api; tickets: Ticket[] | n
       alert((e as Error).message);
     } finally {
       setBusy("");
+    }
+  };
+  const resolve = async (t: Ticket) => {
+    try {
+      await api(`/api/tickets/${t.id}/resolve`, { method: "POST" });
+      setWorking((w) => [...w, t.id]);
+    } catch (e) {
+      alert((e as Error).message);
     }
   };
   return (
@@ -832,8 +841,18 @@ function Tickets({ api, tickets, setTickets }: { api: Api; tickets: Ticket[] | n
               </a>
               {t.priority && t.priority !== "No priority" ? <span>{t.priority.toLowerCase()}</span> : null}
               {t.due ? <span className="text-paper-stamp">due {t.due}</span> : null}
+              {working.includes(t.id) ? <span className="text-paper-accent">Anton is on it…</span> : null}
             </div>
           </div>
+          <button
+            className="rounded-md p-2.5 text-paper-muted hover:bg-white/5 hover:text-paper-accent disabled:opacity-40"
+            disabled={working.includes(t.id)}
+            onClick={() => resolve(t)}
+            aria-label={`Have Anton resolve ${t.id}`}
+            title="Have Anton try to resolve it"
+          >
+            <Bot className="h-5 w-5" />
+          </button>
           <button
             className="rounded-md p-2.5 text-paper-muted hover:bg-white/5 hover:text-paper-accent"
             disabled={busy === t.id}
