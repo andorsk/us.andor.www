@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="111 spells from 30 fantasy and science-fiction books, matched to the technology that does it today.">
+<title>Roadmap to Magic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Roadmap to Magic, as a grimoire.
+   Thesis: the four verdicts run from magic to machine. "Still magic" glows with arcane light;
+   each step toward "Real today" loses glow and gains a circuit grid, square corners and mono type. */
+:root {
+  color-scheme: light;
+  /* Candlelit parchment (light) */
+  --bg: #F2E9D6; --bg-deep: #E6D9BD; --surface: #FBF6EA; --surface-2: #F6EEDC;
+  --ink: #2A2018; --muted: #67584A; --rule: #D8C8A8; --rule-strong: #BFA97E;
+  --gold: #8A6516; --gold-hi: #B08A2E; --focus: #5B2E99;
+  --bar-bg: rgba(242, 233, 214, .92);
+  --chip-on-bg: #2A2018; --chip-on-ink: #FBF6EA;
+  --l0: #6A35A8; --l1: #A3412A; --l2: #7D5A0C; --l3: #0B7360;
+  --l0-bg: #F1E6F6; --l1-bg: #F7E5DB; --l2-bg: #F5EBCF; --l3-bg: #E2F1EB;
+  --l0-glow: rgba(124, 66, 196, .16); --l1-glow: rgba(176, 72, 42, .09); --l2-glow: rgba(150, 110, 20, .06);
+  --l2-grid: rgba(125, 90, 12, .10); --l3-grid: rgba(11, 115, 96, .16);
+  --sky-a: #F7F0E0; --sky-b: #EBDDBF; --sky-c: #E4D2AE;
+  --mote-magic: #7C42C4; --mote-gold: #B08A2E; --mote-tech: #0B7360;
+  --f-deco: "Cinzel Decorative", "Cinzel", "Trajan Pro", Georgia, serif;
+  --f-caps: "Cinzel", "Trajan Pro", "Times New Roman", Georgia, serif;
+  --f-display: "Cormorant Garamond", "Cormorant", "Garamond", "Iowan Old Style", Georgia, serif;
+  --f-body: "EB Garamond", "Garamond", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  /* Night sky over the library */
+  --bg: #0A0C1A; --bg-deep: #06070F; --surface: #11142A; --surface-2: #151935;
+  --ink: #ECE5D3; --muted: #A9A4BC; --rule: #262B4D; --rule-strong: #3A4170;
+  --gold: #E2C275; --gold-hi: #F4DC9A; --focus: #F4DC9A;
+  --bar-bg: rgba(10, 12, 26, .88);
+  --chip-on-bg: #E2C275; --chip-on-ink: #0A0C1A;
+  --l0: #C9A2FF; --l1: #FF9F80; --l2: #E8C468; --l3: #5FE3C0;
+  --l0-bg: #1E1636; --l1-bg: #23172A; --l2-bg: #1F1D27; --l3-bg: #0E2128;
+  --l0-glow: rgba(160, 110, 255, .30); --l1-glow: rgba(255, 140, 110, .14); --l2-glow: rgba(232, 196, 104, .09);
+  --l2-grid: rgba(232, 196, 104, .08); --l3-grid: rgba(95, 227, 192, .13);
+  --sky-a: #1A1840; --sky-b: #0D0F24; --sky-c: #06070F;
+  --mote-magic: #C9A2FF; --mote-gold: #F4DC9A; --mote-tech: #5FE3C0;
+} }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0A0C1A; --bg-deep: #06070F; --surface: #11142A; --surface-2: #151935;
+  --ink: #ECE5D3; --muted: #A9A4BC; --rule: #262B4D; --rule-strong: #3A4170;
+  --gold: #E2C275; --gold-hi: #F4DC9A; --focus: #F4DC9A;
+  --bar-bg: rgba(10, 12, 26, .88);
+  --chip-on-bg: #E2C275; --chip-on-ink: #0A0C1A;
+  --l0: #C9A2FF; --l1: #FF9F80; --l2: #E8C468; --l3: #5FE3C0;
+  --l0-bg: #1E1636; --l1-bg: #23172A; --l2-bg: #1F1D27; --l3-bg: #0E2128;
+  --l0-glow: rgba(160, 110, 255, .30); --l1-glow: rgba(255, 140, 110, .14); --l2-glow: rgba(232, 196, 104, .09);
+  --l2-grid: rgba(232, 196, 104, .08); --l3-grid: rgba(95, 227, 192, .13);
+  --sky-a: #1A1840; --sky-b: #0D0F24; --sky-c: #06070F;
+  --mote-magic: #C9A2FF; --mote-gold: #F4DC9A; --mote-tech: #5FE3C0;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
+[hidden] { display: none !important; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.wrap { max-width: 1120px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* ---------- Hero: the night sky ---------- */
+.sky { position: relative; isolation: isolate; overflow: hidden;
+  background: radial-gradient(120% 90% at 20% 0%, var(--sky-a), var(--sky-b) 55%, var(--sky-c));
+  border-bottom: 1px solid var(--rule-strong); }
+.sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+.sky::after { content: ""; position: absolute; inset: auto 0 0; height: 120px; z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--sky-c)); opacity: .55; }
+.sky .wrap { padding-block: 22px 44px; }
+.home { display: inline-block; font: 500 13px/1 var(--f-caps); letter-spacing: .08em; color: var(--muted); text-decoration: none; padding: 6px 0; }
+.home:hover { color: var(--gold-hi); }
+
+.hero { display: grid; gap: 22px; padding-top: clamp(28px, 7vw, 72px); max-width: 940px; }
+.eyebrow { display: flex; align-items: center; gap: 14px; margin: 0; font: 600 12px/1.4 var(--f-caps); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.eyebrow svg { flex: 0 0 auto; width: 54px; height: 10px; color: var(--gold); }
+h1 { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: clamp(36px, 6.6vw, 78px); line-height: 1.04; letter-spacing: -.005em; text-wrap: balance; }
+/* Illuminated initial */
+h1::first-letter { float: left; font-family: var(--f-deco); font-weight: 700; font-size: 2.05em; line-height: .86;
+  margin: .06em .22em 0 0; padding: .1em .12em .04em; color: var(--gold-hi);
+  border: 1px solid var(--gold); box-shadow: inset 0 0 0 3px var(--surface-2), inset 0 0 0 4px var(--gold);
+  background: radial-gradient(circle at 50% 40%, var(--l0-glow), transparent 70%), var(--surface-2);
+  text-shadow: 0 0 18px var(--l0-glow); }
+h1 .tech { font-family: var(--f-mono); font-weight: 400; font-size: .56em; letter-spacing: -.02em; color: var(--l3);
+  padding: 0 .18em; border: 1px solid var(--l3-grid); background: var(--l3-bg); vertical-align: .12em; white-space: nowrap; }
+h1 em { font-style: italic; color: var(--l0); text-shadow: 0 0 22px var(--l0-glow), 0 0 2px var(--l0-glow); }
+.cite { margin: 0; font-style: italic; color: var(--muted); font-size: 17px; }
+.cite::before { content: "\2014\2002"; color: var(--gold); font-style: normal; }
+.lede { max-width: 62ch; margin: 0; font-size: 19px; line-height: 1.6; }
+
+/* The spectrum: magic to machine */
+.spectrum { margin-top: 18px; display: grid; gap: 12px; }
+.spectrum h2 { margin: 0; font: 600 12px/1.4 var(--f-caps); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.axis { display: flex; justify-content: space-between; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
+.axis .a0 { font-family: var(--f-caps); color: var(--l0); }
+.axis .a3 { font-family: var(--f-mono); color: var(--l3); letter-spacing: .06em; }
+.bar { display: flex; height: 10px; gap: 2px; }
+.bar span { display: block; height: 100%; }
+.bar span:first-child { border-radius: 6px 0 0 6px; box-shadow: 0 0 14px var(--l0-glow); }
+.legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.legend button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 2px; align-items: center;
+  padding: 12px 14px; border: 1px solid var(--rule-strong); border-radius: var(--rad); background: var(--surface); color: var(--lc);
+  transition: border-color .2s, box-shadow .2s, transform .2s; }
+.legend button:hover { border-color: var(--lc); }
+.legend button:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.legend button[aria-pressed="true"] { border-color: var(--lc); box-shadow: inset 0 0 0 1px var(--lc), 0 0 24px var(--glow); }
+.legend svg { grid-row: span 2; width: 26px; height: 26px; }
+.legend b { font: 500 28px/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.legend .lv-0 b, .legend .lv-1 b { font-family: var(--f-display); font-weight: 600; font-size: 32px; }
+.legend .nm { grid-column: 1 / -1; font: 600 13px/1.3 var(--f-caps); letter-spacing: .06em; margin-top: 6px; }
+.legend .ds { grid-column: 1 / -1; font-size: 14px; color: var(--muted); line-height: 1.3; }
+@media (max-width: 680px) { .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Per-level tokens: radius and glow fall, grid rises */
+.lv-0 { --lc: var(--l0); --lbg: var(--l0-bg); --glow: var(--l0-glow); --grid: transparent; --rad: 16px; }
+.lv-1 { --lc: var(--l1); --lbg: var(--l1-bg); --glow: var(--l1-glow); --grid: transparent; --rad: 10px; }
+.lv-2 { --lc: var(--l2); --lbg: var(--l2-bg); --glow: var(--l2-glow); --grid: var(--l2-grid); --rad: 5px; }
+.lv-3 { --lc: var(--l3); --lbg: var(--l3-bg); --glow: transparent; --grid: var(--l3-grid); --rad: 0px; }
+.b0 { background: var(--l0); } .b1 { background: var(--l1); } .b2 { background: var(--l2); } .b3 { background: var(--l3); }
+
+/* ---------- Controls ---------- */
+.controls { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center;
+  padding-block: 12px; background: var(--bar-bg); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule); margin-inline: -8px; padding-inline: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chips button { font: 600 12px/1 var(--f-caps); letter-spacing: .08em; color: var(--ink); background: var(--surface); border: 1px solid var(--rule-strong);
+  border-radius: 999px; padding: 9px 14px; cursor: pointer; transition: border-color .2s; }
+.chips button:hover { border-color: var(--gold); }
+.chips button[aria-pressed="true"] { background: var(--chip-on-bg); color: var(--chip-on-ink); border-color: var(--chip-on-bg); }
+.search { flex: 1 1 220px; min-width: 0; position: relative; display: flex; }
+.search svg { position: absolute; left: 11px; top: 50%; width: 16px; height: 16px; transform: translateY(-50%); color: var(--gold); pointer-events: none; }
+#q { flex: 1; min-width: 0; font: italic 17px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--rule-strong);
+  border-radius: 6px; padding: 7px 12px 7px 36px; }
+#q::placeholder { color: var(--muted); }
+#q:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.count { font: 12px var(--f-mono); color: var(--muted); }
+
+/* ---------- The books ---------- */
+main { display: grid; gap: 56px; margin-top: 40px; }
+.book { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; }
+@media (max-width: 820px) { .book { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
+.spine { display: grid; gap: 6px; align-content: start; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px);
+  padding-left: 14px; border-left: 2px solid var(--gold); }
+@media (max-width: 820px) { .spine { position: static; } }
+.folio { font: 600 11px/1.4 var(--f-caps); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+.spine h2 { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.08; text-wrap: balance; }
+.spine .by { margin: 0; font-style: italic; color: var(--muted); font-size: 16px; }
+.mini { display: flex; gap: 1px; height: 5px; max-width: 160px; margin-top: 8px; }
+.mini span { height: 100%; }
+
+.spells { display: grid; gap: 14px; }
+.spell { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.08fr);
+  border: 1px solid var(--rule); border-radius: var(--rad); background: var(--surface); overflow: hidden; }
+.spell.lv-0 { border-color: var(--l0); box-shadow: 0 0 0 1px var(--l0-glow), 0 8px 34px -12px var(--l0-glow); }
+.spell.lv-3 { border-color: var(--rule-strong); }
+
+.side { display: block; font: 600 11px/1.4 var(--f-caps); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.magic { padding: 18px 20px 20px;
+  background: radial-gradient(120% 100% at 0% 0%, var(--glow), transparent 70%), var(--surface); }
+.m-name { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 25px; line-height: 1.12; text-wrap: balance; }
+.m-name::first-letter { font-family: var(--f-deco); font-weight: 700; font-size: 1.12em; color: var(--lc); }
+.lv-0 .m-name { text-shadow: 0 0 16px var(--l0-glow); }
+.m-does { margin: 6px 0 0; color: var(--muted); font-size: 17px; }
+
+/* The verdict seal sits between the spell and its machine */
+.seal { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px 6px; text-align: center;
+  color: var(--lc); border-inline: 1px dashed var(--rule); background: var(--surface-2); }
+.seal .sig { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--lc);
+  border-radius: calc(var(--rad) * 3 + 2px); box-shadow: 0 0 18px var(--glow), inset 0 0 10px var(--glow); }
+.lv-0 .seal .sig { border-radius: 50%; }
+.seal svg { width: 22px; height: 22px; }
+.seal .lbl { font: 600 11px/1.25 var(--f-caps); letter-spacing: .08em; text-transform: uppercase; }
+.lv-3 .seal .lbl { font-family: var(--f-mono); font-weight: 500; letter-spacing: .02em; }
+.seal .arrow { width: 30px; height: 8px; color: var(--rule-strong); }
+
+.today { position: relative; padding: 18px 20px 20px; overflow: hidden; background-color: var(--lbg);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 14px 14px; background-position: -1px -1px; }
+.today .side { font-family: var(--f-mono); font-weight: 500; letter-spacing: .14em; color: var(--lc); }
+.today .side::before { content: "> "; opacity: .7; }
+.t-name { margin: 0; font: 500 15px/1.35 var(--f-mono); letter-spacing: -.01em; }
+.t-note { margin: 6px 0 0; font-size: 17px; }
+.lv-0 .today { background-image: none; }
+.lv-0 .t-name { font-style: normal; color: var(--muted); }
+.lv-3 .today { box-shadow: inset 3px 0 0 var(--l3); }
+/* Circuit trace in the corner of transmuted spells */
+.lv-3 .today::before { content: ""; position: absolute; right: 12px; bottom: 12px; width: 34px; height: 18px; pointer-events: none;
+  border-right: 1px solid var(--l3); border-bottom: 1px solid var(--l3); opacity: .5;
+  background: radial-gradient(circle, var(--l3) 2px, transparent 2.5px) 0 100% / 6px 6px no-repeat; }
+
+/* Shimmer: a sweep of light that crosses the "today" side as a card arrives, and again on hover */
+.today::after { content: ""; position: absolute; inset: -20% -60%; pointer-events: none; opacity: 0;
+  background: linear-gradient(105deg, transparent 40%, var(--sweep) 50%, transparent 60%);
+  transform: translateX(-60%); }
+.spell { --sweep: var(--gold-hi); }
+.spell.lv-3 { --sweep: var(--l3); }
+.spell.lv-0 { --sweep: var(--l0); }
+@keyframes sweep { 0% { opacity: 0; transform: translateX(-60%); } 15% { opacity: .35; } 85% { opacity: .35; } 100% { opacity: 0; transform: translateX(60%); } }
+@keyframes sweep-again { 0% { opacity: 0; transform: translateX(-60%); } 15% { opacity: .35; } 85% { opacity: .35; } 100% { opacity: 0; transform: translateX(60%); } }
+.spell.seen .today::after { animation: sweep 1.3s cubic-bezier(.4, 0, .2, 1) .15s both; }
+.spell:hover .today::after { animation: sweep-again 1s cubic-bezier(.4, 0, .2, 1) both; }
+
+@media (max-width: 760px) {
+  .spell { grid-template-columns: minmax(0, 1fr); }
+  .seal { flex-direction: row; justify-content: flex-start; gap: 10px; padding: 8px 20px; border-inline: 0; border-block: 1px dashed var(--rule); }
+  .seal .sig { width: 30px; height: 30px; }
+  .seal svg { width: 17px; height: 17px; }
+  .seal .arrow { transform: rotate(90deg); width: 22px; margin-left: auto; }
+  .m-name { font-size: 24px; }
+}
+
+.empty { padding: 48px 0; color: var(--muted); font-style: italic; text-align: center; font-size: 19px; }
+footer { margin-top: 72px; padding-block: 28px 64px; border-top: 1px solid var(--rule-strong); }
+footer .orn { display: block; width: 120px; height: 12px; margin: -34px auto 22px; color: var(--gold); background: var(--bg); padding-inline: 10px; box-sizing: content-box; }
+footer p { margin: 0 auto; max-width: 68ch; font-size: 16px; color: var(--muted); text-align: center; }
+
+/* ---------- Suggest a book: Anton reviews it ---------- */
+#suggest { margin-top: 72px; }
+.quill { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px; padding: clamp(20px, 4vw, 36px);
+  border: 1px solid var(--rule-strong); border-radius: 16px; background: var(--surface);
+  box-shadow: inset 0 0 0 4px var(--surface-2), inset 0 0 0 5px var(--rule), 0 0 40px var(--l0-glow); }
+@media (max-width: 760px) { .quill { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+.quill h2 { margin: 0 0 10px; font-family: var(--f-display); font-weight: 500; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; text-wrap: balance; }
+.quill .kicker { display: block; margin-bottom: 8px; font: 600 12px/1.4 var(--f-caps); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.quill .how { margin: 0; color: var(--muted); }
+.quill form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.quill .full { grid-column: 1 / -1; }
+@media (max-width: 480px) { .quill form { grid-template-columns: minmax(0, 1fr); } }
+.quill label { display: grid; gap: 6px; font: 600 12px/1.3 var(--f-caps); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.quill input, .quill textarea { width: 100%; min-width: 0; font: 17px/1.4 var(--f-body); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule-strong); border-radius: 8px; padding: 10px 12px; text-transform: none; letter-spacing: 0; }
+.quill textarea { resize: vertical; min-height: 76px; }
+.quill input:focus, .quill textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px var(--l0-glow); }
+.quill .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.quill .row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.cast { font: 600 14px/1 var(--f-caps); letter-spacing: .12em; text-transform: uppercase; color: var(--chip-on-ink); background: var(--chip-on-bg);
+  border: 0; border-radius: 999px; padding: 13px 22px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 0 22px var(--l0-glow); }
+.cast svg { width: 18px; height: 18px; }
+.cast[disabled] { opacity: .6; cursor: progress; }
+.verdict { margin: 0; font-size: 16px; min-height: 1.4em; color: var(--muted); }
+.verdict.ok { color: var(--l3); } .verdict.no { color: var(--l1); }
+.verdict a { color: inherit; }
+.verdict .spin { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; color: var(--l0); animation: turn 2.4s linear infinite; }
+@keyframes turn { to { transform: rotate(360deg); } }
+.by .reader { display: block; margin-top: 4px; font-size: 14px; font-style: italic; color: var(--gold); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .today::after { display: none; }
+}
+@media (max-width: 420px) {
+  .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .magic, .today { padding-inline: 16px; }
+  .seal { padding-inline: 16px; }
+  .eyebrow svg { display: none; }
+  .lede { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="fleuron" viewBox="0 0 120 12"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M0 6h46M74 6h46"/><path d="M60 1l5 5-5 5-5-5z"/><circle cx="51" cy="6" r="1.6"/><circle cx="69" cy="6" r="1.6"/></g></symbol>
+  <symbol id="sig0" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12 2l2 6.2L20.5 6l-4 5.2L22 14l-6.4.6L15 21l-3-5.6L9 21l-.6-6.4L2 14l5.5-2.8-4-5.2L10 8.2z"/><circle cx="12" cy="12.4" r="1.8"/></g></symbol>
+  <symbol id="sig1" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M15 3.2a9 9 0 1 0 6 14.3A7.4 7.4 0 0 1 15 3.2z"/><path d="M17.5 8.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/></g></symbol>
+  <symbol id="sig2" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12 3l9.5 17h-19z"/><path d="M6.6 13.5h10.8"/><path d="M12 13.5V20" stroke-dasharray="1.6 1.6"/></g></symbol>
+  <symbol id="sig3" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="6" width="12" height="12"/><rect x="10" y="10" width="4" height="4"/><path d="M9 2.5V6M15 2.5V6M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></g></symbol>
+  <symbol id="arrow" viewBox="0 0 30 8"><g fill="none" stroke="currentColor" stroke-width="1"><path d="M0 4h28M24 1l4 3-4 3"/></g></symbol>
+  <symbol id="lens" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/><path d="M10.5 7.2v6.6M7.2 10.5h6.6" stroke-width="1"/></g></symbol>
+</svg>
+
+<div class="sky">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <a class="home" href="/projects">← andor.us projects</a>
+    <header class="hero">
+      <p class="eyebrow"><svg aria-hidden="true"><use href="#fleuron"/></svg>Roadmap to Magic · <span id="nbooks">30</span> books, their magic, and the machines that caught up</p>
+      <h1>Any sufficiently advanced <span class="tech">technology</span> is indistinguishable from <em>magic</em>.</h1>
+      <p class="cite">Arthur C. Clarke, third law, <i>Profiles of the Future</i> (1973 edition)</p>
+      <p class="lede">Writers have spent two centuries imagining what wands, stones and starships could do. Engineers have quietly been checking items off the list. A self-writing quill is a dictation app. Tom Riddle's diary is a chatbot. Teleportation is still a spell.</p>
+      <section class="spectrum" aria-labelledby="verdicts-h">
+        <h2 id="verdicts-h">The verdicts</h2>
+        <div class="axis" aria-hidden="true"><span class="a0">Magic</span><span class="a3">Machine</span></div>
+        <div class="bar" id="bar"></div>
+        <div class="legend" id="legend"></div>
+      </section>
+    </header>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="controls" role="search">
+    <div class="chips" id="genres" role="group" aria-label="Genre"></div>
+    <label class="search"><svg aria-hidden="true"><use href="#lens"/></svg><input id="q" type="search" placeholder="Search the grimoire: spells, books, tech" aria-label="Search"></label>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <main id="list"></main>
+
+  <!-- Reader suggestions: form and reader-added books are mounted here (added separately). -->
+  <section id="suggest" aria-labelledby="suggest-h">
+    <div class="quill">
+      <div>
+        <span class="kicker">Add to the roadmap</span>
+        <h2 id="suggest-h">Suggest a book</h2>
+        <p class="how">Name a fantasy or science-fiction book that's missing. Anton, Andor's AI agent, reads up on it, writes down its magic and how close today's technology gets, and adds it to the roadmap. It takes about a minute.</p>
+      </div>
+      <form id="suggest-form" novalidate>
+        <label class="full" for="s-title">Book title<input id="s-title" name="title" required maxlength="120" autocomplete="off" placeholder="The Lies of Locke Lamora"></label>
+        <label for="s-author">Author<input id="s-author" name="author" maxlength="80" autocomplete="off" placeholder="Optional"></label>
+        <label for="s-name">Your name<input id="s-name" name="name" maxlength="60" autocomplete="given-name" placeholder="Optional, shown with the book"></label>
+        <label class="full" for="s-note">What magic should Anton look at?<textarea id="s-note" name="note" maxlength="300" placeholder="Optional"></textarea></label>
+        <div class="hp" aria-hidden="true"><label for="s-website">Website<input id="s-website" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="row full">
+          <button class="cast" type="submit" id="s-go"><svg aria-hidden="true" focusable="false"><use href="#sig0"/></svg>Send to Anton</button>
+          <p class="verdict" id="s-verdict" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <footer><svg class="orn" aria-hidden="true"><use href="#fleuron"/></svg><p>Verdicts reflect public technology as of late 2026 and are judgment calls, not lab results. "Almost" means it exists in a narrower, clumsier or prototype form. "Not yet" means no known physics forbids it but nobody has built it. "Still magic" means it breaks physics as we understand it.</p></footer>
+</div>
+
+<script>
+const LEVELS = [
+  { n: "Still magic", d: "Breaks known physics" },
+  { n: "Not yet", d: "Possible in principle" },
+  { n: "Almost", d: "Prototype or partial" },
+  { n: "Real today", d: "You can buy or use it" },
+];
+// key: [title, author, year, genre]
+const BOOKS = {
+  lotr: ["The Lord of the Rings", "J. R. R. Tolkien", 1954, "Fantasy"],
+  hob: ["The Hobbit", "J. R. R. Tolkien", 1937, "Fantasy"],
+  hp: ["Harry Potter", "J. K. Rowling", 1997, "Fantasy"],
+  got: ["A Song of Ice and Fire", "George R. R. Martin", 1996, "Fantasy"],
+  nar: ["The Chronicles of Narnia", "C. S. Lewis", 1950, "Fantasy"],
+  ea: ["A Wizard of Earthsea", "Ursula K. Le Guin", 1968, "Fantasy"],
+  mb: ["Mistborn", "Brandon Sanderson", 2006, "Fantasy"],
+  wot: ["The Wheel of Time", "Robert Jordan", 1990, "Fantasy"],
+  dw: ["Discworld", "Terry Pratchett", 1983, "Fantasy"],
+  hdm: ["His Dark Materials", "Philip Pullman", 1995, "Fantasy"],
+  now: ["The Name of the Wind", "Patrick Rothfuss", 2007, "Fantasy"],
+  al: ["Alice's Adventures in Wonderland", "Lewis Carroll", 1865, "Fantasy"],
+  oz: ["The Wonderful Wizard of Oz", "L. Frank Baum", 1900, "Fantasy"],
+  an: ["One Thousand and One Nights", "Traditional", 800, "Fantasy"],
+  pp: ["Peter Pan", "J. M. Barrie", 1911, "Fantasy"],
+  fr: ["Frankenstein", "Mary Shelley", 1818, "Science fiction"],
+  tt: ["Twenty Thousand Leagues Under the Seas", "Jules Verne", 1870, "Science fiction"],
+  tm: ["The Time Machine", "H. G. Wells", 1895, "Science fiction"],
+  bnw: ["Brave New World", "Aldous Huxley", 1932, "Science fiction"],
+  f451: ["Fahrenheit 451", "Ray Bradbury", 1953, "Science fiction"],
+  ir: ["I, Robot", "Isaac Asimov", 1950, "Science fiction"],
+  fd: ["Foundation", "Isaac Asimov", 1951, "Science fiction"],
+  du: ["Dune", "Frank Herbert", 1965, "Science fiction"],
+  so: ["2001: A Space Odyssey", "Arthur C. Clarke", 1968, "Science fiction"],
+  dad: ["Do Androids Dream of Electric Sheep?", "Philip K. Dick", 1968, "Science fiction"],
+  nm: ["Neuromancer", "William Gibson", 1984, "Science fiction"],
+  hg: ["The Hitchhiker's Guide to the Galaxy", "Douglas Adams", 1979, "Science fiction"],
+  eg: ["Ender's Game", "Orson Scott Card", 1985, "Science fiction"],
+  sc: ["Snow Crash", "Neal Stephenson", 1992, "Science fiction"],
+  tb: ["The Three-Body Problem", "Liu Cixin", 2008, "Science fiction"],
+};
+// [book, magic, what it does, today's tech, how close, level 0-3]
+const S = [
+  ["lotr","Palantír","Seeing-stones that show distant places and let their holders speak across a continent.","Video calls, satellite imagery","FaceTime, Zoom and live satellite maps do this from a phone.",3],
+  ["lotr","Doors of Durin","\"Speak, friend, and enter.\" A door that opens to a spoken password.","Voice-activated smart locks","Voice assistants unlock doors and garages on a spoken phrase.",3],
+  ["lotr","Elven cloaks","Grey cloaks that make the wearer blend into rock and leaf.","Adaptive camouflage","Thermal-masking ponchos and color-shifting panels work; perfect blending in visible light does not.",2],
+  ["lotr","Lembas","One small cake feeds a grown man for a day's march.","Calorie-dense rations","Military ration bars pack hundreds of calories, but a day of energy needs roughly 280 g of pure fat, not one bite.",2],
+  ["lotr","The One Ring's invisibility","Put it on and vanish from sight.","Metamaterial cloaks","Lab cloaks hide small objects at narrow wavelengths. Nothing hides a person in full daylight.",1],
+  ["hob","Sting glows blue","The sword warns its bearer when orcs are near.","Motion sensors, radar, threat alerts","Perimeter radar, PIR sensors and camera recognition raise the alarm before anyone is in sight.",3],
+  ["hob","Moon-letters","Runes visible only under a moon of the same shape and season.","UV and thermochromic ink","Invisible ink that appears under ultraviolet light is on every banknote.",3],
+  ["hob","The thrush and the raven","Birds that carry messages and talk with dwarves.","AI decoding of animal calls","Researchers are mapping sperm-whale codas and bird calls with machine learning. Two-way conversation is not here yet.",1],
+  ["hp","Tom Riddle's diary","Write in it and it writes back, in the voice of a person.","Chatbots and LLMs","Type a message, get a reply in character. Exactly this, minus the possession.",3],
+  ["hp","Quick-Quotes Quill","A quill that takes dictation and writes on its own.","Speech-to-text, AI note-takers","Dictation and meeting transcribers write as you talk, and can summarize just as slanted as Rita Skeeter.",3],
+  ["hp","Marauder's Map","Shows where everyone in the castle is, live.","Location sharing, indoor tracking","Find My, Life360 and ultra-wideband tags put friends and objects on a live map.",3],
+  ["hp","Moving portraits","Paintings and photographs that move and talk.","Video, AI-animated photos, avatars","Phones save live photos, and AI tools animate a single portrait into a talking face.",3],
+  ["hp","Howler","A letter that shouts its message out loud.","Voice messages","Send a voice note. Play it on speaker in the Great Hall at your own risk.",3],
+  ["hp","Remembrall","Glows red when you have forgotten something.","Reminders and left-behind alerts","Phones warn you when you walk away from your keys or wallet tracker.",3],
+  ["hp","Broomsticks","Personal flight for one rider.","Jet suits, eVTOL single-seaters","Jet suits and one-person electric aircraft fly today, loudly and briefly.",2],
+  ["hp","Polyjuice Potion","Take on someone else's body for an hour.","Deepfakes, face-swap filters","You can look like someone on a video call. Changing your actual body is not possible.",1],
+  ["hp","Skele-Gro","Regrow the bones of an arm overnight.","Regenerative medicine","Bone grafts and growth-factor scaffolds help bones heal. Regrowing a limb is still research.",1],
+  ["hp","Invisibility Cloak","A cloak that hides the wearer completely.","Metamaterial cloaking","Works only for tiny objects and narrow bands of light.",1],
+  ["hp","Apparition","Vanish and reappear somewhere else instantly.","Quantum teleportation","Physicists teleport the quantum state of single particles, not matter, and never faster than light.",0],
+  ["hp","Time-Turner","Go back a few hours and live them again.","None","No known physics lets you send yourself into your own past.",0],
+  ["got","Wildfire","A green fire that water cannot put out.","Incendiary chemistry","Napalm, white phosphorus and chlorine trifluoride all burn this way. Sadly, solved.",3],
+  ["got","Warging","See through an animal's eyes and steer it.","Animal-borne cameras, FPV drones","Cameras on dogs and drone goggles give you their view. Steering a living animal is mostly off-limits.",2],
+  ["got","Direwolves","Giant wolves long extinct south of the Wall.","Gene-edited de-extinction","In 2025 Colossal Biosciences announced gene-edited grey wolves with dire wolf traits. Scientists debate whether it counts.",2],
+  ["got","Valyrian steel","Light blades that never dull or shatter.","Modern alloys and ceramics","Powder steels and ceramic edges outperform any historical blade. Unbreakable is still marketing.",2],
+  ["got","Dragons","Flying, fire-breathing beasts that grow to the size of a castle.","None","A flying animal that size breaks the square-cube law. Biology can't get there.",0],
+  ["nar","The wardrobe","A door into another world.","None","No physics lets a closet open onto another universe.",0],
+  ["nar","Lucy's cordial","One drop heals any wound.","Trauma medicine","Hemostatic gauze, antibiotics and blood products save lives fast. A universal cure in a drop does not exist.",1],
+  ["nar","The White Witch's winter","Always winter and never Christmas.","Cloud seeding","Seeding clouds measurably adds snowfall in some regions. Holding a whole country in winter for a century is beyond reach.",1],
+  ["ea","True names","Know a thing's true name and it obeys you.","Wake words and APIs","Say a device's name and give it a command. Every program runs on names.",2],
+  ["ea","Illusion","Wizards dress the world in seeming.","AR glasses, projection mapping","Headsets and projectors overlay convincing images on the real world, if you wear the glasses.",2],
+  ["ea","Summoning the dead","Call back a dead spirit to speak.","Griefbots","AI trained on a person's messages can imitate how they wrote. It is an echo, not the person.",2],
+  ["mb","Tin: heightened senses","Hear a whisper across a room, see in the dark.","Night vision, thermal, hearing aids","Night-vision and thermal goggles and amplifying earbuds are off-the-shelf.",3],
+  ["mb","Pewter: strength","Lift and run far beyond a human body.","Powered exoskeletons","Industrial and military exosuits let wearers carry heavy loads. Leaping rooftops, no.",2],
+  ["mb","Steelpushing","Shove metal objects away with a thought.","Electromagnets, railguns","Magnets push metal hard, from machines, not from your body.",2],
+  ["mb","Atium","See where everyone will move a few seconds ahead.","Predictive models","Car safety systems predict pedestrian paths a moment ahead. Reading a fight move by move is not here.",1],
+  ["wot","Delving","Sense illness inside a person's body.","MRI, CT, blood panels","Medical imaging sees inside the body in detail. It takes a machine and a radiologist, not a touch.",3],
+  ["wot","Wards","An invisible ward that alarms when someone crosses it.","Tripwire sensors, geofencing","Laser tripwires, motion sensors and geofence alerts do exactly this.",3],
+  ["wot","Weaving lightning","Call down lightning on an enemy.","Tasers, directed-energy weapons","Tasers fire electricity at short range. Laser-guided lightning has worked only in lab tests.",2],
+  ["wot","Traveling","Cut a gateway and step across the world.","None","Teleportation of a person is not possible with any known physics.",0],
+  ["dw","Hex","Unseen University's thinking engine, run by ants.","Computers and AI","Ours run on silicon instead of ants, and answer questions all day.",3],
+  ["dw","The iconograph","A box with an imp inside who paints what it sees.","The camera","Every phone carries one. The imp is now an image sensor.",3],
+  ["dw","The clacks","Semaphore towers sending messages across the continent.","Telegraph, then the internet","Chappe's optical telegraph did this in 1790s France. Today, fiber.",3],
+  ["dw","The Luggage","A sapient chest on hundreds of legs that follows its owner.","Follow-me suitcases, legged robots","Robotic suitcases follow their owner through airports. The biting is optional.",2],
+  ["hdm","Lodestone resonator","Talk instantly with someone far away through a tapped stone.","Radio and phones","Radio crosses the planet in a fraction of a second.",3],
+  ["hdm","Alethiometer","Ask any question and get a true answer.","Search engines, AI assistants","They answer almost anything. They are not always right.",2],
+  ["hdm","Dæmons","A lifelong companion who knows your mind.","AI companions","Assistants that remember you exist. Whether they know you is another question.",2],
+  ["hdm","The subtle knife","Cuts a window into another world.","None","Other universes, if they exist, can't be reached by cutting.",0],
+  ["now","Sympathy lamps","Lamps that glow for years without flame.","LEDs","A modern LED runs for 50,000 hours on a sip of power.",3],
+  ["now","Sympathy","Link two objects so motion or heat passes between them.","Wireless charging, haptic telepresence","Induction moves energy between paired coils, and remote haptics let you feel a distant push.",2],
+  ["now","Naming the wind","Speak the wind's name and command it.","Weather modification","Cloud seeding nudges rain. Commanding a gale is not on the table.",1],
+  ["al","The Cheshire Cat","Appears and fades away, leaving only a grin.","AR overlays, holographic displays","Augmented reality can float a grin in midair, for anyone wearing the headset.",2],
+  ["al","Drink Me","Shrink to ten inches tall.","None","Shrinking a person means removing atoms. Physics won't allow it.",0],
+  ["oz","The Wizard","A great and terrible head that speaks from the throne.","Projection and speakers","The Wizard was already technology. Today, any concert hologram.",3],
+  ["oz","Winged monkeys","A flying servant force, summoned on command.","Drones","Call up a drone from your phone. Delivery drones fly in several countries.",3],
+  ["oz","The Tin Woodman","A man rebuilt piece by piece in metal.","Bionic prosthetics","Prosthetic arms and legs driven by nerve signals are real. A whole tin body is not.",2],
+  ["oz","A brain for the Scarecrow","Give someone a new mind.","Brain-computer interfaces","Implants let paralysed patients move cursors and type with thought. They don't add intelligence.",2],
+  ["oz","The silver shoes","Click three times and go anywhere you name.","Self-driving cars","Name a place and a robotaxi drives you there. Instantly is still magic.",0],
+  ["an","Open Sesame","A rock door that opens to a spoken phrase.","Voice-activated locks","Say the phrase, the door opens.",3],
+  ["an","The Ebony Horse","A wooden horse that flies when you turn a peg.","The airplane","Turn the key, take off.",3],
+  ["an","The flying carpet","Ride a rug through the sky.","Hoverboards, single-seat eVTOL","Personal flying platforms exist in small numbers. Lying down on a rug at altitude, no.",2],
+  ["an","The genie of the lamp","Rub the lamp and wishes come true.","AI agents and same-day delivery","Ask out loud and things arrive at your door. Palaces still take a while.",2],
+  ["pp","Fairy dust","Think happy thoughts and fly.","Jet suits","A jet suit lifts one person for a few minutes. Happy thoughts optional.",2],
+  ["pp","Never growing up","Stay young forever.","Longevity research","Drugs extend lifespan in mice. Nothing yet stops human aging.",1],
+  ["fr","A body from parts","Build a living body from many sources.","Organ transplants","Hearts, kidneys, hands and whole faces are transplanted routinely, even pig kidneys into people.",3],
+  ["fr","Reanimation","Bring the dead back to life with electricity.","Defibrillators, organ revival","Shocks restart stopped hearts, and labs have restored cell function in pigs an hour after death. True death is still final.",1],
+  ["tt","The Nautilus","An electric submarine that stays under for months.","Nuclear submarines","Nuclear subs cruise submerged for months.",3],
+  ["tt","Walking the seabed","Suits that let you stroll on the ocean floor.","Scuba, atmospheric diving suits","Divers do it every day.",3],
+  ["tt","The electric gun","A rifle that stuns with an electric charge.","The taser","Standard police equipment.",3],
+  ["tm","Travel to the far future","Ride a machine thousands of years ahead.","Time dilation","Astronauts age a few milliseconds less than us. A trip of millennia would need near-light speed.",1],
+  ["tm","Travel to the past","Return from the future to tell the tale.","None","No accepted physics allows it.",0],
+  ["bnw","Babies from bottles","Children grown in hatcheries, not wombs.","IVF, artificial wombs","IVF is routine and premature lambs grew for weeks in a fluid bag. Full gestation outside a body has not been done.",2],
+  ["bnw","The feelies","Films you can feel as well as watch.","Haptic suits, 4D cinemas","Haptic vests and motion seats let you feel the punches.",2],
+  ["bnw","Soma","A pill for happiness with no side effects.","Antidepressants, psychedelic therapy","They help many people. None are free of side effects.",1],
+  ["bnw","Sleep-teaching","Learn while you sleep.","Targeted memory reactivation","Sounds during sleep can strengthen what you learned awake. Learning new material asleep doesn't work.",1],
+  ["f451","Parlor walls","Wall-sized screens that talk back to you.","Smart TVs, video walls","Wall-sized screens with voice assistants are in living rooms now.",3],
+  ["f451","Seashell radios","Tiny radios that live in your ears.","Wireless earbuds","AirPods. Bradbury nailed it.",3],
+  ["f451","The Mechanical Hound","A robot dog that tracks by scent.","Robot dogs, electronic noses","Quadruped robots patrol sites and e-noses sniff for chemicals. Together they don't hunt people by smell.",2],
+  ["ir","Talking, reasoning robots","Humanoid robots that work beside people and argue logic.","Humanoids plus language models","Humanoid robots are in factory pilots and chat fluently. General household robots are not here.",2],
+  ["ir","The Three Laws","Rules built into every robot that keep humans safe.","AI safety research","Making AI reliably follow rules is an open research problem.",1],
+  ["fd","Psychohistory","Mathematics that predicts the future of whole societies.","Forecasting and prediction markets","Good at elections and weather. Centuries ahead, no.",1],
+  ["fd","Personal force shields","A belt that wraps you in a protective field.","Plasma windows, body armor","Lab plasma windows hold back air, not bullets. Armor is still worn, not projected.",1],
+  ["fd","Hyperspace jumps","Cross the galaxy in hours.","None","Faster-than-light travel breaks relativity.",0],
+  ["du","Hunter-seeker","A tiny flying dart that hunts a target.","Micro-drones","Palm-sized drones fly in tight spaces, and the military uses targeting drones. Grimly, nearly here.",2],
+  ["du","Stillsuit","A suit that recycles your body's water.","Space station water recovery","The ISS recycles about 98% of its water. A wearable suit that does it isn't built.",2],
+  ["du","Ornithopters","Aircraft that fly by flapping their wings.","Flapping-wing drones","Small bird-like drones fly. A full-size troop carrier doesn't.",2],
+  ["du","The Holtzman shield","Stops fast blows but lets slow ones through.","Shear-thickening armor","Fabrics with non-Newtonian fluid stiffen under sudden impact. A wearable force field is not possible.",1],
+  ["du","Spice prescience","See every possible future.","None","Seeing the future isn't physics.",0],
+  ["so","The Newspad","A flat screen that shows any newspaper.","The tablet","Apple's lawyers cited this scene in 2011.",3],
+  ["so","HAL reads lips","The computer reads the astronauts' lips through a window.","AI lip-reading","Lip-reading models beat human experts on benchmarks.",3],
+  ["so","HAL 9000","A computer that talks, reasons and runs the ship.","AI assistants","Conversation, yes. Trusting one to fly the spacecraft, not yet.",2],
+  ["so","Hibernation","Sleep through a year-long voyage.","Therapeutic hypothermia","Doctors cool patients for days. Months of human torpor have not been tried.",1],
+  ["dad","Electric animals","Robot pets that pass for real ones.","Robot pets","Sony's Aibo and robotic cats sit on real sofas.",3],
+  ["dad","The Voigt-Kampff test","Tell a machine from a human by questioning it.","AI detectors, the Turing test","In 2025 a language model passed a three-party Turing test. Telling them apart is now the hard part.",2],
+  ["dad","The Penfield mood organ","Dial any emotion you like.","Deep brain stimulation","Implants ease severe depression and Parkinson's. Choosing a mood by number, no.",1],
+  ["dad","Replicants","Androids indistinguishable from people.","None yet","No robot passes as human in person.",1],
+  ["nm","Jacking in","Plug your mind into cyberspace.","VR headsets, brain implants","VR is mainstream, and brain implants carry simple signals. Full sensory immersion through a jack is not here.",2],
+  ["nm","Wintermute","An AI pursuing its own goals across the network.","Frontier AI agents","AI agents now carry out multi-step tasks online. They still don't stage heists.",2],
+  ["nm","Simstim","Feel another person's senses live.","None yet","Brain recording can't yet capture or replay full senses.",1],
+  ["hg","The Babel fish","Put it in your ear and understand any language.","Live-translation earbuds","Earbuds translate conversation as you hear it.",3],
+  ["hg","The Guide","A pocket book holding everything about everything.","Smartphone plus Wikipedia","It says DON'T PANIC on the lock screen if you want it to.",3],
+  ["hg","Infinite Improbability Drive","Cross space by passing through every point at once.","None","A joke, and still beyond physics.",0],
+  ["eg","The desk","Networked tablets every cadet carries.","Tablets and laptops","Standard school equipment.",3],
+  ["eg","The Giant's Drink","A game that studies its player and adapts.","Adaptive games and recommenders","Games and feeds tune themselves to every player.",3],
+  ["eg","Remote battles","Command a real fleet through a simulator screen.","Remote-piloted drones","Pilots fly real aircraft from thousands of miles away.",3],
+  ["eg","The ansible","Instant messages across light-years.","None","Nothing carries information faster than light.",0],
+  ["sc","The Librarian","An AI researcher that answers any question with sources.","AI research assistants","Ask a question, get a cited answer.",3],
+  ["sc","The Metaverse","A shared virtual city millions walk through.","VR worlds","Roblox and VRChat host millions. One persistent city on the Street, not yet.",2],
+  ["sc","Rat Things","Cybernetic guard dogs that run faster than cars.","Robot dogs","Robot dogs guard sites. They don't do 700 km/h.",2],
+  ["tb","The Three Body game","A VR world with a full-body sensing suit.","VR plus haptic suits","Haptic suits and VR headsets ship today, a bit clunkier.",2],
+  ["tb","Nanofilament","A wire so fine it slices a ship like cheese.","Carbon nanotubes, monofilament","Nanotube fibers are extremely strong. Not yet in kilometer-long blades.",2],
+  ["tb","Sophons","A proton unfolded into a planet-wide supercomputer.","None","Unfolding a proton's dimensions isn't physics we know.",0],
+];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const ORDER = [0, 1, 2, 3]; // left to right: magic to machine
+const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)");
+let genre = "All", level = null, q = "";
+
+function tally(rows) { const t = [0, 0, 0, 0]; rows.forEach(r => t[r[5]]++); return t; }
+function roman(n) {
+  const m = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = ""; for (const [v, s] of m) while (n >= v) { out += s; n -= v; } return out;
+}
+const sig = l => `<svg aria-hidden="true" focusable="false"><use href="#sig${l}"/></svg>`;
+
+function renderHead() {
+  const t = tally(S), n = S.length || 1;
+  $("#bar").innerHTML = ORDER.map(l => `<span class="b${l}" style="width:${(t[l] / n * 100).toFixed(2)}%" title="${LEVELS[l].n}: ${t[l]}"></span>`).join("");
+  $("#legend").innerHTML = ORDER.map(l => `<button type="button" class="lv-${l}" aria-pressed="${level === l}" data-l="${l}">${sig(l)}<b>${t[l]}</b><span class="nm">${LEVELS[l].n}</span><span class="ds">${LEVELS[l].d}</span></button>`).join("");
+  const gs = ["All", "Fantasy", "Science fiction"];
+  $("#genres").innerHTML = gs.map(g => `<button type="button" aria-pressed="${genre === g}" data-g="${g}">${g}</button>`).join("");
+}
+
+function spellHTML(r) {
+  const l = r[5];
+  return `<article class="spell lv-${l}">
+    <div class="magic"><span class="side">The spell</span><h3 class="m-name">${esc(r[1])}</h3><p class="m-does">${esc(r[2])}</p></div>
+    <p class="seal"><span class="sig">${sig(l)}</span><span class="lbl">${LEVELS[l].n}</span><svg class="arrow" aria-hidden="true" focusable="false"><use href="#arrow"/></svg></p>
+    <div class="today"><span class="side">Today</span><p class="t-name">${esc(r[3])}</p><p class="t-note">${esc(r[4])}</p></div>
+  </article>`;
+}
+
+function render() {
+  renderHead();
+  const words = q.toLowerCase().trim();
+  const rows = S.filter(r => {
+    const b = BOOKS[r[0]];
+    if (!b) return false;
+    if (genre !== "All" && b[3] !== genre) return false;
+    if (level !== null && r[5] !== level) return false;
+    if (words && !(r.slice(1, 5).join(" ") + " " + b[0] + " " + b[1]).toLowerCase().includes(words)) return false;
+    return true;
+  });
+  const byBook = {};
+  rows.forEach(r => (byBook[r[0]] ||= []).push(r));
+  const allKeys = Object.keys(BOOKS);
+  const keys = allKeys.filter(k => byBook[k]);
+  $("#count").textContent = `${rows.length} spells · ${keys.length} books`;
+  $("#nbooks").textContent = allKeys.length;
+  if (!rows.length) { $("#list").innerHTML = `<p class="empty">No spells match. Clear the search or pick another filter.</p>`; return; }
+  $("#list").innerHTML = keys.map(k => {
+    const b = BOOKS[k], all = S.filter(r => r[0] === k), t = tally(all);
+    const mini = ORDER.map(l => `<span class="b${l}" style="width:${(t[l] / all.length * 100).toFixed(1)}%"></span>`).join("");
+    const yr = typeof b[2] === "number" && b[2] < 1000 ? "c. 9th century" : b[2];
+    const id = "bk-" + String(k).replace(/[^\w-]/g, "_");
+    return `<section class="book" aria-labelledby="${id}">
+      <header class="spine"><span class="folio">Folio ${roman(allKeys.indexOf(k) + 1)} · ${esc(b[3])}</span><h2 id="${id}">${esc(b[0])}</h2><p class="by">${esc(b[1])}${yr ? ", " + esc(yr) : ""}${b[4] !== undefined ? `<span class="reader">Added by Anton${b[4] ? " · suggested by " + esc(b[4]) : ""}</span>` : ""}</p>
+        <div class="mini" title="${t[3]} of ${all.length} real today">${mini}</div></header>
+      <div class="spells">${byBook[k].slice().sort((a, c) => a[5] - c[5]).map(spellHTML).join("")}</div>
+    </section>`;
+  }).join("");
+  observeCards();
+}
+window.render = render;
+
+/* Shimmer each card's "today" side once as it scrolls into view. Purely decorative: content is never hidden. */
+let io = null;
+function observeCards() {
+  if (REDUCED.matches || !("IntersectionObserver" in window)) return;
+  io ||= new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("seen"); io.unobserve(e.target); }
+  }), { rootMargin: "0px 0px -12% 0px" });
+  io.disconnect();
+  document.querySelectorAll(".spell").forEach(el => io.observe(el));
+}
+
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-g]"), l = e.target.closest("[data-l]");
+  if (g) { genre = g.dataset.g; render(); }
+  if (l) { const v = +l.dataset.l; level = level === v ? null : v; render(); }
+});
+$("#q").addEventListener("input", e => { q = e.target.value; render(); });
+render();
+
+/* ---------- Reader-suggested books: saved and reviewed by Anton (agent-ops magic.py) ---------- */
+const ANTON = "https://ubuntu-dev.tail89681.ts.net/api/magic";
+function addBook(b) {
+  const k = "r" + b.id;
+  if (BOOKS[k] || !Array.isArray(b.spells)) return k;
+  const genre = b.genre === "Science fiction" ? "Science fiction" : "Fantasy";
+  BOOKS[k] = [String(b.title || ""), String(b.author || ""), Number.isInteger(b.year) ? b.year : "", genre, String(b.submitter || "")];
+  b.spells.forEach(x => { if ([0, 1, 2, 3].includes(x.level)) S.push([k, x.magic, x.does, x.today, x.note, x.level]); });
+  return k;
+}
+fetch(ANTON + "/books").then(r => r.ok ? r.json() : null).then(d => {
+  if (d && d.books && d.books.length) { d.books.forEach(addBook); render(); }
+}).catch(() => {});
+
+(function suggest() {
+  const form = $("#suggest-form"), go = $("#s-go"), out = $("#s-verdict");
+  const say = (html, cls = "") => { out.className = "verdict " + cls; out.innerHTML = html; };
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function poll(id) {
+    for (let i = 0; i < 60; i++) {
+      await wait(i < 10 ? 2500 : 5000);
+      let d;
+      try { const r = await fetch(`${ANTON}/suggest/${id}`); d = await r.json(); } catch { continue; }
+      if (d.status === "added") return d;
+      if (d.status !== "reviewing") return d;
+    }
+    return { status: "slow" };
+  }
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    if (!data.title.trim()) { say("Add the book's title first.", "no"); $("#s-title").focus(); return; }
+    go.disabled = true;
+    say(`<svg class="spin" aria-hidden="true"><use href="#sig0"/></svg>Sending to Anton…`);
+    try {
+      const r = await fetch(ANTON + "/suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { say(esc(d.error || "Anton couldn't take that just now. Try again later."), "no"); return; }
+      if (d.status === "exists") { say(esc(d.reason || "That one's already on the roadmap."), "ok"); return; }
+      say(`<svg class="spin" aria-hidden="true"><use href="#sig0"/></svg>Anton is reading <i>${esc(data.title)}</i>. Stay here; it takes about a minute.`);
+      const v = await poll(d.id);
+      if (v.status === "added" && v.book) {
+        const k = addBook(v.book);
+        genre = "All"; level = null; q = ""; $("#q").value = ""; render();
+        form.reset();
+        say(`Added <a href="#bk-${k}">${esc(v.book.title)}</a> with ${v.book.spells.length} spells. ${esc(v.reason || "")}`, "ok");
+      } else if (v.status === "slow") {
+        say("Anton is still reading. Check back in a few minutes; it will appear here once added.");
+      } else {
+        say(esc(v.reason || "Anton didn't add this one."), "no");
+      }
+    } catch {
+      say("Couldn't reach Anton. Check your connection and try again.", "no");
+    } finally { go.disabled = false; }
+  });
+})();
+
+/* ---------- The sky: motes drift left to right and transmute from magic to machine ----------
+   Left of the hero they are round, glowing sparks; as they cross, they snap to a grid and become
+   square pixels in circuit colour. One canvas, paused when off-screen; a single still frame under reduced motion. */
+(function sky() {
+  const cv = $("#sky"), host = cv.parentElement, ctx = cv.getContext("2d");
+  if (!ctx) return;
+  let W = 0, H = 0, dpr = 1, motes = [], cols = {}, raf = 0, visible = true, last = 0;
+  const hex = h => { h = h.trim().replace("#", ""); if (h.length === 3) h = h.replace(/./g, c => c + c); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    cols = { magic: hex(cs.getPropertyValue("--mote-magic")), gold: hex(cs.getPropertyValue("--mote-gold")), tech: hex(cs.getPropertyValue("--mote-tech")) };
+  }
+  function seed(m, anywhere) {
+    m.x = anywhere ? Math.random() * W : -10 - Math.random() * 40;
+    m.y = Math.random() * H;
+    m.v = 0.12 + Math.random() * 0.38;
+    m.r = 0.6 + Math.random() * 1.6;
+    m.ph = Math.random() * Math.PI * 2;
+    m.gold = Math.random() < 0.35;
+    return m;
+  }
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = host.clientWidth; H = host.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.min(160, Math.round(W * H / 7000));
+    while (motes.length < n) motes.push(seed({}, true));
+    motes.length = n;
+  }
+  function draw(time, dt) {
+    ctx.clearRect(0, 0, W, H);
+    const G = 8;
+    for (const m of motes) {
+      m.x += m.v * dt;
+      m.y += Math.sin(time / 1800 + m.ph) * 0.08 * dt;
+      if (m.x > W + 10) seed(m, false);
+      const p = m.x / W, t = smooth(0.42, 0.72, p);
+      const base = m.gold ? cols.gold : cols.magic;
+      const c = mix(base, cols.tech, t);
+      const tw = 0.55 + 0.45 * Math.sin(time / 700 + m.ph * 3);
+      const a = (0.28 + 0.5 * tw) * (1 - 0.25 * t);
+      const y = m.y + (Math.round(m.y / G) * G - m.y) * t;
+      // Magic: soft glowing spark
+      if (t < 1) {
+        const rr = m.r * (2.6 + tw);
+        const g = ctx.createRadialGradient(m.x, y, 0, m.x, y, rr * 1.8);
+        g.addColorStop(0, `rgba(${c},${a * (1 - t)})`);
+        g.addColorStop(1, `rgba(${c},0)`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(m.x, y, rr * 1.8, 0, Math.PI * 2); ctx.fill();
+      }
+      // Machine: crisp square pixel with a short trace
+      if (t > 0) {
+        const s = 1 + m.r * 1.2;
+        ctx.fillStyle = `rgba(${c},${a * t})`;
+        ctx.fillRect(Math.round(m.x - s / 2), Math.round(y - s / 2), s, s);
+        if (m.r > 1.4) { ctx.fillStyle = `rgba(${c},${a * t * 0.35})`; ctx.fillRect(Math.round(m.x - 14 * t), Math.round(y), Math.round(12 * t), 1); }
+      }
+    }
+  }
+  function frame(now) {
+    const dt = last ? Math.min(3, (now - last) / 16.7) : 1; last = now;
+    draw(now, dt);
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!raf && visible && !REDUCED.matches && !document.hidden) { last = 0; raf = requestAnimationFrame(frame); } }
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
+  function still() { stop(); draw(4000, 0); }
+
+  readColors(); resize();
+  if (REDUCED.matches) still(); else start();
+  window.addEventListener("resize", () => { resize(); if (!raf) draw(4000, 0); });
+  const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+  (scheme.addEventListener ? scheme.addEventListener.bind(scheme, "change") : scheme.addListener.bind(scheme))(() => { readColors(); if (!raf) draw(4000, 0); });
+  (REDUCED.addEventListener ? REDUCED.addEventListener.bind(REDUCED, "change") : REDUCED.addListener.bind(REDUCED))(() => { REDUCED.matches ? still() : start(); });
+  document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
+  if ("IntersectionObserver" in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; visible ? start() : stop(); }).observe(host);
+})();
+</script>
+</body>
+</html>

@@ -24,6 +24,13 @@ export const ProjectLinks: Link[] = [
       "A small runtime agentic PDP (policy decision point) that decides, live, what an AI agent is allowed to do. Part of building the infrastructure for the agentic web.",
   },
   {
+    url: "/magic/",
+    label: "Roadmap to Magic",
+    dates: "2026",
+    description:
+      "Any sufficiently advanced technology is indistinguishable from magic. 111 spells from 15 fantasy and 15 science-fiction books, from Tolkien and Harry Potter to Dune and Neuromancer, each matched to today's closest technology and rated from real today to still magic. Readers can suggest more books; Anton (my AI agent) reviews each one and adds it.",
+  },
+  {
     url: "https://projectnanda.org/",
     label: "Project NANDA : Bay Area Chapter",
     organization: "Bay Area Chapter",
