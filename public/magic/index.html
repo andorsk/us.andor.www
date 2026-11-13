@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0C1A">
+<meta name="color-scheme" content="dark">
 <meta name="description" content="111 spells from 30 fantasy and science-fiction books, matched to the technology that does it today.">
 <title>Roadmap to Magic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,53 +15,24 @@
    Thesis: the four verdicts run from magic to machine. "Still magic" glows with arcane light;
    each step toward "Real today" loses glow and gains a circuit grid, square corners and mono type. */
 :root {
-  color-scheme: light;
-  /* Candlelit parchment (light) */
-  --bg: #F2E9D6; --bg-deep: #E6D9BD; --surface: #FBF6EA; --surface-2: #F6EEDC;
-  --ink: #2A2018; --muted: #67584A; --rule: #D8C8A8; --rule-strong: #BFA97E;
-  --gold: #8A6516; --gold-hi: #B08A2E; --focus: #5B2E99;
-  --bar-bg: rgba(242, 233, 214, .92);
-  --chip-on-bg: #2A2018; --chip-on-ink: #FBF6EA;
-  --l0: #6A35A8; --l1: #A3412A; --l2: #7D5A0C; --l3: #0B7360;
-  --l0-bg: #F1E6F6; --l1-bg: #F7E5DB; --l2-bg: #F5EBCF; --l3-bg: #E2F1EB;
-  --l0-glow: rgba(124, 66, 196, .16); --l1-glow: rgba(176, 72, 42, .09); --l2-glow: rgba(150, 110, 20, .06);
-  --l2-grid: rgba(125, 90, 12, .10); --l3-grid: rgba(11, 115, 96, .16);
-  --sky-a: #F7F0E0; --sky-b: #EBDDBF; --sky-c: #E4D2AE;
-  --mote-magic: #7C42C4; --mote-gold: #B08A2E; --mote-tech: #0B7360;
+  /* One look in every theme: the night sky over the library */
+  color-scheme: dark;
+  --bg: #0A0C1A; --bg-deep: #06070F; --surface: #11142A; --surface-2: #151935;
+  --ink: #ECE5D3; --muted: #A9A4BC; --rule: #262B4D; --rule-strong: #3A4170;
+  --gold: #E2C275; --gold-hi: #F4DC9A; --focus: #F4DC9A;
+  --bar-bg: rgba(10, 12, 26, .88);
+  --chip-on-bg: #E2C275; --chip-on-ink: #0A0C1A;
+  --l0: #C9A2FF; --l1: #FF9F80; --l2: #E8C468; --l3: #5FE3C0;
+  --l0-bg: #1E1636; --l1-bg: #23172A; --l2-bg: #1F1D27; --l3-bg: #0E2128;
+  --l0-glow: rgba(160, 110, 255, .30); --l1-glow: rgba(255, 140, 110, .14); --l2-glow: rgba(232, 196, 104, .09);
+  --l2-grid: rgba(232, 196, 104, .08); --l3-grid: rgba(95, 227, 192, .13);
+  --sky-a: #1A1840; --sky-b: #0D0F24; --sky-c: #06070F;
+  --mote-magic: #C9A2FF; --mote-gold: #F4DC9A; --mote-tech: #5FE3C0;
   --f-deco: "Cinzel Decorative", "Cinzel", "Trajan Pro", Georgia, serif;
   --f-caps: "Cinzel", "Trajan Pro", "Times New Roman", Georgia, serif;
   --f-display: "Cormorant Garamond", "Cormorant", "Garamond", "Iowan Old Style", Georgia, serif;
   --f-body: "EB Garamond", "Garamond", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  color-scheme: dark;
-  /* Night sky over the library */
-  --bg: #0A0C1A; --bg-deep: #06070F; --surface: #11142A; --surface-2: #151935;
-  --ink: #ECE5D3; --muted: #A9A4BC; --rule: #262B4D; --rule-strong: #3A4170;
-  --gold: #E2C275; --gold-hi: #F4DC9A; --focus: #F4DC9A;
-  --bar-bg: rgba(10, 12, 26, .88);
-  --chip-on-bg: #E2C275; --chip-on-ink: #0A0C1A;
-  --l0: #C9A2FF; --l1: #FF9F80; --l2: #E8C468; --l3: #5FE3C0;
-  --l0-bg: #1E1636; --l1-bg: #23172A; --l2-bg: #1F1D27; --l3-bg: #0E2128;
-  --l0-glow: rgba(160, 110, 255, .30); --l1-glow: rgba(255, 140, 110, .14); --l2-glow: rgba(232, 196, 104, .09);
-  --l2-grid: rgba(232, 196, 104, .08); --l3-grid: rgba(95, 227, 192, .13);
-  --sky-a: #1A1840; --sky-b: #0D0F24; --sky-c: #06070F;
-  --mote-magic: #C9A2FF; --mote-gold: #F4DC9A; --mote-tech: #5FE3C0;
-} }
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0A0C1A; --bg-deep: #06070F; --surface: #11142A; --surface-2: #151935;
-  --ink: #ECE5D3; --muted: #A9A4BC; --rule: #262B4D; --rule-strong: #3A4170;
-  --gold: #E2C275; --gold-hi: #F4DC9A; --focus: #F4DC9A;
-  --bar-bg: rgba(10, 12, 26, .88);
-  --chip-on-bg: #E2C275; --chip-on-ink: #0A0C1A;
-  --l0: #C9A2FF; --l1: #FF9F80; --l2: #E8C468; --l3: #5FE3C0;
-  --l0-bg: #1E1636; --l1-bg: #23172A; --l2-bg: #1F1D27; --l3-bg: #0E2128;
-  --l0-glow: rgba(160, 110, 255, .30); --l1-glow: rgba(255, 140, 110, .14); --l2-glow: rgba(232, 196, 104, .09);
-  --l2-grid: rgba(232, 196, 104, .08); --l3-grid: rgba(95, 227, 192, .13);
-  --sky-a: #1A1840; --sky-b: #0D0F24; --sky-c: #06070F;
-  --mote-magic: #C9A2FF; --mote-gold: #F4DC9A; --mote-tech: #5FE3C0;
 }
 
 * { box-sizing: border-box; }
@@ -305,7 +278,7 @@ footer p { margin: 0 auto; max-width: 68ch; font-size: 16px; color: var(--muted)
   <div class="wrap">
     <a class="home" href="/projects">← andor.us projects</a>
     <header class="hero">
-      <p class="eyebrow"><svg aria-hidden="true"><use href="#fleuron"/></svg>Roadmap to Magic · <span id="nbooks">30</span> books, their magic, and the machines that caught up</p>
+      <p class="eyebrow"><svg aria-hidden="true"><use href="#fleuron"/></svg><span>Roadmap to Magic · <span id="nbooks">30</span> books, their magic, and the machines that caught up</span></p>
       <h1>Any sufficiently advanced <span class="tech">technology</span> is indistinguishable from <em>magic</em>.</h1>
       <p class="cite">Arthur C. Clarke, third law, <i>Profiles of the Future</i> (1973 edition)</p>
       <p class="lede">Writers have spent two centuries imagining what wands, stones and starships could do. Engineers have quietly been checking items off the list. A self-writing quill is a dictation app. Tom Riddle's diary is a chatbot. Teleportation is still a spell.</p>
