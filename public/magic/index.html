@@ -149,17 +149,35 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .count { font: 12px var(--f-mono); color: var(--muted); }
 
 /* ---------- The books ---------- */
-main { display: grid; gap: 56px; margin-top: 40px; }
-.book { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; }
-@media (max-width: 820px) { .book { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
-.spine { display: grid; gap: 6px; align-content: start; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px);
-  padding-left: 14px; border-left: 2px solid var(--gold); }
-@media (max-width: 820px) { .spine { position: static; } }
+main { display: grid; gap: 0; margin-top: 32px; }
+.book { border-top: 1px solid var(--rule-strong); }
+.book:last-child { border-bottom: 1px solid var(--rule-strong); }
+.spine { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto 28px; gap: 6px 24px; align-items: center;
+  padding: 18px 4px 18px 16px; border-left: 2px solid transparent; transition: border-color .2s, background .2s; }
+.spine::-webkit-details-marker { display: none; }
+.spine:hover, .book[open] > .spine { border-left-color: var(--gold); background: linear-gradient(90deg, var(--l0-bg), transparent 70%); }
+.spine .who { display: grid; gap: 4px; min-width: 0; }
 .folio { font: 600 11px/1.4 var(--f-caps); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
-.spine h2 { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.08; text-wrap: balance; }
+.spine h2 { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: clamp(22px, 3vw, 28px); line-height: 1.08; text-wrap: balance; }
 .spine .by { margin: 0; font-style: italic; color: var(--muted); font-size: 16px; }
-.mini { display: flex; gap: 1px; height: 5px; max-width: 160px; margin-top: 8px; }
+.spine .tease { margin: 2px 0 0; font-size: 15px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book[open] .tease { display: none; }
+.spine .tally { display: grid; justify-items: end; gap: 6px; font: 500 13px/1.2 var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.spine .tally b { color: var(--l3); font-weight: 500; }
+.mini { display: flex; gap: 1px; height: 5px; width: 140px; }
 .mini span { height: 100%; }
+.chev { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid var(--rule-strong); border-radius: 50%; color: var(--gold); transition: transform .25s; }
+.chev::before { content: ""; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+.book[open] .chev { transform: rotate(180deg); }
+.book > .spells { padding: 4px 0 28px; }
+@media (max-width: 560px) {
+  .spine { grid-template-columns: minmax(0, 1fr) 28px; padding-left: 12px; }
+  .spine .tally { grid-column: 1; grid-row: 2; justify-items: start; }
+  .spine .chev { grid-column: 2; grid-row: 1 / span 2; }
+}
+.toggle-all { font: 600 12px/1 var(--f-caps); letter-spacing: .1em; text-transform: uppercase; color: var(--gold); background: none;
+  border: 1px solid var(--rule-strong); border-radius: 999px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
+.toggle-all:hover { border-color: var(--gold); }
 
 .spells { display: grid; gap: 14px; }
 .spell { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1.08fr);
@@ -306,6 +324,7 @@ footer p { margin: 0 auto; max-width: 68ch; font-size: 16px; color: var(--muted)
     <div class="chips" id="genres" role="group" aria-label="Genre"></div>
     <label class="search"><svg aria-hidden="true"><use href="#lens"/></svg><input id="q" type="search" placeholder="Search the grimoire: spells, books, tech" aria-label="Search"></label>
     <span class="count" id="count" aria-live="polite"></span>
+    <button type="button" class="toggle-all" id="toggle-all">Open all</button>
   </div>
 
   <main id="list"></main>
@@ -495,6 +514,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const ORDER = [0, 1, 2, 3]; // left to right: magic to machine
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)");
 let genre = "All", level = null, q = "";
+const opened = new Set();
 
 function tally(rows) { const t = [0, 0, 0, 0]; rows.forEach(r => t[r[5]]++); return t; }
 function roman(n) {
@@ -543,15 +563,39 @@ function render() {
     const mini = ORDER.map(l => `<span class="b${l}" style="width:${(t[l] / all.length * 100).toFixed(1)}%"></span>`).join("");
     const yr = typeof b[2] === "number" && b[2] < 1000 ? "c. 9th century" : b[2];
     const id = "bk-" + String(k).replace(/[^\w-]/g, "_");
-    return `<section class="book" aria-labelledby="${id}">
-      <header class="spine"><span class="folio">Folio ${roman(allKeys.indexOf(k) + 1)} · ${esc(b[3])}</span><h2 id="${id}">${esc(b[0])}</h2><p class="by">${esc(b[1])}${yr ? ", " + esc(yr) : ""}${b[4] !== undefined ? `<span class="reader">Added by Anton${b[4] ? " · suggested by " + esc(b[4]) : ""}</span>` : ""}</p>
-        <div class="mini" title="${t[3]} of ${all.length} real today">${mini}</div></header>
+    const auto = !!words || level !== null;
+    const tease = all.slice().sort((a, c) => a[5] - c[5]).map(r => r[1]).join(" · ");
+    return `<details class="book" id="${id}" data-k="${esc(k)}"${auto || opened.has(k) ? " open" : ""}>
+      <summary class="spine">
+        <span class="who"><span class="folio">Folio ${roman(allKeys.indexOf(k) + 1)} · ${esc(b[3])}</span><h2>${esc(b[0])}</h2>
+          <span class="by">${esc(b[1])}${yr ? ", " + esc(yr) : ""}${b[4] !== undefined ? `<span class="reader">Added by Anton${b[4] ? " · suggested by " + esc(b[4]) : ""}</span>` : ""}</span>
+          <span class="tease">${esc(tease)}</span></span>
+        <span class="tally"><span>${all.length} spells · <b>${t[3]} real</b></span><span class="mini" title="${t[3]} of ${all.length} real today">${mini}</span></span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
       <div class="spells">${byBook[k].slice().sort((a, c) => a[5] - c[5]).map(spellHTML).join("")}</div>
-    </section>`;
+    </details>`;
   }).join("");
+  syncToggleAll();
   observeCards();
 }
 window.render = render;
+function syncToggleAll() {
+  const books = [...document.querySelectorAll("#list .book")];
+  $("#toggle-all").textContent = books.length && books.every(d => d.open) ? "Close all" : "Open all";
+}
+$("#list").addEventListener("toggle", e => {
+  const k = e.target.dataset && e.target.dataset.k;
+  if (!k) return;
+  e.target.open ? opened.add(k) : opened.delete(k);
+  if (e.target.open) observeCards();
+  syncToggleAll();
+}, true);
+$("#toggle-all").addEventListener("click", () => {
+  const books = [...document.querySelectorAll("#list .book")], open = !books.every(d => d.open);
+  books.forEach(d => { d.open = open; open ? opened.add(d.dataset.k) : opened.delete(d.dataset.k); });
+  syncToggleAll();
+});
 
 /* Shimmer each card's "today" side once as it scrolls into view. Purely decorative: content is never hidden. */
 let io = null;
@@ -615,8 +659,10 @@ fetch(ANTON + "/books").then(r => r.ok ? r.json() : null).then(d => {
       const v = await poll(d.id);
       if (v.status === "added" && v.book) {
         const k = addBook(v.book);
+        opened.add(k);
         genre = "All"; level = null; q = ""; $("#q").value = ""; render();
         form.reset();
+        setTimeout(() => { const el = document.getElementById("bk-" + k); if (el) el.scrollIntoView({ behavior: REDUCED.matches ? "auto" : "smooth", block: "start" }); }, 50);
         say(`Added <a href="#bk-${k}">${esc(v.book.title)}</a> with ${v.book.spells.length} spells. ${esc(v.reason || "")}`, "ok");
       } else if (v.status === "slow") {
         say("Anton is still reading. Check back in a few minutes; it will appear here once added.");
