@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2ECDD">
+<meta name="robots" content="noindex">
+<meta name="description" content="A grin without a cat.">
+<title>The Cheshire Cat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&family=IM+Fell+DW+Pica+SC&display=swap">
+<style>
+/* A page from an old book: cream paper, black-ink engraving. A cat sits in your world (through your camera, if you
+   like) and fades away a piece at a time, tail first, until only the grin is left. */
+:root { color-scheme: light; --paper: #F2ECDD; --ink: #1E1A14; --muted: #6E6556; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "IM Fell DW Pica", Georgia, serif; display: grid; justify-items: center; padding: 22px 14px 44px;
+  background: radial-gradient(ellipse at 50% 30%, #FBF6EA, var(--paper) 70%); }
+main { width: min(640px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(28px, 6.6vw, 44px) "IM Fell DW Pica SC", serif; }
+.sub { margin: 0; font-style: italic; color: var(--muted); font-size: 19px; }
+.view { position: relative; width: 100%; aspect-ratio: .9; border: 1.5px solid var(--ink); background: #EDE4CF; overflow: hidden; box-shadow: 0 14px 30px rgba(30,26,20,.18); }
+.view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) sepia(.35) contrast(1.15) brightness(1.05); }
+.view svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.part { transition: opacity 1.4s ease; }
+.gone { opacity: 0; }
+.grin { filter: drop-shadow(0 0 2px rgba(255,255,255,.7)); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+button { border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font: 400 17px "IM Fell DW Pica SC", serif; padding: 8px 16px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.line { min-height: 1.5em; font-style: italic; font-size: 19px; }
+.foot { font-size: 13px; color: var(--muted); } .foot a { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Cheshire Cat</h1>
+  <p class="sub">"I've often seen a cat without a grin; but a grin without a cat!"</p>
+  <div class="view" id="view">
+    <video id="cam" playsinline muted hidden></video>
+    <svg viewBox="0 0 600 660" id="art" aria-label="A grinning cat in a tree">
+      <defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><line x1="0" y1="0" x2="0" y2="6" stroke="#1E1A14" stroke-width="1"/></pattern>
+        <pattern id="hatch2" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)"><line x1="0" y1="0" x2="0" y2="5" stroke="#1E1A14" stroke-width=".7"/></pattern></defs>
+      <g id="wood" stroke="#1E1A14" fill="none" stroke-width="2">
+        <path d="M40 660 C 60 420, 30 240, 80 40 M120 660 C 140 480, 110 300, 150 120" />
+        <path d="M80 300 C 200 280, 330 320, 560 300 M80 318 C 200 300, 330 340, 560 318" stroke-width="3"/>
+        <path d="M480 660 C 470 520, 520 420, 500 300" /><path d="M520 660 C 515 520, 560 420, 540 300" />
+        <path d="M90 300 l-30 -40 M200 296 l-10 -50 M420 304 l20 -46" stroke-width="1.5"/>
+        <rect x="80" y="300" width="480" height="18" fill="url(#hatch2)" stroke="none"/>
+      </g>
+      <g id="cat" stroke="#1E1A14" stroke-width="2.4" fill="#F5EFE2" stroke-linejoin="round" stroke-linecap="round">
+        <path class="part" data-o="1" d="M380 296 C 470 270, 520 200, 500 140 C 490 110, 470 120, 476 140 C 492 190, 450 250, 380 270" fill="url(#hatch)"/>
+        <path class="part" data-o="2" d="M210 296 C 200 220, 260 180, 330 182 C 400 184, 430 230, 420 296 Z" fill="url(#hatch)"/>
+        <path class="part" data-o="3" d="M230 296 l-6 30 h28 l2 -30 M380 296 l4 30 h-28 l-2 -30" />
+        <g class="part" data-o="4"><path d="M220 150 C 220 90, 270 70, 300 70 C 330 70, 380 90, 380 150 C 380 190, 340 214, 300 214 C 260 214, 220 190, 220 150 Z" fill="url(#hatch2)"/>
+          <path d="M228 112 L222 54 L264 84 M372 112 L378 54 L336 84"/></g>
+        <g class="part" data-o="5"><ellipse cx="270" cy="130" rx="14" ry="10" fill="#F5EFE2"/><ellipse cx="330" cy="130" rx="14" ry="10" fill="#F5EFE2"/>
+          <ellipse cx="270" cy="130" rx="3" ry="9" fill="#1E1A14"/><ellipse cx="330" cy="130" rx="3" ry="9" fill="#1E1A14"/>
+          <path d="M296 150 l4 6 l4 -6 Z" fill="#1E1A14"/><path d="M240 160 l-50 -8 M240 168 l-50 4 M360 160 l50 -8 M360 168 l50 4" stroke-width="1.2"/></g>
+        <g class="grin"><path d="M246 170 C 270 204, 330 204, 354 170 C 340 186, 260 186, 246 170 Z" fill="#F5EFE2" stroke-width="2.6"/>
+          <path d="M262 180 v8 M274 184 v10 M286 186 v11 M300 187 v11 M314 186 v11 M326 184 v10 M338 180 v8" stroke-width="1.6"/></g>
+      </g>
+    </svg>
+  </div>
+  <p class="line" id="line" aria-live="polite">Tap the cat.</p>
+  <div class="row"><button id="camBtn" type="button">See it in your world (camera)</button><button id="back" type="button">Bring it back</button></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The camera picture stays on your device. The line above is Lewis Carroll's (1865).</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const parts = [...document.querySelectorAll(".part")].sort((a, b) => a.dataset.o - b.dataset.o);
+const LINES = ["It vanishes quite slowly, beginning with the end of the tail…", "…then the body…", "…the paws…", "…the head…", "…and the eyes…", "…and only the grin is left."];
+let fading = false;
+async function vanish() {
+  if (fading) return; fading = true;
+  for (const [i, p] of parts.entries()) { $("#line").textContent = LINES[i]; p.classList.add("gone"); await new Promise((r) => setTimeout(r, 1100)); }
+  $("#line").textContent = LINES[5];
+}
+$("#art").addEventListener("click", vanish);
+$("#back").addEventListener("click", () => { parts.forEach((p) => p.classList.remove("gone")); fading = false; $("#line").textContent = "It comes back, grin first. Tap the cat."; });
+$("#camBtn").addEventListener("click", async () => {
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+    const v = $("#cam"); v.srcObject = s; v.hidden = false; await v.play(); $("#wood").style.display = "none"; $("#camBtn").textContent = "Camera on";
+  } catch (e) { $("#line").textContent = "No camera, so the cat stays in its tree."; }
+});
+</script>
+</body>
+</html>

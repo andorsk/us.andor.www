@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#120C08">
+<meta name="robots" content="noindex">
+<meta name="description" content="Ask the Librarian.">
+<title>The Librarian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+SC:wght@700&family=Special+Elite&display=swap">
+<style>
+/* Shelves that go on further than the building should allow, a long oak catalogue cabinet, and a card pulled from it,
+   typed by someone with very long arms. */
+:root { color-scheme: dark; --dark: #120C08; --oak: #5A3A1E; --oak-2: #3A2412; --card: #F4ECD8; --card-line: rgba(176,60,60,.35); --ink: #EFE3CC; --type: #2A2016; --muted: #B29A78; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Alegreya", Georgia, serif; display: grid; justify-items: center; padding: 22px 14px 44px;
+  background: repeating-linear-gradient(90deg, rgba(0,0,0,.25) 0 3px, transparent 3px 46px), repeating-linear-gradient(0deg, #1E140C 0 6px, #2A1C10 6px 120px), var(--dark); }
+body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse at 50% 30%, rgba(255,180,90,.18), rgba(10,6,3,.85) 70%); pointer-events: none; }
+main { position: relative; width: min(640px, 100%); display: grid; gap: 14px; }
+h1 { margin: 0; text-align: center; font: 700 clamp(30px, 7vw, 46px) "Alegreya SC", serif; letter-spacing: .04em; color: #F2D9A8; }
+.sub { margin: 0; text-align: center; color: var(--muted); font-style: italic; font-size: 19px; }
+.drawer { border-radius: 8px; padding: 14px 14px 18px; background: linear-gradient(180deg, #6E4826, var(--oak) 40%, var(--oak-2)); box-shadow: 0 20px 40px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12); }
+.label { width: 46%; margin: 0 auto 12px; background: #E8DCC0; color: #3A2412; border: 2px solid #B48A3C; border-radius: 3px; text-align: center; font: 700 14px "Alegreya SC", serif; letter-spacing: .1em; padding: 4px; }
+.card { position: relative; background: linear-gradient(180deg, var(--card) 0 34px, #fff0 34px), repeating-linear-gradient(180deg, transparent 0 25px, rgba(80,110,160,.18) 25px 26px), var(--card);
+  color: var(--type); border-radius: 3px; padding: 10px 18px 22px; min-height: 260px; box-shadow: 0 6px 14px rgba(0,0,0,.35); font: 16px/26px "Special Elite", "Courier New", monospace; }
+.card::before { content: ""; position: absolute; left: 0; right: 0; top: 34px; border-top: 2px solid var(--card-line); }
+.card .head { display: flex; justify-content: space-between; font-size: 13px; color: #7A5A3A; height: 24px; }
+.card .body { white-space: pre-wrap; margin-top: 10px; }
+.card .hole { position: absolute; left: 50%; bottom: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--oak-2); transform: translateX(-50%); }
+form { display: flex; gap: 8px; }
+input { flex: 1; min-width: 0; background: rgba(239,227,204,.06); border: 1px solid rgba(242,217,168,.3); border-radius: 10px; color: var(--ink); font: 19px "Alegreya", serif; padding: 10px 12px; }
+button { border: 1px solid #B48A3C; background: rgba(180,138,60,.15); color: #F2D9A8; font: 700 16px "Alegreya SC", serif; padding: 0 18px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #F2D9A8; outline-offset: 2px; }
+.foot { text-align: center; font-size: 13px; color: rgba(239,227,204,.45); } .foot a { color: #F2D9A8; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Librarian</h1>
+  <p class="sub">Please do not call him a monkey.</p>
+  <div class="drawer">
+    <div class="label">CATALOGUE · ALL SUBJECTS</div>
+    <div class="card"><div class="head"><span id="call">CALL NO. —</span><span>L-SPACE</span></div><div class="body" id="body" aria-live="polite">Ook?
+
+(Ask a question below. Answers come with three books worth reading.)</div><div class="hole"></div></div>
+  </div>
+  <form id="ask"><input id="q" maxlength="300" placeholder="What would you like to know?" aria-label="Your question" autocomplete="off"><button type="submit">Ask</button></form>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Cards are typed by an AI on the spot; check the books before you rely on them. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/librarian";
+const $ = (s) => document.querySelector(s);
+let typing = 0;
+function type(text) { const id = ++typing; let i = 0; const step = () => { if (id !== typing) return; $("#body").textContent = text.slice(0, i); if (i++ < text.length) setTimeout(step, 14); }; step(); }
+$("#ask").addEventListener("submit", async (e) => {
+  e.preventDefault(); const q = $("#q").value.trim(); if (!q) return;
+  $("#call").textContent = `CALL NO. ${(Math.random() * 900 + 100).toFixed(2)} ${q.slice(0, 3).toUpperCase()}`; type("Ook. (Sound of a ladder being climbed, very fast.)");
+  try { const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "Eeek."); type(d.text);
+  } catch (err) { type(err.message === "Failed to fetch" ? "Eeek. (The library is closed for a moment. Try again.)" : err.message); }
+});
+</script>
+</body>
+</html>

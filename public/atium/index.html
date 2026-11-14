@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0F11">
+<meta name="robots" content="noindex">
+<meta name="description" content="Your opponent can see what you'll do next.">
+<title>Atium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Marcellus+SC&family=Spectral:ital@0;1&display=swap">
+<style>
+/* Night mist and falling ash. Across from you, someone swallows a bead of atium and sees a shadow of your next move a
+   heartbeat before you make it. It's a pattern-reading model, and people are more predictable than they think. */
+:root { color-scheme: dark; --mist: #0E0F11; --ash: #8A8D93; --ink: #E7E7E4; --muted: #8F9196; --atium: #E9EEF5; --steel: #8FB4FF; --iron: #C9A27A; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Spectral", Georgia, serif; display: grid; justify-items: center; padding: 22px 16px 44px;
+  background: radial-gradient(ellipse at 50% 20%, #23262C 0%, var(--mist) 70%); }
+canvas#ash { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; }
+main { width: min(620px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(32px, 7.4vw, 50px) "Marcellus SC", serif; letter-spacing: .14em; }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 18px; max-width: 46ch; }
+.bead { width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, var(--atium) 40%, #7C8696); box-shadow: 0 0 24px rgba(233,238,245,.7); animation: glint 2.4s ease-in-out infinite; }
+@keyframes glint { 50% { box-shadow: 0 0 40px rgba(233,238,245,1); } }
+.arena { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+.side { border: 1px solid rgba(231,231,228,.14); border-radius: 14px; padding: 14px 8px; min-height: 120px; display: grid; gap: 6px; align-content: center; }
+.side small { color: var(--muted); letter-spacing: .1em; font: 12px "Marcellus SC", serif; }
+.move { font: 400 clamp(22px, 6vw, 32px) "Marcellus", serif; min-height: 1.3em; }
+.shadow { color: var(--muted); font-style: italic; font-size: 15px; min-height: 1.3em; }
+.vs { font: 14px "Marcellus SC", serif; color: var(--muted); }
+.moves { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.moves button { border: 1px solid rgba(231,231,228,.3); background: rgba(231,231,228,.04); color: var(--ink); font: 400 19px "Marcellus", serif; padding: 12px 20px; border-radius: 12px; cursor: pointer; min-width: 120px; }
+.moves button small { display: block; color: var(--muted); font: italic 13px "Spectral", serif; }
+.moves button:focus-visible { outline: 2px solid var(--atium); outline-offset: 3px; }
+.result { min-height: 1.5em; font: 400 20px "Marcellus", serif; }
+.meter { width: 100%; display: grid; gap: 6px; }
+.track { height: 8px; border-radius: 4px; background: rgba(231,231,228,.1); position: relative; overflow: hidden; }
+.track i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--atium); transition: width .4s; }
+.track b { position: absolute; left: 33.3%; top: -2px; bottom: -2px; width: 2px; background: #FF8C6B; }
+.stats { display: flex; justify-content: space-between; color: var(--muted); font-size: 15px; font-variant-numeric: tabular-nums; }
+.foot { font-size: 13px; color: rgba(231,231,228,.4); } .foot a { color: var(--atium); }
+</style>
+</head>
+<body>
+<canvas id="ash" aria-hidden="true"></canvas>
+<main>
+  <h1>Atium</h1>
+  <div class="bead" aria-hidden="true"></div>
+  <p class="sub">Your opponent is burning atium: it sees a shadow of your next move. Try to be unpredictable. Push beats Hold, Hold beats Pull, Pull beats Push.</p>
+  <div class="arena">
+    <div class="side"><small>YOU</small><div class="move" id="you">—</div><div class="shadow" id="yourShadow"></div></div>
+    <div class="vs">vs</div>
+    <div class="side"><small>THE ATIUM-BURNER</small><div class="move" id="them">—</div><div class="shadow" id="saw"></div></div>
+  </div>
+  <div class="moves" id="moves">
+    <button type="button" data-m="Push">Push<small>steel: shove away</small></button>
+    <button type="button" data-m="Pull">Pull<small>iron: draw in</small></button>
+    <button type="button" data-m="Hold">Hold<small>pewter: stand firm</small></button>
+  </div>
+  <p class="result" id="result" aria-live="polite">Make your move.</p>
+  <div class="meter">
+    <div class="track" aria-hidden="true"><i id="acc"></i><b title="chance"></b></div>
+    <div class="stats"><span id="accTxt">Shadows seen correctly: —</span><span id="score">You 0 · Them 0</span></div>
+  </div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The "atium" is a small pattern model running in your browser. The red mark is pure chance (33%).</p>
+</main>
+<script>
+const MOVES = ["Push", "Pull", "Hold"], BEATS = { Push: "Hold", Hold: "Pull", Pull: "Push" }, COUNTER = { Hold: "Push", Pull: "Hold", Push: "Pull" };
+const $ = (s) => document.querySelector(s);
+const hist = [], counts = {}; let seen = 0, right = 0, you = 0, them = 0;
+// Predict from what usually follows your last two moves (and your last move), with a little decay toward recent habits.
+function predict() {
+  const score = { Push: 1, Pull: 1, Hold: 1 };
+  for (const n of [2, 1]) { if (hist.length < n) continue; const key = hist.slice(-n).join(">"); const c = counts[key]; if (c) for (const m of MOVES) score[m] += (c[m] || 0) * (n === 2 ? 3 : 1); }
+  if (hist.length) score[hist[hist.length - 1]] += .5;   // people repeat
+  return MOVES.reduce((a, b) => (score[b] > score[a] ? b : a));
+}
+function learn(m) {
+  for (const n of [2, 1]) { if (hist.length < n) continue; const key = hist.slice(-n).join(">"); counts[key] ||= {};
+    for (const k in counts[key]) counts[key][k] *= .92; counts[key][m] = (counts[key][m] || 0) + 1; }
+  hist.push(m);
+}
+$("#moves").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-m]"); if (!b) return; const m = b.dataset.m;
+  const guess = predict(), theirs = COUNTER[guess];
+  seen++; if (guess === m) right++;
+  $("#you").textContent = m; $("#them").textContent = theirs;
+  $("#yourShadow").textContent = `your shadow moved first: ${guess}`; $("#saw").textContent = guess === m ? "it saw you coming" : "the shadow lied";
+  if (BEATS[m] === theirs) { you++; $("#result").textContent = "You win the exchange."; } else if (BEATS[theirs] === m) { them++; $("#result").textContent = "They saw it coming."; } else $("#result").textContent = "A standoff.";
+  learn(m);
+  const acc = right / seen; $("#acc").style.width = `${acc * 100}%`;
+  $("#accTxt").textContent = `Shadows seen correctly: ${Math.round(acc * 100)}% of ${seen}`; $("#score").textContent = `You ${you} · Them ${them}`;
+});
+const cv = $("#ash"), c = cv.getContext("2d"); let A = [];
+function size() { cv.width = innerWidth; cv.height = innerHeight; A = Array.from({ length: 120 }, () => [Math.random() * cv.width, Math.random() * cv.height, Math.random() * 1.6 + .4, Math.random() * .6 + .2]); }
+size(); addEventListener("resize", size);
+(function loop(t) { c.clearRect(0, 0, cv.width, cv.height); for (const a of A) { a[1] += a[3]; a[0] += Math.sin(t / 2000 + a[2]) * .3; if (a[1] > cv.height) { a[1] = -4; a[0] = Math.random() * cv.width; } c.fillStyle = "rgba(138,141,147,.55)"; c.fillRect(a[0], a[1], a[2], a[2]); }
+  requestAnimationFrame(loop); })(0);
+</script>
+</body>
+</html>

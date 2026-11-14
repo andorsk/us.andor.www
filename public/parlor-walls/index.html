@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0E">
+<meta name="robots" content="noindex">
+<meta name="description" content="The family is on all three walls, and they want to hear from you.">
+<title>Parlor Walls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap">
+<style>
+/* A small parlour. Three of its walls are screens, floor to ceiling, and "the family" lives on them: loud, bright,
+   endlessly friendly, and always waiting for your line. The fourth wall is on order. */
+:root { color-scheme: dark; --room: #0A0A0E; --ink: #F2F0EA; --muted: #9A97A2; --hot: #FF3D7F; --sun: #FFD23F; --sky: #3DD6FF; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "DM Sans", system-ui, sans-serif; display: grid; justify-items: center; padding: 22px 12px 44px; background: var(--room); }
+main { width: min(1000px, 100%); display: grid; gap: 14px; }
+h1 { margin: 0; text-align: center; font: 400 clamp(36px, 9vw, 64px) "Bebas Neue", sans-serif; letter-spacing: .06em; }
+.sub { margin: 0; text-align: center; color: var(--muted); }
+.walls { display: grid; grid-template-columns: .8fr 1.2fr .8fr; gap: 8px; perspective: 900px; }
+.wall { position: relative; aspect-ratio: .75; border-radius: 6px; overflow: hidden; background: #111; box-shadow: 0 0 40px var(--c, rgba(255,61,127,.35)); }
+.wall.l { transform: rotateY(28deg); transform-origin: right; } .wall.r { transform: rotateY(-28deg); transform-origin: left; }
+.wall canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cap { position: absolute; left: 8%; right: 8%; bottom: 8%; background: rgba(0,0,0,.6); border-radius: 6px; padding: 8px 10px; font-size: clamp(12px, 2.4vw, 16px); line-height: 1.3; min-height: 3.2em; }
+.cap b { color: var(--sun); display: block; font: 400 clamp(14px, 2.6vw, 18px) "Bebas Neue", sans-serif; letter-spacing: .06em; }
+.you { display: grid; gap: 8px; justify-items: center; }
+.cue { font: 400 clamp(22px, 5.4vw, 34px) "Bebas Neue", sans-serif; letter-spacing: .04em; color: var(--hot); min-height: 1.2em; text-align: center; }
+form { display: flex; gap: 8px; width: min(560px, 100%); }
+input { flex: 1; min-width: 0; background: rgba(242,240,234,.06); border: 1px solid rgba(242,240,234,.25); border-radius: 10px; color: var(--ink); font: 17px "DM Sans"; padding: 10px 12px; }
+button { border: 0; background: var(--hot); color: #fff; font: 400 20px "Bebas Neue", sans-serif; letter-spacing: .06em; padding: 0 18px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--sun); outline-offset: 2px; }
+.fourth { text-align: center; color: var(--muted); font-size: 14px; }
+.foot { text-align: center; font-size: 13px; color: rgba(242,240,234,.4); } .foot a { color: var(--sun); }
+@media (max-width: 640px) { .walls { grid-template-columns: 1fr; } .wall { aspect-ratio: 1.6; } .wall.l, .wall.r { transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Parlor Walls</h1>
+  <p class="sub">The family is on all three walls tonight. You have a part in the play.</p>
+  <div class="walls">
+    <div class="wall l" style="--c: rgba(61,214,255,.35)"><canvas id="w0" width="300" height="400"></canvas><div class="cap" id="c0"></div></div>
+    <div class="wall" style="--c: rgba(255,61,127,.4)"><canvas id="w1" width="400" height="330"></canvas><div class="cap" id="c1"></div></div>
+    <div class="wall r" style="--c: rgba(255,210,63,.35)"><canvas id="w2" width="300" height="400"></canvas><div class="cap" id="c2"></div></div>
+  </div>
+  <div class="you">
+    <div class="cue" id="cue" aria-live="polite"></div>
+    <form id="line"><input id="said" maxlength="140" placeholder="Your name, to begin" aria-label="Your line" autocomplete="off"><button type="submit" id="go">Join in</button></form>
+  </div>
+  <p class="fourth">The fourth wall is available. Your family would love it. Think how happy we'd all be.</p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Scripted, not AI: the family says the same things to everyone. That's rather the point.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+let name = "", turn = 0, waiting = false;
+const FAMILY = ["AUNT MAUD", "COUSIN REX", "UNCLE PIP"];
+const SCRIPT = [
+  ["AUNT MAUD", "Isn't it wonderful that we're all together again?"], ["COUSIN REX", "Together! Every evening! Nobody ever has to be alone!"],
+  ["UNCLE PIP", "I was going to read something today, but I watched us instead."], ["AUNT MAUD", "Much better. Books make people sad."],
+  ["COUSIN REX", "Who wants to argue about nothing? Let's argue about nothing!"], ["UNCLE PIP", "I say the thing! You say the other thing!"],
+];
+const ASKS = ["And what do you think, {n}?", "{n}! You've been so quiet. Your line!", "Tell us how you feel, {n}. We're listening. We're always listening.", "{n}, settle it for us: who's right?"];
+const CHEERS = ["Absolutely right, {n}!", "{n}, you're so smart!", "Wasn't that wonderful? {n} said it perfectly!", "Yes! YES! Just what we were all thinking, {n}!"];
+const fill = (s) => s.replaceAll("{n}", name || "dear");
+async function play() {
+  for (;;) {
+    for (let i = 0; i < 3; i++) { if (waiting) break; const [who, text] = SCRIPT[(turn + i) % SCRIPT.length]; const w = FAMILY.indexOf(who); $(`#c${w}`).innerHTML = `<b>${who}</b>${text}`; await wait(2600); }
+    if (name && !waiting) { waiting = true; const ask = fill(ASKS[turn % ASKS.length]); $("#cue").textContent = ask; ["#c0", "#c1", "#c2"].forEach((c, k) => { $(c).innerHTML = `<b>${FAMILY[k]}</b>${ask}`; }); }
+    while (waiting) await wait(300);
+    turn += 3;
+  }
+}
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+$("#line").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#said").value.trim(); if (!t) return; $("#said").value = "";
+  if (!name) { name = t.split(" ")[0].slice(0, 20); $("#said").placeholder = "Say your line…"; $("#go").textContent = "Say it"; $("#cue").textContent = `Welcome to the family, ${name}!`; return; }
+  const cheer = fill(CHEERS[turn % CHEERS.length]); $("#cue").textContent = cheer; ["#c0", "#c1", "#c2"].forEach((c, k) => { $(c).innerHTML = `<b>${FAMILY[k]}</b>${cheer}`; });
+  burst = 1; await wait(2400); waiting = false; $("#cue").textContent = "";
+});
+// each wall: a loud, cheerful, ever-changing broadcast of shapes and faces
+let burst = 0; const W = [0, 1, 2].map((i) => $(`#w${i}`).getContext("2d")), HUES = [190, 330, 48];
+(function loop(t) {
+  burst *= .97;
+  W.forEach((c, i) => { const w = c.canvas.width, h = c.canvas.height, hue = HUES[i] + Math.sin(t / 900 + i) * 30;
+    c.fillStyle = `hsl(${hue} 80% ${18 + burst * 30}%)`; c.fillRect(0, 0, w, h);
+    for (let k = 0; k < 6; k++) { c.fillStyle = `hsla(${hue + k * 40} 90% 60% / .35)`; c.beginPath(); c.arc(w / 2 + Math.sin(t / (700 + k * 90) + k) * w * .4, h * .4 + Math.cos(t / (900 + k * 70) + k) * h * .3, 30 + k * 10 + burst * 40, 0, 6.3); c.fill(); }
+    // a face
+    const fx = w / 2, fy = h * .38, s = Math.min(w, h) * .2; c.fillStyle = "#F2D6C0"; c.beginPath(); c.arc(fx, fy, s, 0, 6.3); c.fill();
+    c.fillStyle = "#222"; c.fillRect(fx - s * .45, fy - s * .2, s * .2, s * .2); c.fillRect(fx + s * .25, fy - s * .2, s * .2, s * .2);
+    const open = Math.abs(Math.sin(t / 120 + i * 2)) * s * .3 + 4; c.fillStyle = "#8A2030"; c.beginPath(); c.ellipse(fx, fy + s * .45, s * .4, open, 0, 0, 6.3); c.fill(); });
+  requestAnimationFrame(loop);
+})(0);
+$("#cue").textContent = "Tell the family your name.";
+play();
+</script>
+</body>
+</html>

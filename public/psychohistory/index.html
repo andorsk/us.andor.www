@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#03070C">
+<meta name="robots" content="noindex">
+<meta name="description" content="The future of large things, as probabilities.">
+<title>Psychohistory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Mono:wght@400&family=Spectral:ital@0;1&display=swap">
+<style>
+/* A dim room. In the middle of it, the Radiant: equations that hang in the air and drift, brightening where the future
+   is most certain. Ask about something big; the maths answers in odds. */
+:root { color-scheme: dark; --room: #03070C; --glow: #6EF0FF; --glow-2: #3F8CFF; --warn: #FFB25E; --ink: #DDEAF2; --muted: #7D93A3; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Spectral", Georgia, serif; display: grid; justify-items: center; padding: 22px 16px 44px; background: var(--room); }
+canvas#radiant { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; }
+main { width: min(660px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 700 clamp(30px, 7vw, 48px) "Rajdhani", sans-serif; letter-spacing: .22em; color: var(--glow); text-shadow: 0 0 18px rgba(110,240,255,.5); }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 18px; max-width: 48ch; }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(110,240,255,.05); border: 1px solid rgba(110,240,255,.3); border-radius: 10px; color: var(--ink); font: 18px "Spectral", serif; padding: 10px 12px; }
+button { border: 1px solid var(--glow); background: rgba(110,240,255,.08); color: var(--glow); font: 700 15px "Rajdhani", sans-serif; letter-spacing: .14em; padding: 0 18px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.ideas { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ideas button { padding: 6px 12px; font-size: 13px; letter-spacing: .06em; }
+.panel { width: 100%; border: 1px solid rgba(110,240,255,.18); border-radius: 14px; padding: 18px; background: rgba(3,12,20,.72); display: grid; gap: 10px; min-height: 140px; }
+.p { font: 700 clamp(56px, 16vw, 92px) "Rajdhani", sans-serif; line-height: 1; color: var(--glow); text-shadow: 0 0 26px rgba(110,240,255,.6); font-variant-numeric: tabular-nums; }
+.p small { font-size: .32em; color: var(--muted); letter-spacing: .14em; display: block; }
+.verdict { font-size: 20px; font-style: italic; }
+.forces { display: grid; gap: 6px; text-align: left; font: 14px "IBM Plex Mono", monospace; color: #BFE8F2; }
+.forces span::before { content: "∂ "; color: var(--glow); }
+.foot { font-size: 13px; color: rgba(221,234,242,.4); } .foot a { color: var(--glow); }
+</style>
+</head>
+<body>
+<canvas id="radiant" aria-hidden="true"></canvas>
+<main>
+  <h1>PSYCHOHISTORY</h1>
+  <p class="sub">It can't tell what one person will do. Ask about something large (a technology, a city, a market) and it gives you the odds.</p>
+  <form id="ask"><input id="q" maxlength="300" placeholder="Will most new cars sold in the US be electric by 2032?" aria-label="Your question about the future" autocomplete="off"><button type="submit">COMPUTE</button></form>
+  <div class="ideas" id="ideas"></div>
+  <div class="panel" aria-live="polite"><div class="p" id="p">—<small>PROBABILITY</small></div><div class="verdict" id="verdict">The Radiant is waiting for a question.</div><div class="forces" id="forces"></div></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Forecasts are an AI's calibrated guess, not advice. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/forecast";
+const $ = (s) => document.querySelector(s);
+const IDEAS = ["Will a humanoid robot be sold to homes for under $20k by 2030?", "Will fusion supply power to a grid by 2035?", "Will San Francisco's population grow in 2027?", "Will people land on Mars by 2035?"];
+$("#ideas").innerHTML = IDEAS.map((q) => `<button type="button">${q.replace(/^Will /, "").slice(0, 34)}…</button>`).join("");
+[...$("#ideas").children].forEach((b, i) => b.addEventListener("click", () => { $("#q").value = IDEAS[i]; go(); }));
+let spin = 0;
+async function go() {
+  const q = $("#q").value.trim() || $("#q").placeholder; $("#q").value = q;
+  $("#verdict").textContent = "Integrating…"; $("#forces").innerHTML = ""; heat = 1;
+  const roll = setInterval(() => { $("#p").firstChild.textContent = `${Math.floor(Math.random() * 100)}%`; }, 70);
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "The equations do not converge.");
+    clearInterval(roll); $("#p").firstChild.textContent = d.probability == null ? "—" : `${d.probability}%`;
+    $("#p").querySelector("small").textContent = d.horizon ? `PROBABILITY · ${d.horizon.toUpperCase()}` : "PROBABILITY";
+    $("#verdict").textContent = d.verdict; $("#forces").innerHTML = d.forces.map((f) => `<span>${f.replace(/[<&]/g, "")}</span>`).join("");
+  } catch (e) { clearInterval(roll); $("#p").firstChild.textContent = "—"; $("#verdict").textContent = e.message === "Failed to fetch" ? "The Radiant flickers. Try again in a moment." : e.message; }
+  heat = 0;
+}
+$("#ask").addEventListener("submit", (e) => { e.preventDefault(); go(); });
+// the Radiant: drifting equations
+const cv = $("#radiant"), c = cv.getContext("2d"); let heat = 0, E = [];
+const GLYPHS = ["∂Ψ/∂t", "Σ pᵢ log pᵢ", "∫ f(x) dx", "λ = 0.73", "ΔN ≥ 10⁹", "∇·J = 0", "e^{−βH}", "P(A|B)", "σ²", "lim n→∞", "dS ≥ 0", "μ ± 2σ", "Φ(t+1)", "ρ(x,t)"];
+function size() { cv.width = innerWidth; cv.height = innerHeight; E = Array.from({ length: 70 }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height, z: Math.random(), g: GLYPHS[Math.floor(Math.random() * GLYPHS.length)], v: (Math.random() - .5) * .3 })); }
+size(); addEventListener("resize", size);
+(function loop(t) {
+  c.clearRect(0, 0, cv.width, cv.height); const cx = cv.width / 2, cy = cv.height * .42;
+  const g = c.createRadialGradient(cx, cy, 0, cx, cy, Math.min(cv.width, cv.height) * .6); g.addColorStop(0, `rgba(63,140,255,${.12 + heat * .1})`); g.addColorStop(1, "rgba(0,0,0,0)"); c.fillStyle = g; c.fillRect(0, 0, cv.width, cv.height);
+  for (const e of E) { e.x += e.v * (1 + heat * 4); e.y += Math.sin(t / 3000 + e.z * 10) * .15; if (e.x < -80) e.x = cv.width + 40; if (e.x > cv.width + 80) e.x = -40;
+    c.font = `${10 + e.z * 12}px "IBM Plex Mono", monospace`; c.fillStyle = `rgba(110,240,255,${(.06 + e.z * .2) * (1 + heat)})`; c.fillText(e.g, e.x, e.y); }
+  requestAnimationFrame(loop);
+})(0);
+</script>
+</body>
+</html>

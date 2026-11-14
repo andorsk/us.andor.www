@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090D">
+<meta name="robots" content="noindex">
+<meta name="description" content="A blade that glows blue when danger is near.">
+<title>Sting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=EB+Garamond:ital@0;1&display=swap">
+<style>
+/* A small elven blade on dark stone. It is only a knife to most, a sword to a hobbit, and it glows blue when danger is
+   close. Here the danger is real: earthquakes and weather alerts near you, from public feeds. */
+:root { color-scheme: dark; --night: #07090D; --ink: #E4E8EE; --muted: #8C96A6; --blue: #5FB8FF; --steel: #C9D3DE; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "EB Garamond", Georgia, serif; display: grid; justify-items: center; padding: 22px 16px 44px;
+  background: radial-gradient(ellipse at 50% 35%, #161C26 0%, var(--night) 65%); }
+main { width: min(620px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 600 clamp(30px, 7vw, 46px) "Cinzel", serif; letter-spacing: .1em; }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; }
+.blade { width: min(560px, 96%); --g: 0; filter: drop-shadow(0 0 calc(var(--g) * 28px) rgba(95,184,255,calc(var(--g) * .9))) drop-shadow(0 0 calc(var(--g) * 8px) rgba(180,225,255,var(--g))); transition: filter 1.5s; }
+.blade .edge { fill: url(#steel); }
+.blade .glow { fill: var(--blue); opacity: calc(var(--g) * .75); transition: opacity 1.5s; mix-blend-mode: screen; }
+.pulse .glow { animation: throb 1.6s ease-in-out infinite; }
+@keyframes throb { 50% { opacity: calc(var(--g) * .35); } }
+.verdict { font: 600 clamp(19px, 4.6vw, 24px) "Cinzel", serif; letter-spacing: .05em; min-height: 1.4em; }
+.verdict.near { color: var(--blue); text-shadow: 0 0 14px rgba(95,184,255,.6); }
+ul { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 6px; text-align: left; }
+li { border: 1px solid rgba(228,232,238,.12); border-radius: 10px; padding: 9px 12px; font-size: 17px; }
+li small { color: var(--muted); display: block; font-size: 14px; }
+button { border: 1px solid rgba(95,184,255,.5); background: rgba(95,184,255,.08); color: #B7DDFF; font: 600 14px "Cinzel", serif; letter-spacing: .06em; padding: 9px 16px; border-radius: 999px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.where { color: var(--muted); font-size: 16px; }
+.foot { font-size: 13px; color: rgba(228,232,238,.4); } .foot a { color: #B7DDFF; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sting</h1>
+  <p class="sub">It glows blue when danger is near.</p>
+  <svg class="blade" id="blade" viewBox="0 0 600 120" aria-hidden="true">
+    <defs><linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F6FA"/><stop offset=".5" stop-color="#9AA6B4"/><stop offset="1" stop-color="#E2E8EF"/></linearGradient>
+      <linearGradient id="grip" x1="0" x2="1"><stop offset="0" stop-color="#3B2A1C"/><stop offset="1" stop-color="#6A4A2E"/></linearGradient></defs>
+    <path class="edge" d="M150 52 L520 47 Q 572 60 520 73 L150 68 Z"/>
+    <path class="glow" d="M150 52 L520 47 Q 572 60 520 73 L150 68 Z"/>
+    <path d="M160 60 L500 60" stroke="#7E8A98" stroke-width="1.2"/>
+    <path d="M190 58 q8 -6 16 0 q8 6 16 0 q8 -6 16 0 M260 58 q8 -6 16 0 q8 6 16 0" stroke="#5E6A78" stroke-width="1" fill="none"/>
+    <path d="M120 26 Q 150 40 152 60 Q 150 80 120 94 L132 60 Z" fill="#B48A3C"/>
+    <rect x="44" y="52" width="80" height="16" rx="6" fill="url(#grip)"/>
+    <path d="M52 52 v16 M64 52 v16 M76 52 v16 M88 52 v16 M100 52 v16 M112 52 v16" stroke="#2A1D12" stroke-width="2"/>
+    <circle cx="38" cy="60" r="11" fill="#B48A3C"/>
+  </svg>
+  <p class="verdict" id="verdict" aria-live="polite">Feeling for danger…</p>
+  <p class="where" id="where"></p>
+  <ul id="list"></ul>
+  <button id="here" type="button">Check where I am</button>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Earthquakes: USGS (last 24 h, magnitude 2.5+). Weather alerts: US National Weather Service. Your location stays in your browser.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const km = (a, b, c, d) => { const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); };
+async function feel(lat, lon, label) {
+  $("#where").textContent = `Near ${label}.`; $("#verdict").textContent = "Feeling for danger…"; $("#verdict").className = "verdict";
+  const threats = [];
+  try {
+    const q = await (await fetch("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson")).json();
+    for (const f of q.features) { const [x, y] = f.geometry.coordinates, d = km(lat, lon, y, x);
+      if (d < 400) threats.push({ w: (f.properties.mag / 4) * (1 - d / 400), t: `Earthquake, magnitude ${f.properties.mag.toFixed(1)}`, s: `${Math.round(d)} km away · ${f.properties.place} · ${new Date(f.properties.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` }); }
+  } catch (e) {}
+  try {
+    const a = await (await fetch(`https://api.weather.gov/alerts/active?point=${lat.toFixed(4)},${lon.toFixed(4)}`)).json();
+    for (const f of a.features || []) { const sev = { Extreme: 1, Severe: .8, Moderate: .5, Minor: .3 }[f.properties.severity] ?? .3;
+      threats.push({ w: sev, t: f.properties.event, s: `${f.properties.severity || "Advisory"} · ${f.properties.areaDesc}` }); }
+  } catch (e) {}
+  threats.sort((a, b) => b.w - a.w);
+  const g = Math.min(1, threats.reduce((s, t) => s + t.w, 0));
+  $("#blade").style.setProperty("--g", g.toFixed(2)); $("#blade").classList.toggle("pulse", g > .5);
+  $("#verdict").className = "verdict" + (g > .15 ? " near" : "");
+  $("#verdict").textContent = g > .5 ? "It's glowing. Danger is close." : g > .15 ? "A faint blue light. Something stirs nearby." : "The blade is dark. All is quiet.";
+  $("#list").innerHTML = threats.slice(0, 6).map((t) => `<li>${t.t}<small>${t.s}</small></li>`).join("");
+}
+$("#here").addEventListener("click", () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition((p) => feel(p.coords.latitude, p.coords.longitude, "you"), () => { $("#where").textContent = "Couldn't get your location; showing San Francisco."; });
+});
+feel(37.7749, -122.4194, "San Francisco");
+</script>
+</body>
+</html>

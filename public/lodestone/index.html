@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14110D">
+<meta name="robots" content="noindex">
+<meta name="description" content="Two paired stones. What one hears, the other speaks.">
+<title>Lodestone Resonator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
+<style>
+/* A brass housing with a dark stone set in it. Its twin is somewhere else. Tap a message into one and it hums out of
+   the other: a channel between exactly two stones, cut from the same rock. */
+:root { color-scheme: dark; --bg: #14110D; --brass: #C89B4A; --brass-2: #8A6428; --stone: #2A2F36; --glow: #8FD7FF; --ink: #EFE6D2; --muted: #A69676; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Cormorant Garamond", Georgia, serif; display: grid; justify-items: center; padding: 22px 14px 44px;
+  background: radial-gradient(ellipse at 50% 20%, #2A2217, var(--bg) 70%); }
+main { width: min(600px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 700 clamp(24px, 6vw, 38px) "Cinzel", serif; letter-spacing: .12em; color: var(--brass); }
+.sub { margin: 0; font-style: italic; color: var(--muted); font-size: 19px; }
+.device { width: min(280px, 70vw); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; position: relative;
+  background: conic-gradient(from 30deg, var(--brass), var(--brass-2), var(--brass), #E8C47A, var(--brass-2), var(--brass)); box-shadow: 0 20px 40px rgba(0,0,0,.6), inset 0 0 0 6px rgba(0,0,0,.25); }
+.device::before { content: ""; position: absolute; inset: 9%; border-radius: 50%; border: 2px dashed rgba(20,17,13,.45); }
+.stone { width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #5A6470, var(--stone) 55%, #111418); box-shadow: inset 0 -8px 18px rgba(0,0,0,.6), 0 0 0 4px #5A4420; transition: box-shadow .3s; }
+.stone.hum { animation: hum .9s ease-out; }
+@keyframes hum { 0% { box-shadow: inset 0 -8px 18px rgba(0,0,0,.6), 0 0 0 4px #5A4420, 0 0 0 rgba(143,215,255,0); } 30% { box-shadow: inset 0 0 40px rgba(143,215,255,.8), 0 0 0 4px #5A4420, 0 0 50px rgba(143,215,255,.7); } 100% { box-shadow: inset 0 -8px 18px rgba(0,0,0,.6), 0 0 0 4px #5A4420, 0 0 0 rgba(143,215,255,0); } }
+.mark { font: 700 22px "Cinzel", serif; letter-spacing: .3em; color: var(--brass); }
+.panel { width: 100%; display: grid; gap: 10px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+input { flex: 1; min-width: 0; background: rgba(239,230,210,.05); border: 1px solid rgba(200,155,74,.4); border-radius: 10px; color: var(--ink); font: 19px "Cormorant Garamond", serif; padding: 10px 12px; }
+input.code { flex: 0 0 9em; text-transform: uppercase; letter-spacing: .2em; text-align: center; font-family: "Cinzel", serif; }
+button { border: 1px solid var(--brass); background: rgba(200,155,74,.12); color: var(--brass); font: 700 14px "Cinzel", serif; letter-spacing: .1em; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.log { width: 100%; text-align: left; display: grid; gap: 8px; max-height: 320px; overflow-y: auto; padding: 4px; }
+.msg { border-left: 2px solid var(--brass-2); padding: 4px 10px; font-size: 19px; line-height: 1.3; }
+.msg.them { border-color: var(--glow); }
+.msg b { display: block; font: 500 12px "Cinzel", serif; letter-spacing: .12em; color: var(--muted); }
+.status { color: var(--muted); font-style: italic; min-height: 1.4em; }
+.foot { font-size: 14px; color: rgba(239,230,210,.4); } .foot a { color: var(--brass); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lodestone Resonator</h1>
+  <p class="sub">Two stones cut from one rock. What one is told, the other hums.</p>
+  <div class="device"><div class="stone" id="stone"></div></div>
+  <div class="mark" id="mark"></div>
+
+  <section class="panel" id="pair">
+    <div class="row"><input id="who" maxlength="20" placeholder="Your name" aria-label="Your name" autocomplete="off"></div>
+    <div class="row"><button id="cut" type="button">Cut a new pair</button></div>
+    <div class="row"><input class="code" id="code" maxlength="5" placeholder="CODE" aria-label="Pair code" autocomplete="off"><button id="join" type="button">Hold the twin</button></div>
+  </section>
+
+  <section class="panel" id="talk" hidden>
+    <div class="row" id="shareRow"><button id="share" type="button">Copy the link for the twin</button></div>
+    <form class="row" id="send"><input id="text" maxlength="300" placeholder="Speak into the stone…" aria-label="Message" autocomplete="off"><button type="submit">Send</button></form>
+    <div class="log" id="log" aria-live="polite"></div>
+  </section>
+
+  <p class="status" id="status"></p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Only the two holders of a code can talk. Messages are kept in memory only and fade after six quiet hours.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/lodestone";
+const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[<&]/g, (c) => ({ "<": "&lt;", "&": "&amp;" })[c]);
+let code = "", since = 0, me = "", timer = 0;
+try { me = localStorage.getItem("lodestone-who") || ""; } catch (e) {}
+$("#who").value = me;
+const call = async (body) => { const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); const d = await r.json(); if (!r.ok) throw new Error(d.error || "The stone is cold."); return d; };
+const status = (t) => { $("#status").textContent = t; };
+function name() { me = $("#who").value.trim().slice(0, 20) || "A holder"; try { localStorage.setItem("lodestone-who", me); } catch (e) {} return me; }
+function hum() { const s = $("#stone"); s.classList.remove("hum"); void s.offsetWidth; s.classList.add("hum"); try { navigator.vibrate?.(60); } catch (e) {} }
+function open(c) {
+  code = c; since = 0; $("#mark").textContent = code; $("#pair").hidden = true; $("#talk").hidden = false; $("#log").innerHTML = "";
+  history.replaceState(null, "", `?c=${code}`); status("The stones are paired. Waiting for the twin…"); poll();
+}
+async function poll() {
+  clearTimeout(timer);
+  try {
+    const d = await call({ code, poll: true, since });
+    for (const m of d.msgs) { since = m.n; const mine = m.who === me; $("#log").insertAdjacentHTML("beforeend", `<div class="msg ${mine ? "" : "them"}"><b>${esc(m.who || "Someone")}</b>${esc(m.text)}</div>`); if (!mine) hum(); }
+    if (d.msgs.length) { $("#log").scrollTop = 1e9; status(""); }
+  } catch (e) { status(e.message === "Failed to fetch" ? "The stone flickers. Retrying…" : e.message); if (e.message.startsWith("No stone")) return; }
+  timer = setTimeout(poll, document.hidden ? 8000 : 2000);
+}
+$("#cut").addEventListener("click", async () => { name(); status("Cutting the stone…"); try { open((await call({})).code); } catch (e) { status(e.message === "Failed to fetch" ? "The forge is cold. Try again shortly." : e.message); } });
+$("#join").addEventListener("click", () => { name(); const c = $("#code").value.trim().toUpperCase(); if (c.length < 5) return status("A code is five marks."); open(c); });
+$("#send").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#text").value.trim(); if (!t) return; $("#text").value = "";
+  try { await call({ code, who: me, text: t }); hum(); poll(); } catch (e2) { status(e2.message); }
+});
+$("#share").addEventListener("click", async () => {
+  const url = `${location.origin}${location.pathname}?c=${code}`;
+  try { if (navigator.share) await navigator.share({ title: "Lodestone", url }); else { await navigator.clipboard.writeText(url); status("Link copied. Send it to the one other person."); } } catch (e) { status(url); }
+});
+document.addEventListener("visibilitychange", () => { if (code && !document.hidden) poll(); });
+const pre = new URLSearchParams(location.search).get("c");
+if (pre) { $("#code").value = pre.toUpperCase().slice(0, 5); status("Someone sent you their twin stone. Add your name and hold it."); }
+</script>
+</body>
+</html>

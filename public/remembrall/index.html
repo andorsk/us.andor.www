@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#151012">
+<meta name="robots" content="noindex">
+<meta name="description" content="It glows red when you've forgotten something.">
+<title>Remembrall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap">
+<style>
+/* A glass ball the size of a large marble, full of white smoke. It turns red when there's something you've forgotten.
+   The trouble, as ever, is that it doesn't say what. (This one does, if you ask.) */
+:root { color-scheme: dark; --night: #151012; --ink: #EFE5D2; --muted: #A99B88; --brass: #C9A15A; --red: #E0282E; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "IM Fell English", Georgia, serif; display: grid; justify-items: center; padding: 22px 16px 44px;
+  background: radial-gradient(ellipse at 50% 30%, #2C2026 0%, var(--night) 65%); }
+main { width: min(560px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(30px, 7vw, 46px) "IM Fell English SC", serif; }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; }
+.ball { position: relative; width: min(260px, 64vw); aspect-ratio: 1; border-radius: 50%; overflow: hidden; cursor: pointer;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.35), rgba(255,255,255,.05) 45%, rgba(255,255,255,.02)); box-shadow: inset 0 0 40px rgba(255,255,255,.12), 0 20px 40px rgba(0,0,0,.6); }
+.ball canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ball::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), transparent 18%); pointer-events: none; }
+.ball.red { box-shadow: inset 0 0 40px rgba(255,60,60,.25), 0 0 50px rgba(224,40,46,.45), 0 20px 40px rgba(0,0,0,.6); }
+.stand { width: 110px; height: 22px; margin-top: -14px; background: linear-gradient(180deg, #E6C77E, var(--brass) 50%, #6E5020); clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%); }
+.status { min-height: 1.5em; font-size: 20px; font-style: italic; }
+.status.red { color: #FF8C8F; }
+form { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; width: 100%; }
+@media (max-width: 480px) { form { grid-template-columns: 1fr 1fr; } form input:first-child { grid-column: 1 / -1; } }
+input { min-width: 0; background: rgba(239,229,210,.05); border: 1px solid rgba(239,229,210,.25); border-radius: 10px; color: var(--ink); font: 18px "IM Fell English", serif; padding: 9px 10px; }
+button { border: 1px solid var(--brass); background: rgba(201,161,90,.1); color: #F0D9A6; font: 17px "IM Fell English SC", serif; padding: 9px 16px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #F0D9A6; outline-offset: 2px; }
+ul { list-style: none; margin: 0; padding: 0; width: 100%; display: grid; gap: 8px; text-align: left; }
+li { display: flex; gap: 10px; align-items: center; justify-content: space-between; border: 1px solid rgba(239,229,210,.14); border-radius: 10px; padding: 10px 12px; }
+li.due { border-color: rgba(224,40,46,.6); background: rgba(224,40,46,.08); }
+li span small { display: block; color: var(--muted); font-size: 14px; }
+li button { padding: 4px 12px; font-size: 14px; }
+.foot { font-size: 14px; color: rgba(239,229,210,.4); } .foot a { color: #F0D9A6; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Remembrall</h1>
+  <p class="sub">Tell it what you mustn't forget. It will turn red when you have.</p>
+  <div class="ball" id="ball" role="img" aria-label="A glass ball of smoke"><canvas id="smoke" width="300" height="300"></canvas></div>
+  <div class="stand"></div>
+  <p class="status" id="status" aria-live="polite"></p>
+  <form id="add"><input id="what" maxlength="80" placeholder="Water the plants" required aria-label="What not to forget"><input id="when" type="datetime-local" required aria-label="When"><button type="submit">Remember</button></form>
+  <ul id="list"></ul>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Your list stays in this browser only. Keep the page open and it checks every minute.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s), KEY = "remembrall";
+let items = [];
+try { items = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch (e) {} };
+const d0 = new Date(Date.now() + 36e5); d0.setMinutes(0, 0, 0); $("#when").value = new Date(d0 - d0.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+if (!items.length) { items = [{ what: "Ring Gran on Sunday", when: Date.now() - 6e5 }]; }
+function render() {
+  const now = Date.now(), due = items.filter((i) => i.when <= now);
+  $("#ball").classList.toggle("red", due.length > 0); red = due.length > 0;
+  $("#status").className = "status" + (due.length ? " red" : "");
+  $("#status").textContent = due.length ? "You've forgotten something!" : items.length ? "All remembered, for now." : "Nothing to remember yet.";
+  $("#list").innerHTML = "";
+  items.sort((a, b) => a.when - b.when).forEach((it, k) => {
+    const li = document.createElement("li"); if (it.when <= now) li.className = "due";
+    li.innerHTML = `<span>${it.what.replace(/[<&]/g, "")}<small>${new Date(it.when).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</small></span>`;
+    const b = document.createElement("button"); b.type = "button"; b.textContent = it.when <= now ? "Done" : "Forget it";
+    b.addEventListener("click", () => { items.splice(k, 1); save(); render(); }); li.append(b); $("#list").append(li);
+  });
+}
+$("#add").addEventListener("submit", (e) => { e.preventDefault(); items.push({ what: $("#what").value.trim(), when: new Date($("#when").value).getTime() }); $("#what").value = ""; save(); render(); });
+$("#ball").addEventListener("click", () => { const due = items.filter((i) => i.when <= Date.now()); $("#status").textContent = due.length ? `You've forgotten: ${due.map((i) => i.what).join(", ")}.` : "It stays clear. Nothing forgotten."; });
+setInterval(render, 60000);
+// smoke: white, or red when something's due
+const cv = $("#smoke"), c = cv.getContext("2d"); let red = false, mix = 0;
+const puffs = Array.from({ length: 34 }, () => ({ a: Math.random() * 6.3, r: Math.random() * 90, s: 30 + Math.random() * 50, v: .004 + Math.random() * .01 }));
+(function loop() {
+  mix += ((red ? 1 : 0) - mix) * .03; c.clearRect(0, 0, 300, 300);
+  for (const p of puffs) { p.a += p.v; const x = 150 + Math.cos(p.a) * p.r, y = 160 + Math.sin(p.a * 1.4) * p.r * .7;
+    const g = c.createRadialGradient(x, y, 0, x, y, p.s); const col = `${Math.round(240 - 10 * mix)},${Math.round(240 - 200 * mix)},${Math.round(240 - 195 * mix)}`;
+    g.addColorStop(0, `rgba(${col},.32)`); g.addColorStop(1, `rgba(${col},0)`); c.fillStyle = g; c.fillRect(x - p.s, y - p.s, p.s * 2, p.s * 2); }
+  requestAnimationFrame(loop);
+})();
+render();
+</script>
+</body>
+</html>

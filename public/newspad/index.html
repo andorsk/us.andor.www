@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E9E9E6">
+<meta name="robots" content="noindex">
+<meta name="description" content="Today's news on a flat slate of glass.">
+<title>Newspad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* A white table on a spaceship, a meal tray, and beside it a thin black slate showing the news from home. Then the
+   astronauts picked it up and read it, decades before anyone else could. */
+:root { color-scheme: light; --table: #E9E9E6; --slab: #0B0B0C; --glass: #121417; --ink: #EDEFF2; --muted: #8C9299; --red: #E2342B; --line: #23262B; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; font-family: "Inter", system-ui, sans-serif; display: grid; justify-items: center; padding: 26px 14px 44px;
+  background: radial-gradient(ellipse at 50% 0%, #FFFFFF, var(--table) 60%, #D6D6D2); color: #1A1A1A; }
+main { width: min(860px, 100%); display: grid; gap: 14px; }
+.top { display: flex; justify-content: space-between; align-items: baseline; font: 12px "Michroma", sans-serif; letter-spacing: .16em; color: #5A5A58; }
+.slab { border-radius: 10px; background: var(--slab); padding: 14px; box-shadow: 0 30px 60px rgba(0,0,0,.35), 0 2px 0 #2A2A2C inset; }
+.glass { border-radius: 4px; background: var(--glass); color: var(--ink); padding: 18px 18px 22px; display: grid; gap: 14px; min-height: 520px; }
+.mast { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.mast h1 { margin: 0; font: 400 clamp(18px, 4.6vw, 26px) "Michroma", sans-serif; letter-spacing: .2em; }
+.mast span { font: 11px "Michroma", sans-serif; color: var(--muted); letter-spacing: .12em; }
+.cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+@media (max-width: 680px) { .cols { grid-template-columns: 1fr; } }
+h2 { margin: 0 0 8px; font: 11px "Michroma", sans-serif; letter-spacing: .2em; color: var(--red); }
+ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+li a { color: var(--ink); text-decoration: none; font-size: 15.5px; line-height: 1.35; display: block; }
+li a:hover { text-decoration: underline; }
+li small { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.lead a { font-size: 20px; font-weight: 600; }
+.year { font: 12px "Michroma", sans-serif; color: var(--muted); letter-spacing: .08em; display: block; }
+.foot { font-size: 13px; color: #6A6A68; text-align: center; } .foot a { color: #1A1A1A; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><span>NEWSPAD · CHANNEL 1</span><span id="clock"></span></div>
+  <div class="slab"><div class="glass">
+    <div class="mast"><h1>THE NEWS</h1><span id="date"></span></div>
+    <div class="cols">
+      <section><h2>TOP STORIES · LIVE</h2><ol id="news"><li><small>Receiving…</small></li></ol></section>
+      <section><h2>ON THIS DAY</h2><ol id="onthisday"><li><small>Receiving…</small></li></ol></section>
+    </div>
+  </div></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Stories: Hacker News, live. On this day: Wikipedia. Fetched by your browser.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[<&"]/g, (c) => ({ "<": "&lt;", "&": "&amp;", '"': "&quot;" })[c]);
+const now = new Date();
+$("#date").textContent = now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" }).toUpperCase();
+const tick = () => { $("#clock").textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }; tick(); setInterval(tick, 30000);
+(async () => {
+  try {
+    const ids = (await (await fetch("https://hacker-news.firebaseio.com/v0/topstories.json")).json()).slice(0, 12);
+    const items = await Promise.all(ids.map((id) => fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then((r) => r.json())));
+    $("#news").innerHTML = items.filter(Boolean).map((it, i) => {
+      const host = it.url ? new URL(it.url).hostname.replace(/^www\./, "") : "news.ycombinator.com";
+      return `<li class="${i ? "" : "lead"}"><a href="${esc(it.url || `https://news.ycombinator.com/item?id=${it.id}`)}" target="_blank" rel="noopener">${esc(it.title)}</a><small>${esc(host)} · ${it.score} points</small></li>`;
+    }).join("");
+  } catch (e) { $("#news").innerHTML = "<li><small>No signal from home. Try again shortly.</small></li>"; }
+  try {
+    const mm = String(now.getMonth() + 1).padStart(2, "0"), dd = String(now.getDate()).padStart(2, "0");
+    const d = await (await fetch(`https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/selected/${mm}/${dd}`)).json();
+    $("#onthisday").innerHTML = (d.selected || []).slice(0, 7).map((e) => {
+      const p = e.pages?.[0]; const url = p?.content_urls?.desktop?.page;
+      return `<li><span class="year">${e.year}</span>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(e.text)}</a>` : esc(e.text)}</li>`;
+    }).join("");
+  } catch (e) { $("#onthisday").innerHTML = "<li><small>The archive is unreachable.</small></li>"; }
+})();
+</script>
+</body>
+</html>
