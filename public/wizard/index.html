@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04140A">
+<meta name="robots" content="noindex">
+<meta name="description" content="Approach the throne. Pay no attention to the curtain.">
+<title>The Great Wizard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Josefin+Sans:wght@400;600&display=swap">
+<style>
+/* An emerald throne room. Green fire, smoke, and a giant bald head floating above the throne that booms at you. To one
+   side, a green curtain. Pull it and you find the machine, and the ordinary man running it. */
+:root { color-scheme: dark; --em: #19E07A; --em-2: #0B7A42; --deep: #04140A; --gold: #E9C46A; --ink: #E8FFF1; --muted: #8DBFA2; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Josefin Sans", system-ui, sans-serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 30%, #0E3A22, var(--deep) 70%); }
+main { width: min(720px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(28px, 7vw, 50px) "Limelight", serif; color: var(--em); text-shadow: 0 0 22px rgba(25,224,122,.6); letter-spacing: .04em; }
+.room { position: relative; width: 100%; aspect-ratio: 1.3; border-radius: 14px; overflow: hidden; border: 1px solid rgba(25,224,122,.3);
+  background: radial-gradient(ellipse at 50% 100%, #0B3A20, #020A05 75%); }
+.room svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#head { transform-origin: 300px 190px; transition: opacity 1s; }
+.flame { animation: lick 1.1s ease-in-out infinite alternate; transform-origin: bottom; }
+.flame.b { animation-duration: .8s; animation-delay: -.3s; }
+@keyframes lick { from { transform: scaleY(.85) skewX(-4deg); } to { transform: scaleY(1.15) skewX(4deg); } }
+#curtain { transition: transform 1.4s cubic-bezier(.6,.0,.3,1); transform-origin: 600px 0; }
+.open #curtain { transform: scaleX(.12); }
+#man { opacity: 0; transition: opacity 1s .6s; } .open #man { opacity: 1; }
+.open #head { opacity: .25; }
+.said { min-height: 3.4em; font-size: 20px; line-height: 1.35; max-width: 40ch; }
+.said.boom { font: 400 clamp(20px, 4.4vw, 26px) "Limelight", serif; color: var(--em); text-shadow: 0 0 14px rgba(25,224,122,.5); }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(25,224,122,.06); border: 1px solid rgba(25,224,122,.35); border-radius: 10px; color: var(--ink); font: 18px "Josefin Sans"; padding: 10px 12px; }
+button { border: 1px solid var(--em); background: rgba(25,224,122,.12); color: var(--em); font: 600 15px "Josefin Sans"; letter-spacing: .08em; text-transform: uppercase; padding: 0 16px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+#pull { border-color: var(--gold); color: var(--gold); background: rgba(233,196,106,.08); padding: 10px 16px; }
+.foot { font-size: 13px; color: rgba(232,255,241,.4); } .foot a { color: var(--em); }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Great Wizard</h1>
+  <div class="room" id="room">
+    <svg viewBox="0 0 600 460" aria-label="A giant floating head above a throne between two columns of green fire">
+      <defs>
+        <radialGradient id="hg" cx="45%" cy="35%" r="65%"><stop offset="0" stop-color="#B8FFD6"/><stop offset=".55" stop-color="#2FCB7C"/><stop offset="1" stop-color="#0A4A28"/></radialGradient>
+        <radialGradient id="fire" cx="50%" cy="100%" r="90%"><stop offset="0" stop-color="#E8FFE0"/><stop offset=".35" stop-color="#39F08C"/><stop offset="1" stop-color="rgba(10,120,60,0)"/></radialGradient>
+        <filter id="blur"><feGaussianBlur stdDeviation="6"/></filter>
+        <linearGradient id="cur" x1="0" x2="1"><stop offset="0" stop-color="#0E5A30"/><stop offset=".5" stop-color="#1A8A4C"/><stop offset="1" stop-color="#0E5A30"/></linearGradient>
+      </defs>
+      <rect x="230" y="330" width="140" height="100" rx="8" fill="#0E2A18" stroke="#2FCB7C" stroke-opacity=".5"/>
+      <path d="M220 330 h160 l-20 -30 h-120 Z" fill="#14442A"/>
+      <g><path class="flame" d="M90 440 C 60 360, 120 330, 100 250 C 140 320, 150 360, 130 440 Z" fill="url(#fire)"/><path class="flame b" d="M100 440 C 85 380, 120 360, 112 300 C 135 350, 138 400, 125 440 Z" fill="#C8FFD8" opacity=".7"/></g>
+      <g><path class="flame b" d="M470 440 C 440 360, 500 330, 480 250 C 520 320, 530 360, 510 440 Z" fill="url(#fire)"/><path class="flame" d="M480 440 C 465 380, 500 360, 492 300 C 515 350, 518 400, 505 440 Z" fill="#C8FFD8" opacity=".7"/></g>
+      <g id="head">
+        <ellipse cx="300" cy="190" rx="130" ry="150" fill="#19E07A" opacity=".25" filter="url(#blur)"/>
+        <ellipse cx="300" cy="185" rx="100" ry="125" fill="url(#hg)"/>
+        <path d="M232 150 q30 -22 56 -4 M312 146 q28 -20 58 2" stroke="#063A1E" stroke-width="9" stroke-linecap="round" fill="none" id="brows"/>
+        <ellipse cx="262" cy="172" rx="18" ry="11" fill="#E8FFF1"/><ellipse cx="338" cy="172" rx="18" ry="11" fill="#E8FFF1"/>
+        <circle cx="262" cy="172" r="7" fill="#022A12" class="pupil"/><circle cx="338" cy="172" r="7" fill="#022A12" class="pupil"/>
+        <path d="M300 180 q-10 40 0 50 q10 2 14 -4" stroke="#0A4A28" stroke-width="5" fill="none"/>
+        <path id="mouth" d="M255 255 q45 20 90 0 q-45 6 -90 0 Z" fill="#032A14"/>
+      </g>
+      <g id="man">
+        <rect x="490" y="250" width="90" height="150" rx="6" fill="#1A2A20" stroke="#E9C46A" stroke-opacity=".6"/>
+        <g stroke="#E9C46A" stroke-width="4" stroke-linecap="round"><path d="M505 300 l10 -30"/><path d="M530 300 l-6 -32"/><path d="M555 300 l8 -28"/></g>
+        <circle cx="515" cy="268" r="6" fill="#E94F4F"/><circle cx="524" cy="266" r="6" fill="#E9C46A"/><circle cx="563" cy="270" r="6" fill="#4FA9E9"/>
+        <circle cx="535" cy="330" r="22" fill="#E8C4A0"/><path d="M513 322 q22 -22 44 0" fill="#B8B8B8"/>
+        <path d="M505 400 q30 -55 60 0 Z" fill="#3A4A6A"/><path d="M527 336 q8 6 16 0" stroke="#5A3A2A" stroke-width="2" fill="none" id="manMouth"/>
+        <rect x="560" y="210" width="10" height="40" fill="#555"/><path d="M548 205 h34 l-6 -18 h-22 Z" fill="#777"/>
+      </g>
+      <g id="curtain"><path d="M600 0 V460 H470 C 480 380, 455 300, 470 220 C 482 150, 460 70, 470 0 Z" fill="url(#cur)"/>
+        <path d="M490 0 C 500 150, 480 300, 495 460 M520 0 C 528 160, 508 300, 522 460 M555 0 C 562 140, 545 320, 556 460" stroke="#063A1E" stroke-width="3" fill="none" opacity=".6"/></g>
+    </svg>
+  </div>
+  <p class="said boom" id="said" aria-live="polite">I AM THE GREAT AND TERRIBLE. WHO ARE YOU, AND WHY DO YOU SEEK ME?</p>
+  <form id="talk"><input id="text" maxlength="400" placeholder="Speak, petitioner…" aria-label="What you say" autocomplete="off"><button type="submit">Speak</button></form>
+  <button id="pull" type="button">Pull back the curtain</button>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Original artwork; an AI plays the Wizard and booms in a generated voice. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/persona";
+const $ = (s) => document.querySelector(s);
+let who = "wizard", history = [], talking = false, audio;
+const mouth = $("#mouth"), head = $("#head");
+(function loop(t) {
+  const bob = Math.sin(t / 900) * 6; head.setAttribute("transform", `translate(0 ${bob.toFixed(1)})`);
+  const o = talking ? 6 + Math.abs(Math.sin(t / 90)) * 22 : 0;
+  mouth.setAttribute("d", `M255 255 q45 ${20 + o} 90 0 q-45 ${6 - o * .2} -90 0 Z`);
+  $("#manMouth").setAttribute("d", `M527 336 q8 ${talking && who !== "wizard" ? 6 + Math.abs(Math.sin(t / 90)) * 6 : 6} 16 0`);
+  requestAnimationFrame(loop);
+})(0);
+$("#pull").addEventListener("click", () => {
+  if (who === "wizard_man") return;
+  who = "wizard_man"; history = []; $("#room").classList.add("open"); $("#said").classList.remove("boom");
+  $("#said").textContent = "Oh dear. Oh, dear me. You weren't supposed to see that. Well… come in, then. Ask me anything.";
+  $("#text").placeholder = "Talk to the man behind the curtain…"; $("#pull").disabled = true; $("#pull").textContent = "The curtain is open";
+});
+$("#talk").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#text").value.trim(); if (!t) return; $("#text").value = ""; $("#said").textContent = who === "wizard" ? "SILENCE…" : "Hmm, let me think…";
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ who, history, text: t, speak: true }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "The fires gutter.");
+    history.push({ who: "me", text: t }, { who: "them", text: d.text }); history = history.slice(-10);
+    $("#said").textContent = who === "wizard" ? d.text.toUpperCase() : d.text;
+    if (d.audio) { audio?.pause(); audio = new Audio(`data:audio/mpeg;base64,${d.audio}`); talking = true; audio.onended = () => { talking = false; }; audio.play().catch(() => { talking = false; }); }
+    else { talking = true; setTimeout(() => { talking = false; }, 2200); }
+  } catch (err) { $("#said").textContent = err.message === "Failed to fetch" ? "The fires gutter. Come back in a moment." : err.message; }
+});
+</script>
+</body>
+</html>

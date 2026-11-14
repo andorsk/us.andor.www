@@ -531,12 +531,17 @@ const BUILT = {
   "Dæmons": "/daemon/", "Remembrall": "/remembrall/", "Sting glows blue": "/sting/", "The Librarian": "/librarian/",
   "Atium": "/atium/", "Psychohistory": "/psychohistory/", "The Giant's Drink": "/giants-drink/", "Parlor walls": "/parlor-walls/",
   "The Newspad": "/newspad/", "The Cheshire Cat": "/cheshire-cat/", "Lodestone resonator": "/lodestone/",
+  "Moving portraits": "/portrait/", "The Wizard": "/wizard/", "The genie of the lamp": "/genie/", "HAL 9000": "/hal/",
+  "The iconograph": "/iconograph/", "Hex": "/hex/", "Tin: heightened senses": "/tin/", "Wards": "/wards/",
+  "Electric animals": "/electric-sheep/", "True names": "/true-names/", "Seashell radios": "/seashell/",
 };
 try { const m = new URLSearchParams(location.search).get("made"); if (m === "built" || m === "web") made = m; } catch (e) {}
 const WEB = new Set(["Tom Riddle's diary", "Quick-Quotes Quill", "Howler", "Marauder's Map", "Remembrall", "Doors of Durin",
   "Open Sesame", "Moon-letters", "Sting glows blue", "Palantír", "Alethiometer", "Dæmons", "The Babel fish", "The Guide",
   "The Voigt-Kampff test", "The Penfield mood organ", "The Librarian", "The clacks", "Atium", "Psychohistory",
-  "The Giant's Drink", "Parlor walls", "The Newspad", "The Cheshire Cat", "Lodestone resonator"]);
+  "The Giant's Drink", "Parlor walls", "The Newspad", "The Cheshire Cat", "Lodestone resonator",
+  "Moving portraits", "The Wizard", "The genie of the lamp", "HAL 9000", "The iconograph", "Hex", "Tin: heightened senses", "Wards",
+  "Electric animals", "True names", "Seashell radios"]);
 const opened = new Set();
 
 function tally(rows) { const t = [0, 0, 0, 0]; rows.forEach(r => t[r[5]]++); return t; }

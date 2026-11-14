@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1E1A16">
+<meta name="robots" content="noindex">
+<meta name="description" content="A sheep on the roof. Look after it. Don't tell the neighbours it's electric.">
+<title>Electric Sheep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Source+Serif+4:ital,wght@0,400;1,400&family=Share+Tech+Mono&display=swap">
+<style>
+/* A rooftop pen in a dusty, half-empty city at dusk. Everyone keeps an animal, and the poor keep replicas. Yours is a
+   sheep. It eats, it bleats, it needs brushing. Lift the service panel and you'll see why it never gets sick. */
+:root { color-scheme: dark; --dusk: #1E1A16; --dust: #C79A62; --ink: #F1E9DC; --muted: #B5A48C; --green: #7CE38B; --red: #E85B4A; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Source Serif 4", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: linear-gradient(180deg, #3A2A22 0%, #6A4A34 30%, #2A221C 60%, var(--dusk)); }
+main { width: min(640px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 600 clamp(30px, 7vw, 50px) "Oswald", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.sub { margin: 0; color: var(--muted); font-style: italic; }
+.pen { position: relative; width: 100%; aspect-ratio: 1.4; border-radius: 10px; overflow: hidden; background: linear-gradient(#5A4636, #3A2E24 60%, #2A221A); border: 1px solid rgba(199,154,98,.3); }
+.pen svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#sheep { cursor: pointer; transform-origin: 300px 300px; }
+#sheep.hop { animation: hop .5s; } @keyframes hop { 40% { transform: translateY(-18px); } }
+#panel { transition: transform .6s; transform-origin: 250px 230px; } .open #panel { transform: rotate(-70deg) translate(-10px, -20px); }
+#guts { opacity: 0; transition: opacity .4s .2s; } .open #guts { opacity: 1; }
+.bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; font: 13px "Share Tech Mono", monospace; letter-spacing: .06em; }
+.bar { text-align: left; } .bar i { display: block; height: 8px; border-radius: 4px; background: #1A1612; margin-top: 4px; overflow: hidden; }
+.bar i b { display: block; height: 100%; background: var(--green); transition: width .4s, background .4s; }
+.say { min-height: 1.6em; font: 400 20px "Oswald", sans-serif; letter-spacing: .04em; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+button { border: 1px solid var(--dust); background: rgba(199,154,98,.12); color: var(--ink); font: 400 15px "Oswald", sans-serif; letter-spacing: .08em; text-transform: uppercase; padding: 9px 14px; border-radius: 8px; cursor: pointer; }
+button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.tag { font: 12px "Share Tech Mono", monospace; color: var(--muted); }
+.foot { font-size: 13px; color: rgba(241,233,220,.42); } .foot a { color: var(--dust); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Electric Sheep</h1>
+  <p class="sub">Every good household keeps an animal. Keep yours fed and groomed, and nobody need ever know.</p>
+  <div class="pen" id="pen">
+    <svg viewBox="0 0 600 420" aria-label="A woolly sheep in a rooftop pen">
+      <rect x="0" y="330" width="600" height="90" fill="#4A3A28"/><path d="M0 330 h600" stroke="#7A6044" stroke-width="3"/>
+      <g stroke="#8A6A48" stroke-width="5"><path d="M30 250 v90 M140 250 v90 M460 250 v90 M570 250 v90"/><path d="M20 270 h140 M440 270 h150 M20 300 h140 M440 300 h150"/></g>
+      <g fill="#7FA04A" id="grass"></g>
+      <g id="sheep">
+        <ellipse cx="300" cy="330" rx="120" ry="14" fill="rgba(0,0,0,.3)"/>
+        <g stroke="#2A2420" stroke-width="10" stroke-linecap="round"><path d="M230 290 v40 M260 295 v38 M340 295 v38 M370 290 v40"/></g>
+        <g id="wool" fill="#F2EEE6">
+          <circle cx="240" cy="230" r="44"/><circle cx="290" cy="210" r="50"/><circle cx="345" cy="220" r="46"/><circle cx="380" cy="250" r="38"/>
+          <circle cx="225" cy="270" r="38"/><circle cx="280" cy="275" r="46"/><circle cx="340" cy="275" r="44"/>
+        </g>
+        <g id="panel"><rect x="250" y="230" width="80" height="50" rx="4" fill="#E6E0D4" stroke="#B8B0A0" stroke-width="2"/><circle cx="320" cy="255" r="3" fill="#888"/></g>
+        <g id="guts"><rect x="252" y="232" width="76" height="46" fill="#1A2A22"/><path d="M258 250 h20 v-10 h20 v20 h22 M258 266 h40 v-8 h22" stroke="#7CE38B" stroke-width="2" fill="none"/>
+          <circle cx="300" cy="246" r="4" fill="#E85B4A"/><rect x="262" y="270" width="18" height="5" fill="#E9C46A"/><text x="290" y="276" fill="#7CE38B" font-size="8" font-family="Share Tech Mono">OV-7</text></g>
+        <g id="head"><ellipse cx="170" cy="230" rx="38" ry="30" fill="#2A2420"/><ellipse cx="148" cy="214" rx="18" ry="8" fill="#2A2420" transform="rotate(-25 148 214)"/>
+          <ellipse cx="200" cy="205" rx="18" ry="8" fill="#2A2420" transform="rotate(30 200 205)"/><circle cx="160" cy="225" r="5" fill="#F2EEE6"/><circle cx="160" cy="225" r="2.5" fill="#000" id="eye"/>
+          <path d="M140 244 q8 6 16 0" stroke="#F2EEE6" stroke-width="2" fill="none" id="mouth"/><circle cx="186" cy="200" r="16" fill="#F2EEE6"/></g>
+      </g>
+    </svg>
+  </div>
+  <div class="say" id="say" aria-live="polite">Baa.</div>
+  <div class="bars"><div class="bar">FED<i><b id="fed"></b></i></div><div class="bar">WOOL<i><b id="wool2"></b></i></div><div class="bar">CHARGE<i><b id="charge"></b></i></div></div>
+  <div class="row"><button id="feed" type="button">Scatter grass</button><button id="brush" type="button">Brush the wool</button><button id="pat" type="button">Pat it</button><button id="service" type="button">Open the service panel</button></div>
+  <div class="tag" id="tag"></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Your sheep lives in this browser and gets hungry in real time, even while you're away.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const KEY = "electric-sheep"; let st;
+try { st = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+if (!st) st = { fed: 80, wool: 70, charge: 90, at: Date.now(), born: Date.now(), serial: "OV-7 / " + Math.random().toString(36).slice(2, 7).toUpperCase() };
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+function decay() { const hrs = (Date.now() - st.at) / 36e5; st.fed = Math.max(0, st.fed - hrs * 6); st.wool = Math.max(0, st.wool - hrs * 3); st.charge = Math.max(0, st.charge - hrs * 2.5); st.at = Date.now(); }
+const BLEATS = ["Baa.", "Baaa?", "Baa-aa.", "Mbaa."];
+function render() {
+  decay(); [["fed", st.fed], ["wool2", st.wool], ["charge", st.charge]].forEach(([id, v]) => { const b = $("#" + id); b.style.width = `${v}%`; b.style.background = v < 30 ? "var(--red)" : v < 60 ? "#E9C46A" : "var(--green)"; });
+  const low = st.charge < 20 ? "The bleat has gone tinny. CHARGE LOW." : st.fed < 25 ? "It looks at you, and at the empty pen, and at you." : st.wool < 25 ? "Its wool is matted and dusty. The neighbours have noticed." : null;
+  if (low) $("#say").textContent = low;
+  $("#wool").setAttribute("fill", st.wool < 30 ? "#C9BFA8" : "#F2EEE6");
+  const days = Math.floor((Date.now() - st.born) / 864e5); $("#tag").textContent = `Serial ${st.serial} · in your care ${days} day${days === 1 ? "" : "s"} · authentic-looking, guaranteed`;
+  save();
+}
+function hop() { const s = $("#sheep"); s.classList.remove("hop"); void s.getBoundingClientRect(); s.classList.add("hop"); }
+function bleat(text) { $("#say").textContent = text || BLEATS[Math.floor(Math.random() * BLEATS.length)];
+  try { const a = new AudioContext(), o = a.createOscillator(), g = a.createGain(), l = a.createOscillator(), lg = a.createGain(); o.type = "sawtooth"; o.frequency.value = 330 - (100 - st.charge);
+    l.frequency.value = 18; lg.gain.value = 22; l.connect(lg).connect(o.frequency); g.gain.setValueAtTime(.0001, a.currentTime); g.gain.exponentialRampToValueAtTime(.12, a.currentTime + .05); g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + .7);
+    o.connect(g).connect(a.destination); o.start(); l.start(); o.stop(a.currentTime + .75); l.stop(a.currentTime + .75); setTimeout(() => a.close(), 900); } catch (e) {} }
+$("#feed").addEventListener("click", () => { st.fed = Math.min(100, st.fed + 30); const g = $("#grass"); g.innerHTML = Array.from({ length: 14 }, () => `<path d="M${120 + Math.random() * 120} 336 l3 -14 l3 14 z"/>`).join(""); setTimeout(() => { g.innerHTML = ""; }, 2500); hop(); bleat("Munch. Munch. Baa!"); render(); });
+$("#brush").addEventListener("click", () => { st.wool = Math.min(100, st.wool + 35); hop(); bleat("A contented, slightly static-y baa."); render(); });
+$("#pat").addEventListener("click", () => { hop(); bleat(); });
+$("#sheep").addEventListener("click", () => { hop(); bleat(); });
+$("#service").addEventListener("click", () => {
+  const open = $("#pen").classList.toggle("open"); $("#service").textContent = open ? "Close it, quickly" : "Open the service panel";
+  if (open) { st.charge = 100; bleat("Charge restored. Please close the panel before the neighbours look over."); render(); } else bleat("Baa. (Nothing to see here.)");
+});
+render(); setInterval(render, 60000);
+(function blink() { $("#eye").setAttribute("r", .5); setTimeout(() => $("#eye").setAttribute("r", 2.5), 150); setTimeout(blink, 2500 + Math.random() * 3000); })();
+</script>
+</body>
+</html>

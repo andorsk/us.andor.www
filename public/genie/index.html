@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B0C2E">
+<meta name="robots" content="noindex">
+<meta name="description" content="Rub the lamp. Make a wish.">
+<title>The Genie of the Lamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Lora:ital@0;1&display=swap">
+<style>
+/* A night market tent: indigo silk, brass and lantern light. A dented oil lamp on a cushion. Rub it and smoke pours out
+   and becomes a genie, who grants your wish and then shows you how the modern world already grants it. */
+:root { color-scheme: dark; --night: #1B0C2E; --silk: #2E1450; --brass: #E3B04B; --brass-2: #9C6A1C; --smoke: #8FD6FF; --ink: #FBF1DC; --muted: #C2A9D8; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Lora", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 70%, rgba(227,176,75,.18), transparent 50%), repeating-linear-gradient(90deg, var(--silk) 0 40px, #26103F 40px 80px); }
+main { width: min(640px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(28px, 6.6vw, 46px) "Marcellus", serif; color: var(--brass); letter-spacing: .06em; text-shadow: 0 2px 0 #000; }
+.sub { margin: 0; color: var(--muted); font-style: italic; }
+.stage { position: relative; width: 100%; aspect-ratio: 1.2; touch-action: none; user-select: none; }
+.stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#lamp { cursor: grab; } #lamp:active { cursor: grabbing; }
+#genie { opacity: 0; transition: opacity 1.4s ease .2s; } .free #genie { opacity: 1; }
+.rubbed { color: var(--brass); font: 400 15px "Marcellus", serif; letter-spacing: .14em; }
+.said { min-height: 3.6em; font-size: 20px; line-height: 1.4; max-width: 42ch; }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(251,241,220,.07); border: 1px solid rgba(227,176,75,.45); border-radius: 10px; color: var(--ink); font: 18px "Lora"; padding: 10px 12px; }
+button { border: 1px solid var(--brass); background: rgba(227,176,75,.14); color: var(--brass); font: 400 16px "Marcellus", serif; letter-spacing: .08em; padding: 0 16px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible, #lamp:focus-visible { outline: 2px solid var(--smoke); outline-offset: 2px; }
+.wishes { color: var(--muted); font-size: 15px; }
+.foot { font-size: 13px; color: rgba(251,241,220,.42); } .foot a { color: var(--brass); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Genie of the Lamp</h1>
+  <p class="sub" id="hint">Rub the lamp. Drag back and forth across it, or press Enter on it.</p>
+  <div class="stage" id="stage">
+    <svg viewBox="0 0 600 500" aria-label="A brass oil lamp on a cushion">
+      <defs>
+        <linearGradient id="br" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE29A"/><stop offset=".4" stop-color="#E3B04B"/><stop offset="1" stop-color="#7A4E12"/></linearGradient>
+        <radialGradient id="sm" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#BFF0FF" stop-opacity=".9"/><stop offset="1" stop-color="#5AB8F0" stop-opacity="0"/></radialGradient>
+        <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6FC8FF"/><stop offset="1" stop-color="#2A6FD0"/></linearGradient>
+      </defs>
+      <ellipse cx="300" cy="455" rx="170" ry="30" fill="#7A1E3A"/><ellipse cx="300" cy="448" rx="160" ry="24" fill="#A8294E"/>
+      <g id="smoke"></g>
+      <g id="genie">
+        <path d="M300 380 C 250 360, 340 330, 290 300 C 250 280, 330 250, 300 230" stroke="url(#gb)" stroke-width="34" fill="none" stroke-linecap="round" opacity=".85"/>
+        <path d="M230 170 C 240 120, 360 120, 370 170 C 380 230, 220 230, 230 170 Z" fill="url(#gb)"/>
+        <path d="M232 160 C 190 150, 170 120, 150 140 C 170 150, 190 180, 236 186 M368 160 C 410 150, 430 120, 450 140 C 430 150, 410 180, 364 186" fill="url(#gb)"/>
+        <circle cx="300" cy="100" r="42" fill="url(#gb)"/>
+        <path d="M262 82 q38 -40 76 0" fill="#C8303A"/><circle cx="300" cy="58" r="6" fill="#E3B04B"/>
+        <circle cx="286" cy="98" r="5" fill="#081A3A"/><circle cx="314" cy="98" r="5" fill="#081A3A"/>
+        <path d="M282 116 q18 14 36 0" stroke="#081A3A" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M300 140 q-6 20 0 34 q6 -14 0 -34" fill="#1A3A7A"/>
+        <circle cx="236" cy="186" r="8" fill="#E3B04B"/><circle cx="364" cy="186" r="8" fill="#E3B04B"/>
+      </g>
+      <g id="lamp" tabindex="0" role="button" aria-label="The lamp: rub it">
+        <path d="M180 420 C 170 380, 230 360, 300 360 C 380 360, 440 380, 420 420 C 400 440, 210 440, 180 420 Z" fill="url(#br)"/>
+        <path d="M410 395 C 450 385, 480 375, 510 352 C 500 375, 470 400, 425 412 Z" fill="url(#br)"/>
+        <path d="M190 400 C 140 400, 130 360, 160 352 C 150 375, 170 392, 196 390" fill="none" stroke="#B8842A" stroke-width="10" stroke-linecap="round"/>
+        <path d="M260 362 C 262 330, 338 330, 340 362 Z" fill="url(#br)"/><circle cx="300" cy="328" r="10" fill="#FFE29A"/>
+        <ellipse cx="300" cy="432" rx="70" ry="10" fill="#7A4E12"/>
+        <path d="M220 392 q80 18 160 0" stroke="#FFF2C4" stroke-width="3" fill="none" opacity=".6" id="shine"/>
+      </g>
+    </svg>
+  </div>
+  <div class="rubbed" id="rubbed" aria-live="polite"></div>
+  <p class="said" id="said" aria-live="polite"></p>
+  <form id="wish" hidden><input id="text" maxlength="300" placeholder="I wish…" aria-label="Your wish" autocomplete="off"><button type="submit">Wish</button></form>
+  <p class="wishes" id="left" hidden></p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Original artwork; an AI plays the genie and speaks in a generated voice. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/persona";
+const $ = (s) => document.querySelector(s);
+let rub = 0, lastX = null, lastDir = 0, free = false, wishes = 3, history = [];
+const NEED = 6;
+function puff(x, y) { const g = $("#smoke"); const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 14); c.setAttribute("fill", "url(#sm)"); g.appendChild(c);
+  const t0 = performance.now(); (function up(t) { const k = (t - t0) / 1600; c.setAttribute("cy", y - k * 160); c.setAttribute("cx", x + Math.sin(k * 6) * 20); c.setAttribute("r", 14 + k * 50); c.setAttribute("opacity", 1 - k); if (k < 1) requestAnimationFrame(up); else c.remove(); })(t0); }
+function stroke() {
+  if (free) return; rub++; puff(300 + (Math.random() - .5) * 40, 330); $("#shine").setAttribute("opacity", .3 + (rub % 2) * .6);
+  $("#rubbed").textContent = "✦".repeat(rub) + "·".repeat(Math.max(0, NEED - rub));
+  if (rub >= NEED) release();
+}
+function release() {
+  free = true; for (let i = 0; i < 18; i++) setTimeout(() => puff(510 - i * 6, 350 - i * 8), i * 70);
+  setTimeout(() => { $("#stage").classList.add("free"); $("#hint").textContent = "You have three wishes."; $("#rubbed").textContent = "";
+    $("#said").textContent = "Free! FREE! Ten thousand years in a lamp, and you rub it at last. Speak your wish, master of the lamp!";
+    $("#wish").hidden = false; $("#left").hidden = false; $("#left").textContent = "Wishes left: 3"; $("#text").focus(); }, 900);
+}
+const lamp = $("#lamp");
+lamp.addEventListener("pointerdown", (e) => { lastX = e.clientX; lamp.setPointerCapture(e.pointerId); });
+lamp.addEventListener("pointermove", (e) => { if (lastX == null) return; const dx = e.clientX - lastX; if (Math.abs(dx) < 18) return; const dir = Math.sign(dx); if (dir !== lastDir) { lastDir = dir; stroke(); } lastX = e.clientX; });
+lamp.addEventListener("pointerup", () => { lastX = null; });
+lamp.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); stroke(); } });
+let audio;
+$("#wish").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#text").value.trim(); if (!t || wishes <= 0) return; $("#text").value = ""; $("#said").textContent = "The genie strokes his chin…";
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ who: "genie", history, text: `My wish: ${t}`, speak: true }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "The genie has slipped back into the lamp.");
+    history.push({ who: "me", text: `My wish: ${t}` }, { who: "them", text: d.text }); history = history.slice(-10);
+    $("#said").textContent = d.text; wishes--; $("#left").textContent = wishes ? `Wishes left: ${wishes}` : "Your wishes are spent. The genie bows, and sails off to see the world.";
+    if (!wishes) { $("#wish").hidden = true; }
+    if (d.audio) { audio?.pause(); audio = new Audio(`data:audio/mpeg;base64,${d.audio}`); audio.play().catch(() => {}); }
+  } catch (err) { $("#said").textContent = err.message === "Failed to fetch" ? "A gust of smoke, and nothing. Try again in a moment." : err.message; }
+});
+</script>
+</body>
+</html>

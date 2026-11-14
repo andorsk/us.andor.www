@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D1A22">
+<meta name="robots" content="noindex">
+<meta name="description" content="Learn a thing's true name, speak it, and it obeys.">
+<title>True Names</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Crimson+Pro:ital@0;1&display=swap">
+<style>
+/* A rocky island shore at dusk: a fire on the stones, the sea, the wind in the grass, a hawk on a post, a standing stone.
+   Each has a name it was given at the making of the world. Learn it by listening, then say it and it answers. */
+:root { color-scheme: dark; --sea: #0D1A22; --foam: #CFE8EE; --ink: #EEF2EC; --muted: #9DB2B4; --fire: #FF9A3D; --rune: #E9D29A; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Crimson Pro", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: linear-gradient(180deg, #2A3A4A 0%, #4A5A62 25%, #1A2A32 55%, var(--sea)); }
+main { width: min(760px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(30px, 7vw, 52px) "Uncial Antiqua", serif; color: var(--rune); }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; max-width: 54ch; }
+.shore { width: 100%; aspect-ratio: 1.6; border-radius: 12px; overflow: hidden; border: 1px solid rgba(233,210,154,.25); }
+.shore canvas { width: 100%; height: 100%; display: block; }
+.names { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; }
+@media (max-width: 600px) { .names { grid-template-columns: repeat(2, 1fr); } }
+.thing { border: 1px solid rgba(233,210,154,.3); border-radius: 10px; padding: 8px; background: rgba(13,26,34,.7); display: grid; gap: 4px; }
+.thing b { font-size: 17px; } .thing .tn { font: 400 18px "Uncial Antiqua", serif; color: var(--rune); min-height: 1.3em; letter-spacing: .06em; }
+.thing button { font-size: 13px; padding: 5px 8px; }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(238,242,236,.06); border: 1px solid rgba(233,210,154,.35); border-radius: 10px; color: var(--ink); font: 19px "Crimson Pro"; padding: 10px 12px; }
+button { border: 1px solid var(--rune); background: rgba(233,210,154,.1); color: var(--rune); font: 400 15px "Uncial Antiqua", serif; padding: 0 14px; border-radius: 10px; cursor: pointer; }
+form button { padding: 0 14px; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--foam); outline-offset: 2px; }
+.said { min-height: 1.5em; font-size: 20px; font-style: italic; }
+.foot { font-size: 13px; color: rgba(238,242,236,.4); } .foot a { color: var(--rune); }
+</style>
+</head>
+<body>
+<main>
+  <h1>True Names</h1>
+  <p class="sub">Everything has a true name from the making of the world. Listen until you've learned one, then speak it, aloud or written, and the thing will answer.</p>
+  <div class="shore"><canvas id="cv" width="960" height="600" aria-label="A shore with a fire, the sea, wind in the grass, a hawk and a standing stone"></canvas></div>
+  <div class="names" id="names"></div>
+  <form id="speak"><input id="word" maxlength="40" placeholder="Speak a true name…" aria-label="A true name" autocomplete="off"><button type="submit">Speak</button><button type="button" id="mic" aria-label="Say it aloud">Aloud</button></form>
+  <p class="said" id="said" aria-live="polite">The shore is quiet.</p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The names are invented for this page. Speech is recognised by your browser. Today we call them wake words.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const THINGS = [
+  { id: "fire", common: "Fire", name: "Kaeshur", say: "The fire leaps up and roars, then settles, waiting." },
+  { id: "sea", common: "The sea", name: "Ollundra", say: "The sea draws back and heaves up a great slow wave." },
+  { id: "wind", common: "Wind", name: "Hevrith", say: "The wind rises out of nowhere and combs the grass flat." },
+  { id: "hawk", common: "The hawk", name: "Sirrakai", say: "The hawk lifts from its post and circles once above you." },
+  { id: "stone", common: "The stone", name: "Durmoth", say: "The standing stone hums, and rises a hand's breadth into the air." },
+];
+const learned = new Set(); let fx = {};
+$("#names").innerHTML = THINGS.map((t) => `<div class="thing"><b>${t.common}</b><span class="tn" id="tn-${t.id}"></span><button type="button" data-id="${t.id}">Listen</button></div>`).join("");
+document.querySelectorAll(".thing button").forEach((b) => b.addEventListener("click", () => listen(THINGS.find((t) => t.id === b.dataset.id), b)));
+function listen(t, b) {
+  // you learn a name a few letters at a time, by listening patiently
+  const el = $(`#tn-${t.id}`), have = el.textContent.length; if (have >= t.name.length) return;
+  const next = Math.min(t.name.length, have + 2 + Math.floor(Math.random() * 2)); el.textContent = t.name.slice(0, next);
+  if (next >= t.name.length) { learned.add(t.id); b.textContent = "Learned"; $("#said").textContent = `You have learned the true name of ${t.common.toLowerCase()}. Speak it.`; }
+  else $("#said").textContent = `${t.common} murmurs part of its name. Listen again.`;
+}
+function speak(word) {
+  const w = word.trim().toLowerCase().replace(/[^a-z]/g, ""); if (!w) return;
+  const t = THINGS.find((x) => x.name.toLowerCase() === w);
+  if (!t) { $("#said").textContent = "Nothing answers. That is nobody's name."; return; }
+  if (!learned.has(t.id)) { learned.add(t.id); $(`#tn-${t.id}`).textContent = t.name; }
+  fx[t.id] = performance.now(); $("#said").textContent = t.say;
+}
+$("#speak").addEventListener("submit", (e) => { e.preventDefault(); speak($("#word").value); $("#word").value = ""; });
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) $("#mic").hidden = true;
+$("#mic").addEventListener("click", () => { const r = new SR(); r.lang = "en-GB"; r.maxAlternatives = 5; $("#said").textContent = "Speak…";
+  r.onresult = (e) => { const alts = [...e.results[0]].map((a) => a.transcript); const sound = (s) => s.toLowerCase().replace(/[^a-z]/g, "").replace(/(.)\1+/g, "$1").replace(/[aeiouy]/g, "").slice(0, 4);
+    const hit = THINGS.find((t) => alts.some((a) => a.split(/\s+/).some((w) => sound(w) === sound(t.name)))); if (hit) speak(hit.name); else $("#said").textContent = `You said "${alts[0]}". Nothing answers.`; };
+  r.onerror = () => { $("#said").textContent = "Your voice didn't carry. Try writing it."; }; r.start(); });
+// the shore
+const cv = $("#cv"), c = cv.getContext("2d");
+const since = (id) => fx[id] ? (performance.now() - fx[id]) / 1000 : 99;
+const blades = Array.from({ length: 90 }, (_, i) => ({ x: 560 + Math.random() * 380, h: 20 + Math.random() * 40 }));
+function draw(t) {
+  const s = t / 1000; c.clearRect(0, 0, 960, 600);
+  const sky = c.createLinearGradient(0, 0, 0, 330); sky.addColorStop(0, "#3A4E66"); sky.addColorStop(1, "#C8946A"); c.fillStyle = sky; c.fillRect(0, 0, 960, 330);
+  // sea
+  const wv = since("sea"), big = wv < 4 ? Math.sin(Math.min(1, wv / 4) * Math.PI) * 80 : 0;
+  c.fillStyle = "#1E3A4A"; c.beginPath(); c.moveTo(0, 330); for (let x = 0; x <= 960; x += 10) c.lineTo(x, 330 - big * Math.exp(-((x - 300) ** 2) / 40000) + Math.sin(x / 40 + s * 1.4) * 4); c.lineTo(960, 600); c.lineTo(0, 600); c.fill();
+  c.strokeStyle = "rgba(207,232,238,.5)"; c.lineWidth = 2; c.beginPath(); for (let x = 0; x <= 520; x += 10) c.lineTo(x, 420 + Math.sin(x / 30 + s * 2) * 3 - big * .3); c.stroke();
+  // land
+  c.fillStyle = "#2A2A22"; c.beginPath(); c.moveTo(380, 600); c.bezierCurveTo(460, 420, 620, 380, 960, 370); c.lineTo(960, 600); c.fill();
+  // grass and wind
+  const wd = since("wind"), gust = wd < 5 ? Math.sin(Math.min(1, wd / 5) * Math.PI) : 0;
+  c.strokeStyle = "#6A7A4A"; c.lineWidth = 2; blades.forEach((b, i) => { const base = 380 + (b.x - 560) * -.02 + 10, lean = Math.sin(s * 1.5 + i) * 4 + gust * 30; c.beginPath(); c.moveTo(b.x, base + 20); c.quadraticCurveTo(b.x + lean * .5, base - b.h / 2, b.x + lean, base - b.h + gust * 8); c.stroke(); });
+  if (gust > .05) { c.strokeStyle = `rgba(230,240,240,${gust * .5})`; for (let k = 0; k < 6; k++) { const y = 120 + k * 40, x = ((s * 400 + k * 170) % 1100) - 100; c.beginPath(); c.moveTo(x, y); c.bezierCurveTo(x + 60, y - 10, x + 120, y + 10, x + 180, y); c.stroke(); } }
+  // standing stone
+  const st = since("stone"), lift = st < 6 ? Math.sin(Math.min(1, st / 6) * Math.PI) * 26 : 0;
+  c.fillStyle = "#5A5A56"; c.beginPath(); c.moveTo(820, 380 - lift); c.lineTo(836, 250 - lift); c.lineTo(870, 240 - lift); c.lineTo(884, 380 - lift); c.fill();
+  if (lift > 1) { c.strokeStyle = `rgba(233,210,154,${lift / 26})`; c.lineWidth = 2; c.beginPath(); c.moveTo(838, 300 - lift); c.lineTo(852, 280 - lift); c.lineTo(866, 300 - lift); c.stroke(); c.fillStyle = "rgba(0,0,0,.3)"; c.beginPath(); c.ellipse(852, 384, 34, 5, 0, 0, 6.3); c.fill(); }
+  // hawk post and hawk
+  c.fillStyle = "#3A2A1A"; c.fillRect(700, 300, 8, 90);
+  const hk = since("hawk"); let hx = 704, hy = 296;
+  if (hk < 6) { const a = hk / 6 * Math.PI * 2; hx = 704 + Math.sin(a) * 220; hy = 296 - Math.sin(Math.min(1, hk / 6) * Math.PI) * 200 + Math.cos(a) * 30; }
+  c.fillStyle = "#2A1A10"; c.beginPath(); if (hk < 6) { const f = Math.sin(s * 14) * 10; c.moveTo(hx - 30, hy - f); c.quadraticCurveTo(hx, hy - 8, hx + 30, hy - f); c.quadraticCurveTo(hx, hy + 4, hx - 30, hy - f); } else c.ellipse(hx, hy - 10, 8, 14, 0, 0, 6.3); c.fill();
+  // fire
+  const fr = since("fire"), roar = fr < 3 ? 1 + Math.sin(Math.min(1, fr / 3) * Math.PI) * 2.4 : 1;
+  c.fillStyle = "#4A3A2A"; c.beginPath(); c.ellipse(560, 470, 60, 14, 0, 0, 6.3); c.fill();
+  for (let k = 0; k < 14; k++) { const fx2 = 560 + Math.sin(k * 2.1 + s * 3) * 20, fh = (30 + (k % 5) * 10) * roar * (.8 + Math.sin(s * 8 + k) * .2);
+    const g = c.createRadialGradient(fx2, 465, 2, fx2, 465 - fh * .5, fh * .7); g.addColorStop(0, "rgba(255,240,180,.9)"); g.addColorStop(.4, "rgba(255,154,61,.6)"); g.addColorStop(1, "rgba(200,60,20,0)");
+    c.fillStyle = g; c.beginPath(); c.ellipse(fx2, 465 - fh * .4, 10 * roar, fh * .55, 0, 0, 6.3); c.fill(); }
+  const glow = c.createRadialGradient(560, 450, 10, 560, 450, 160 * roar); glow.addColorStop(0, "rgba(255,154,61,.25)"); glow.addColorStop(1, "rgba(255,154,61,0)"); c.fillStyle = glow; c.fillRect(0, 0, 960, 600);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

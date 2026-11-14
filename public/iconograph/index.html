@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2B1D12">
+<meta name="robots" content="noindex">
+<meta name="description" content="A wooden box with a very small, very fast painter inside.">
+<title>The Iconograph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rye&family=Caveat:wght@500&family=Lora:ital@0;1&display=swap">
+<style>
+/* A wooden box camera with brass corners and a leather bellows. Point it, press the lever, and the tiny painter inside
+   dashes off a picture of what it saw, in quick, blobby oils, with a complaint scrawled underneath. */
+:root { color-scheme: dark; --wood: #6B4426; --wood-2: #3E2614; --brass: #D9A845; --paper: #F1E4C6; --ink: #F6ECD8; --muted: #CDB894; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Lora", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 20%, #4A3220, #1C130B 70%); }
+main { width: min(640px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(28px, 7vw, 46px) "Rye", serif; color: var(--brass); text-shadow: 0 2px 0 #000; }
+.sub { margin: 0; color: var(--muted); font-style: italic; }
+.box { width: 100%; padding: 18px; border-radius: 10px; position: relative;
+  background: repeating-linear-gradient(92deg, rgba(0,0,0,.08) 0 3px, transparent 3px 11px), linear-gradient(var(--wood), var(--wood-2));
+  box-shadow: 0 24px 50px rgba(0,0,0,.6), inset 0 0 0 3px rgba(0,0,0,.35); }
+.box::before, .box::after { content: ""; position: absolute; width: 26px; height: 26px; border: 4px solid var(--brass); }
+.box::before { top: 6px; left: 6px; border-right: 0; border-bottom: 0; } .box::after { bottom: 6px; right: 6px; border-left: 0; border-top: 0; }
+.window { position: relative; aspect-ratio: 4 / 3; background: #120C07; border-radius: 4px; overflow: hidden; box-shadow: inset 0 0 0 6px #1A110A, inset 0 0 30px #000; }
+video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+canvas { background: var(--paper); }
+.imp { position: absolute; right: 12px; bottom: 10px; width: 64px; transition: transform .2s; }
+.imp.busy { animation: dash .18s steps(2) infinite; }
+@keyframes dash { 50% { transform: translate(-6px, -4px) rotate(-8deg); } }
+.note { font: 500 24px "Caveat", cursive; color: var(--paper); min-height: 1.4em; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+button, .file { border: 2px solid var(--brass); background: rgba(217,168,69,.12); color: var(--brass); font: 400 16px "Rye", serif; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+.file input { display: none; }
+button:focus-visible, .file:focus-within { outline: 2px solid var(--paper); outline-offset: 3px; }
+button:disabled { opacity: .4; cursor: default; }
+.foot { font-size: 13px; color: rgba(246,236,216,.42); } .foot a { color: var(--brass); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Iconograph</h1>
+  <p class="sub">There's an imp in the box. He paints very fast, and he wants you to know he's underpaid.</p>
+  <div class="box">
+    <div class="window">
+      <video id="cam" playsinline muted hidden></video>
+      <canvas id="pic" width="800" height="600"></canvas>
+      <svg class="imp" id="imp" viewBox="0 0 64 80" aria-hidden="true"><ellipse cx="32" cy="58" rx="14" ry="16" fill="#7A3A22"/><circle cx="32" cy="30" r="14" fill="#9A4A2A"/><path d="M20 22 l-6 -12 l10 6 M44 22 l6 -12 l-10 6" fill="#9A4A2A"/><circle cx="27" cy="29" r="3" fill="#FFE070"/><circle cx="37" cy="29" r="3" fill="#FFE070"/><path d="M27 38 q5 3 10 0" stroke="#2A0E06" stroke-width="2" fill="none"/><path d="M44 52 l14 -16" stroke="#C8A060" stroke-width="3"/><circle cx="58" cy="36" r="3" fill="#C82A2A"/></svg>
+    </div>
+  </div>
+  <p class="note" id="note" aria-live="polite">Open the shutter and point it at something.</p>
+  <div class="row">
+    <button id="open" type="button">Open the shutter (camera)</button>
+    <button id="snap" type="button" disabled>Press the lever</button>
+    <label class="file">Show him a picture<input type="file" id="file" accept="image/*"></label>
+  </div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Everything happens on your device: the picture is never uploaded. Save it with a long press or right-click.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const cv = $("#pic"), c = cv.getContext("2d"), cam = $("#cam");
+const GRIPES = ["Hold STILL. Do you know how hard it is to paint a sneeze?", "That's the last of the red. You owe me a tube of red.", "Done. My elbow hurts. Lunch is overdue.",
+  "Lovely light. I hate it. Took forever.", "Another one? I painted eleven yesterday and nobody said thank you.", "I gave it an extra blob. Artistic licence. Don't argue.",
+  "If you want detail, buy a bigger imp.", "Smile next time. I can't paint a smile that isn't there."];
+let gripe = 0;
+(function idle() { c.fillStyle = "#F1E4C6"; c.fillRect(0, 0, 800, 600); c.fillStyle = "rgba(60,36,10,.25)"; c.font = "italic 30px Lora, serif"; c.textAlign = "center"; c.fillText("(the canvas is blank, and waiting)", 400, 310); })();
+$("#open").addEventListener("click", async () => {
+  try { const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); cam.srcObject = s; cam.hidden = false; await cam.play(); cv.style.opacity = 0; $("#snap").disabled = false; $("#open").textContent = "Shutter open"; $("#note").textContent = "Frame it up, then press the lever."; }
+  catch (e) { $("#note").textContent = "No camera here. Show him a picture instead."; }
+});
+$("#snap").addEventListener("click", () => {
+  if (cam.hidden) { cam.hidden = false; cv.style.opacity = 0; $("#snap").textContent = "Press the lever"; $("#note").textContent = "Frame it up, then press the lever."; return; }
+  paint(cam, cam.videoWidth, cam.videoHeight);
+});
+$("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (!f) return; const img = new Image(); img.onload = () => paint(img, img.naturalWidth, img.naturalHeight); img.src = URL.createObjectURL(f); });
+async function paint(src, w, h) {
+  // sample the source into a small grid, then the imp dabs oil-paint strokes from coarse to fine
+  const sw = 160, sh = 120, s = document.createElement("canvas"); s.width = sw; s.height = sh; const sc = s.getContext("2d");
+  const k = Math.max(sw / w, sh / h); sc.drawImage(src, (sw - w * k) / 2, (sh - h * k) / 2, w * k, h * k);
+  const px = sc.getImageData(0, 0, sw, sh).data;
+  const at = (x, y) => { const i = (Math.min(sh - 1, Math.max(0, y | 0)) * sw + Math.min(sw - 1, Math.max(0, x | 0))) * 4; return [px[i], px[i + 1], px[i + 2]]; };
+  const lum = (x, y) => { const [r, g, b] = at(x, y); return r * .3 + g * .59 + b * .11; };
+  cam.hidden = true; cv.style.opacity = 1; $("#imp").classList.add("busy"); $("#snap").disabled = true; $("#note").textContent = "Scribble scribble scribble…";
+  c.fillStyle = "#E9DCC0"; c.fillRect(0, 0, 800, 600);
+  const passes = [[34, 700], [18, 1800], [9, 3600], [5, 2600]];
+  for (const [size, n] of passes) {
+    for (let i = 0; i < n; i++) {
+      const x = Math.random() * sw, y = Math.random() * sh, [r, g, b] = at(x, y);
+      const gx = lum(x + 1, y) - lum(x - 1, y), gy = lum(x, y + 1) - lum(x, y - 1), ang = Math.atan2(gy, gx) + Math.PI / 2;
+      const q = (v) => Math.min(255, Math.round(v / 24) * 24 + 10 + (Math.random() - .5) * 18);
+      c.save(); c.translate(x * 5, y * 5); c.rotate(ang); c.fillStyle = `rgb(${q(r * 1.08)},${q(g * 1.04)},${q(b)})`; c.globalAlpha = .82;
+      c.beginPath(); c.ellipse(0, 0, size * (.8 + Math.random() * .6), size * .32, 0, 0, 6.3); c.fill(); c.restore();
+      if (i % 400 === 0) await new Promise(requestAnimationFrame);
+    }
+  }
+  // canvas grain and a dark frame edge
+  const v = c.createRadialGradient(400, 300, 200, 400, 300, 520); v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(40,20,5,.45)"); c.fillStyle = v; c.fillRect(0, 0, 800, 600);
+  c.font = "500 26px Caveat, cursive"; c.fillStyle = "rgba(40,20,5,.7)"; c.textAlign = "right"; c.fillText("— the imp", 780, 585);
+  $("#imp").classList.remove("busy"); $("#note").textContent = GRIPES[gripe++ % GRIPES.length];
+  if (cam.srcObject) { $("#snap").disabled = false; $("#snap").textContent = "Another (he'll moan)"; }
+}
+</script>
+</body>
+</html>

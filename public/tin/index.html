@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0D10">
+<meta name="robots" content="noindex">
+<meta name="description" content="Burn tin. Hear the whisper across the room. See in the dark.">
+<title>Burn Tin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital@0;1&display=swap">
+<style>
+/* Night in an ash-grey city, mists in the street. A vial of metal flakes. Swallow it and burn it: the world gets loud
+   and bright. Your microphone becomes ears that hear too much; your camera becomes eyes that see in the dark. */
+:root { color-scheme: dark; --ash: #0B0D10; --mist: #A8B3BE; --tin: #D7DEE6; --ink: #E7EBEF; --muted: #8995A1; --flare: #CFE6FF; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "EB Garamond", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px; background: var(--ash); overflow-x: hidden; }
+#mists { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; opacity: .5; }
+main { width: min(760px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 700 clamp(30px, 7vw, 50px) "Cinzel", serif; letter-spacing: .2em; color: var(--tin); }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; max-width: 50ch; }
+.vial { display: flex; gap: 10px; align-items: center; font: 500 14px "Cinzel", serif; letter-spacing: .14em; color: var(--muted); }
+.flake { width: 12px; height: 12px; background: var(--tin); transform: rotate(45deg); box-shadow: 0 0 0 rgba(207,230,255,0); transition: box-shadow .3s; }
+.burning .flake { box-shadow: 0 0 16px var(--flare); animation: flick .4s infinite alternate; }
+@keyframes flick { to { opacity: .6; } }
+.senses { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+@media (max-width: 640px) { .senses { grid-template-columns: 1fr; } }
+.sense { border: 1px solid #1F252C; border-radius: 12px; background: rgba(20,24,30,.8); padding: 12px; display: grid; gap: 10px; }
+.sense h2 { margin: 0; font: 500 14px "Cinzel", serif; letter-spacing: .2em; color: var(--tin); }
+.view { position: relative; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; background: #050607; }
+.view canvas, .view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.meter { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 15px; }
+button { border: 1px solid var(--tin); background: rgba(215,222,230,.08); color: var(--tin); font: 500 14px "Cinzel", serif; letter-spacing: .12em; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--flare); outline-offset: 2px; }
+label { color: var(--muted); font-size: 15px; display: flex; gap: 8px; align-items: center; justify-content: center; }
+input[type=range] { width: 50%; accent-color: var(--tin); }
+.warn { font-size: 15px; color: #E7B07A; }
+.foot { font-size: 13px; color: rgba(231,235,239,.4); } .foot a { color: var(--tin); }
+</style>
+</head>
+<body>
+<canvas id="mists" aria-hidden="true"></canvas>
+<main>
+  <h1>BURN TIN</h1>
+  <p class="sub">Tin sharpens every sense. Too much and a whisper is a shout, a candle a sun. Use headphones, or the room will howl back at you.</p>
+  <div class="vial" id="vial"><span class="flake"></span><span class="flake"></span><span class="flake"></span><span id="state">Tin: not burning</span></div>
+  <div class="senses">
+    <section class="sense"><h2>Ears</h2><div class="view"><canvas id="sound" width="640" height="480"></canvas></div>
+      <label>Flare <input type="range" id="gain" min="1" max="30" value="8" aria-label="How much to amplify"></label>
+      <div class="meter" id="db">silence</div><button id="ears" type="button">Burn for hearing</button></section>
+    <section class="sense"><h2>Eyes</h2><div class="view"><video id="cam" playsinline muted hidden></video><canvas id="sight" width="640" height="480"></canvas></div>
+      <label>Flare <input type="range" id="bright" min="1" max="8" step=".25" value="3" aria-label="How much to brighten"></label>
+      <div class="meter" id="lux">darkness</div><button id="eyes" type="button">Burn for sight</button></section>
+  </div>
+  <p class="warn">Plug in headphones before burning for hearing.</p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Everything stays on your device: the sound and the picture are processed here and never sent anywhere.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+let burning = 0; const mark = () => { $("#vial").classList.toggle("burning", burning > 0); $("#state").textContent = burning ? "Tin: burning" : "Tin: not burning"; };
+// ---- ears: mic -> gain + compressor -> headphones, with a spectrum
+let actx, gainNode, analyser;
+$("#ears").addEventListener("click", async () => {
+  if (actx) { actx.close(); actx = null; burning--; mark(); $("#ears").textContent = "Burn for hearing"; return; }
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+    actx = new AudioContext(); const src = actx.createMediaStreamSource(s); gainNode = actx.createGain(); gainNode.gain.value = +$("#gain").value;
+    const comp = actx.createDynamicsCompressor(); comp.threshold.value = -30; comp.ratio.value = 12; analyser = actx.createAnalyser(); analyser.fftSize = 1024;
+    src.connect(gainNode).connect(comp).connect(analyser).connect(actx.destination); burning++; mark(); $("#ears").textContent = "Extinguish";
+    s.getTracks()[0].addEventListener("ended", () => { actx?.close(); actx = null; });
+  } catch (e) { $("#db").textContent = "No microphone, or permission refused."; }
+});
+$("#gain").addEventListener("input", () => { if (gainNode) gainNode.gain.value = +$("#gain").value; });
+const sc = $("#sound").getContext("2d");
+// ---- eyes: camera -> brightened, contrast-stretched, green-silver
+const cam = $("#cam"), vc = $("#sight").getContext("2d", { willReadFrequently: true });
+$("#eyes").addEventListener("click", async () => {
+  if (cam.srcObject) { cam.srcObject.getTracks().forEach((t) => t.stop()); cam.srcObject = null; burning--; mark(); $("#eyes").textContent = "Burn for sight"; return; }
+  try { cam.srcObject = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); await cam.play(); burning++; mark(); $("#eyes").textContent = "Extinguish"; }
+  catch (e) { $("#lux").textContent = "No camera, or permission refused."; }
+});
+function frame(t) {
+  // sound
+  sc.fillStyle = "rgba(5,6,7,.35)"; sc.fillRect(0, 0, 640, 480);
+  if (analyser) { const f = new Uint8Array(analyser.frequencyBinCount); analyser.getByteFrequencyData(f); let sum = 0;
+    for (let i = 0; i < 160; i++) { const v = f[i] / 255; sum += v; const h = v * 440; sc.fillStyle = `hsla(210, 60%, ${40 + v * 50}%, .9)`; sc.fillRect(i * 4, 460 - h, 3, h); }
+    $("#db").textContent = `Loudness ${Math.round(sum / 1.6)}% · amplified ×${$("#gain").value}`;
+  } else { sc.fillStyle = "#3A4652"; sc.font = "italic 26px 'EB Garamond'"; sc.textAlign = "center"; sc.fillText("silence", 320, 250); }
+  // sight
+  if (cam.srcObject && cam.videoWidth) {
+    vc.drawImage(cam, 0, 0, 640, 480); const img = vc.getImageData(0, 0, 640, 480), d = img.data, k = +$("#bright").value; let L = 0;
+    for (let i = 0; i < d.length; i += 4) { const y = (d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11); L += y; const v = Math.min(255, Math.pow(y / 255, 1 / k) * 255);
+      d[i] = v * .78; d[i + 1] = v; d[i + 2] = v * .86; }
+    vc.putImageData(img, 0, 0); for (let n = 0; n < 900; n++) { vc.fillStyle = `rgba(255,255,255,${Math.random() * .12})`; vc.fillRect(Math.random() * 640, Math.random() * 480, 1, 1); }
+    $("#lux").textContent = `Light in the scene ${Math.round(L / (640 * 480) / 2.55)}% · seen ×${k}`;
+  } else { vc.fillStyle = "#050607"; vc.fillRect(0, 0, 640, 480); vc.fillStyle = "#3A4652"; vc.font = "italic 26px 'EB Garamond'"; vc.textAlign = "center"; vc.fillText("darkness", 320, 250); }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+// ---- the mists
+const mc = $("#mists"), m = mc.getContext("2d"); const size = () => { mc.width = innerWidth; mc.height = innerHeight; }; size(); addEventListener("resize", size);
+const wisps = Array.from({ length: 26 }, () => ({ x: Math.random(), y: Math.random(), r: .1 + Math.random() * .25, v: .00006 + Math.random() * .00012 }));
+(function mist() { m.clearRect(0, 0, mc.width, mc.height);
+  for (const w of wisps) { w.x += w.v * (burning ? 3 : 1); if (w.x > 1.3) w.x = -.3; const g = m.createRadialGradient(w.x * mc.width, w.y * mc.height, 0, w.x * mc.width, w.y * mc.height, w.r * mc.width);
+    g.addColorStop(0, `rgba(168,179,190,${burning ? .05 : .12})`); g.addColorStop(1, "rgba(168,179,190,0)"); m.fillStyle = g; m.fillRect(0, 0, mc.width, mc.height); }
+  requestAnimationFrame(mist); })();
+</script>
+</body>
+</html>

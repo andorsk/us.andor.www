@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A120C">
+<meta name="robots" content="noindex">
+<meta name="description" content="A portrait that watches you, and talks.">
+<title>The Moving Portrait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap">
+<style>
+/* A castle gallery by candlelight: damask walls, a heavy gilt frame, and inside it a lady painted in 1832 who follows
+   you with her eyes, blinks, and will talk to you if you are polite. */
+:root { color-scheme: dark; --wall: #2A1712; --wall-2: #1A0E0A; --gold: #D4A94F; --gold-2: #8C6420; --ink: #F1E6CF; --muted: #B39C7C; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Cormorant Garamond", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 25%, rgba(255,190,110,.16), transparent 55%),
+    repeating-linear-gradient(45deg, rgba(0,0,0,.08) 0 14px, transparent 14px 28px), linear-gradient(var(--wall), var(--wall-2)); }
+main { width: min(620px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 600 clamp(28px, 6.4vw, 42px) "Cormorant SC", serif; letter-spacing: .08em; color: var(--gold); }
+.frame { width: min(380px, 84vw); padding: 22px; border-radius: 6px; position: relative;
+  background: linear-gradient(135deg, #F4D488, var(--gold) 25%, var(--gold-2) 50%, var(--gold) 75%, #F4D488);
+  box-shadow: 0 30px 60px rgba(0,0,0,.6), inset 0 0 0 3px rgba(0,0,0,.3), inset 0 0 0 9px rgba(255,230,160,.35); }
+.frame::after { content: ""; position: absolute; inset: 14px; border: 2px solid rgba(60,36,10,.6); pointer-events: none; }
+.plaque { margin-top: -6px; padding: 4px 14px; font: 600 14px "Cormorant SC", serif; letter-spacing: .1em; color: #2A1A08; background: linear-gradient(#E8C979, #B08A3A); border-radius: 3px; box-shadow: 0 4px 10px rgba(0,0,0,.4); }
+svg { display: block; width: 100%; height: auto; }
+.said { min-height: 3.2em; font-size: 21px; font-style: italic; line-height: 1.35; max-width: 34ch; }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(241,230,207,.06); border: 1px solid rgba(212,169,79,.4); border-radius: 10px; color: var(--ink); font: 19px "Cormorant Garamond", serif; padding: 10px 12px; }
+button { border: 1px solid var(--gold); background: rgba(212,169,79,.12); color: var(--gold); font: 600 16px "Cormorant SC", serif; letter-spacing: .06em; padding: 0 16px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #F4D488; outline-offset: 2px; }
+label.voice { color: var(--muted); font-size: 16px; display: flex; gap: 6px; align-items: center; }
+.foot { font-size: 14px; color: rgba(241,230,207,.42); } .foot a { color: var(--gold); }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Moving Portrait</h1>
+  <div class="frame">
+    <svg viewBox="0 0 300 380" id="art" aria-label="An oil portrait of a lady in a lace collar, whose eyes follow you">
+      <defs>
+        <radialGradient id="bg" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#5A4632"/><stop offset=".7" stop-color="#2A1E14"/><stop offset="1" stop-color="#140E08"/></radialGradient>
+        <radialGradient id="skin" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#F3D7BC"/><stop offset=".7" stop-color="#DDB290"/><stop offset="1" stop-color="#B98A68"/></radialGradient>
+        <linearGradient id="gown" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E4A3A"/><stop offset="1" stop-color="#14241C"/></linearGradient>
+        <filter id="paint"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="g"/><feComponentTransfer in="g" result="g2"><feFuncA type="linear" slope=".09"/></feComponentTransfer><feComposite in="g2" in2="SourceGraphic" operator="in" result="t"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="t"/></feMerge></filter>
+        <clipPath id="eyeL"><ellipse cx="128" cy="160" rx="13" ry="7"/></clipPath><clipPath id="eyeR"><ellipse cx="172" cy="160" rx="13" ry="7"/></clipPath>
+      </defs>
+      <g filter="url(#paint)">
+        <rect width="300" height="380" fill="url(#bg)"/>
+        <path d="M300 0 V230 C 270 200, 250 120, 262 60 C 268 30, 250 10, 230 0 Z" fill="#5A1A1E"/><path d="M300 0 V230 C 285 190, 278 120, 284 50" stroke="#3A0E12" stroke-width="6" fill="none" opacity=".6"/>
+        <path d="M262 60 C 255 110, 270 170, 300 230" stroke="#8A3A30" stroke-width="2" fill="none" opacity=".5"/>
+        <ellipse cx="90" cy="90" rx="90" ry="70" fill="#7A6040" opacity=".25"/>
+        <path d="M40 380 C 50 300, 100 270, 150 268 C 200 270, 250 300, 260 380 Z" fill="url(#gown)"/>
+        <path d="M95 290 C 120 312, 180 312, 205 290 C 196 300, 170 318, 150 318 C 130 318, 104 300, 95 290 Z" fill="#F4EEDF" opacity=".95"/>
+        <path d="M100 292 q8 10 16 4 q8 10 16 4 q8 10 18 4 q8 10 16 4 q8 10 16 -2" fill="none" stroke="#CFC5AE" stroke-width="2"/>
+        <rect x="136" y="225" width="28" height="50" fill="#D9AE8C"/>
+        <path d="M136 225 h28 v14 q-14 8 -28 0 Z" fill="#B88A68" opacity=".7"/>
+        <path d="M60 330 C 90 296, 120 288, 150 290 M240 330 C 210 296, 180 288, 150 290" stroke="#0E1A14" stroke-width="10" fill="none" opacity=".35"/>
+        <path d="M86 150 C 82 80, 120 58, 150 58 C 182 58, 220 80, 214 150 C 222 120, 230 190, 206 210 L 94 210 C 70 190, 78 120, 86 150 Z" fill="#4A2E1A"/>
+        <ellipse cx="150" cy="168" rx="52" ry="66" fill="url(#skin)"/>
+        <path d="M98 140 C 110 96, 190 96, 202 140 C 190 112, 110 112, 98 140 Z" fill="#4A2E1A"/>
+        <circle cx="96" cy="140" r="16" fill="#4A2E1A"/><circle cx="204" cy="140" r="16" fill="#4A2E1A"/>
+        <g fill="#4A2E1A" stroke="#2E1A0C" stroke-width="1.5"><circle cx="92" cy="166" r="11"/><circle cx="90" cy="186" r="10"/><circle cx="93" cy="204" r="9"/><circle cx="208" cy="166" r="11"/><circle cx="210" cy="186" r="10"/><circle cx="207" cy="204" r="9"/></g>
+        <path d="M112 110 q38 -24 76 0" stroke="#6A4428" stroke-width="3" fill="none" opacity=".7"/>
+        <ellipse cx="128" cy="138" rx="10" ry="4" fill="#FFF0E0" opacity=".25"/><path d="M196 150 C 200 190, 185 220, 150 232 C 180 222, 196 196, 192 150 Z" fill="#A87858" opacity=".35"/>
+        <path d="M114 146 q14 -7 28 -1 M158 145 q14 -6 28 1" stroke="#5A3A22" stroke-width="2.4" fill="none" stroke-linecap="round" id="brows"/>
+        <g clip-path="url(#eyeL)"><ellipse cx="128" cy="160" rx="13" ry="7" fill="#F6EFE4"/><g class="iris"><circle cx="128" cy="160" r="5.5" fill="#4C6A54"/><circle cx="128" cy="160" r="2.6" fill="#120C08"/><circle cx="126.5" cy="158.5" r="1.1" fill="#fff"/></g><rect class="lid" x="112" y="150" width="32" height="0" fill="#D9AE8C"/></g>
+        <g clip-path="url(#eyeR)"><ellipse cx="172" cy="160" rx="13" ry="7" fill="#F6EFE4"/><g class="iris"><circle cx="172" cy="160" r="5.5" fill="#4C6A54"/><circle cx="172" cy="160" r="2.6" fill="#120C08"/><circle cx="170.5" cy="158.5" r="1.1" fill="#fff"/></g><rect class="lid" x="156" y="150" width="32" height="0" fill="#D9AE8C"/></g>
+        <path d="M114 156 q14 -10 28 0 M158 156 q14 -10 28 0" stroke="#3A2214" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M114 151 q14 -9 28 -1 M158 150 q14 -8 28 1" stroke="#B58466" stroke-width="1.2" fill="none" opacity=".7"/>
+        <path d="M116 156 l-3 -3 M120 153 l-2 -3 M184 156 l3 -3 M180 153 l2 -3" stroke="#3A2214" stroke-width="1.2"/>
+        <path d="M148 168 q-4 18 2 22 q4 1 6 -2" stroke="#B08566" stroke-width="2" fill="none"/>
+        <ellipse cx="124" cy="196" rx="11" ry="6" fill="#E8A090" opacity=".35"/><ellipse cx="176" cy="196" rx="11" ry="6" fill="#E8A090" opacity=".35"/>
+        <path id="lips" d="M134 206 q16 8 32 0 q-16 4 -32 0 Z" fill="#B0504A"/>
+        <circle cx="150" cy="276" r="7" fill="#7AA0C8" stroke="#D4A94F" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+  <div class="plaque">Lady Wilhelmina Fenwick, 1832</div>
+  <p class="said" id="said" aria-live="polite">Oh! A visitor. Do come closer, nobody ever stops at this end of the gallery.</p>
+  <form id="talk"><input id="text" maxlength="400" placeholder="Speak to the portrait…" aria-label="What you say" autocomplete="off"><button type="submit">Speak</button></form>
+  <label class="voice"><input type="checkbox" id="speak" checked> Let her speak aloud</label>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. An original painting; an AI plays the sitter and voices her. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/persona";
+const $ = (s) => document.querySelector(s);
+const art = $("#art"), irises = [...document.querySelectorAll(".iris")], lids = [...document.querySelectorAll(".lid")], lips = $("#lips");
+let look = { x: 0, y: 0 }, talking = 0, history = [];
+function aim(cx, cy) { const r = art.getBoundingClientRect(); const ex = r.left + r.width / 2, ey = r.top + r.height * .42;
+  const dx = cx - ex, dy = cy - ey, d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 300); look = { x: dx / d * 6 * k, y: dy / d * 2.6 * k }; }
+addEventListener("pointermove", (e) => aim(e.clientX, e.clientY));
+addEventListener("deviceorientation", (e) => { if (e.gamma != null) look = { x: Math.max(-6, Math.min(6, e.gamma / 6)), y: Math.max(-2.6, Math.min(2.6, (e.beta - 45) / 12)) }; });
+let cur = { x: 0, y: 0 };
+(function loop(t) {
+  cur.x += (look.x - cur.x) * .12; cur.y += (look.y - cur.y) * .12;
+  irises.forEach((g) => g.setAttribute("transform", `translate(${cur.x.toFixed(2)} ${cur.y.toFixed(2)})`));
+  const open = talking ? 3 + Math.abs(Math.sin(t / 85)) * 7 : 0;
+  lips.setAttribute("d", `M134 206 q16 ${8 + open} 32 0 q-16 ${4 - open * .2} -32 0 Z`);
+  requestAnimationFrame(loop);
+})(0);
+function blink() { lids.forEach((l) => { l.setAttribute("y", 152); l.setAttribute("height", 16); }); setTimeout(() => lids.forEach((l) => l.setAttribute("height", 0)), 130); setTimeout(blink, 2500 + Math.random() * 4000); }
+setTimeout(blink, 2000);
+function sayText(t) { const el = $("#said"); el.textContent = ""; let i = 0; talking = 1; const iv = setInterval(() => { el.textContent = t.slice(0, ++i); if (i >= t.length) { clearInterval(iv); if (!audioOn) talking = 0; } }, 28); }
+let audioOn = false;
+$("#talk").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#text").value.trim(); if (!t) return; $("#text").value = "";
+  $("#said").textContent = "…"; const speak = $("#speak").checked;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ who: "portrait", history, text: t, speak }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "She has turned to look out of the window.");
+    history.push({ who: "me", text: t }, { who: "them", text: d.text }); history = history.slice(-10);
+    if (d.audio) { const a = new Audio(`data:audio/mpeg;base64,${d.audio}`); audioOn = true; a.onended = () => { audioOn = false; talking = 0; }; a.play().catch(() => { audioOn = false; }); }
+    sayText(d.text);
+  } catch (err) { talking = 0; $("#said").textContent = err.message === "Failed to fetch" ? "She has dozed off in her frame. Try again in a moment." : err.message; }
+});
+</script>
+</body>
+</html>

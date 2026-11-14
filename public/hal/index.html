@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0B">
+<meta name="robots" content="noindex">
+<meta name="description" content="The ship's computer is listening. Everything is going extremely well.">
+<title>HAL 9000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500&display=swap">
+<style>
+/* A white spacecraft corridor: a brushed-metal panel set flush into the wall, a single red lens with a yellow pinpoint
+   at its centre, a small name badge above, and readouts beside it. It glows brighter when it speaks. */
+:root { color-scheme: dark; --hull: #E8E8E4; --panel: #1A1B1E; --steel: #8E9196; --red: #FF2A1A; --ink: #EDEFF2; --muted: #8C9299; --amber: #FFB547; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Inter", system-ui, sans-serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: linear-gradient(90deg, #CFCFCB, var(--hull) 20%, #F4F4F1 50%, var(--hull) 80%, #CFCFCB); }
+main { width: min(760px, 100%); display: grid; gap: 14px; }
+.console { display: grid; grid-template-columns: 220px 1fr; gap: 14px; background: #0A0A0B; border-radius: 6px; padding: 16px; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+@media (max-width: 620px) { .console { grid-template-columns: 1fr; } }
+.unit { background: linear-gradient(90deg, #2A2C30, #505358 45%, #2A2C30); border-radius: 4px; padding: 14px 18px 22px; display: grid; justify-items: center; gap: 16px; }
+.badge { width: 100%; display: flex; border: 1px solid #000; font: 11px "Michroma", sans-serif; letter-spacing: .14em; }
+.badge span { padding: 5px 8px; } .badge .n { background: #0A0A0B; color: #fff; } .badge .m { background: #1F4FBF; color: #fff; flex: 1; text-align: right; }
+.lens { width: 160px; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle, #222 55%, #0A0A0A 58%, #3A3C40 64%, #121315 70%, #6A6D72 72%, #1A1B1D 76%);
+  box-shadow: inset 0 0 0 2px #000; }
+.eye { width: 64%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #FFE36A 0 5%, #FF5A2A 9%, var(--red) 20%, #8A0A04 48%, #1A0200 72%); transition: filter .25s, transform .25s; position: relative; }
+.eye::after { content: ""; position: absolute; left: 22%; top: 16%; width: 24%; height: 14%; border-radius: 50%; background: rgba(255,255,255,.28); transform: rotate(-30deg); }
+.eye.talk { filter: brightness(1.45) saturate(1.2); transform: scale(1.03); }
+.grille { width: 70%; height: 46px; background: repeating-linear-gradient(0deg, #0A0A0B 0 3px, #3A3C40 3px 6px); border-radius: 3px; }
+.screen { display: grid; grid-template-rows: auto 1fr auto; gap: 10px; min-height: 380px; }
+.status { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font: 10.5px "Michroma", sans-serif; letter-spacing: .1em; }
+.status div { background: #101114; border: 1px solid #23262B; border-radius: 3px; padding: 6px 8px; display: flex; justify-content: space-between; }
+.status b { color: #6EE7A0; font-weight: 400; }
+.log { background: #050506; border: 1px solid #23262B; border-radius: 3px; padding: 12px; font-size: 15.5px; line-height: 1.45; overflow-y: auto; max-height: 360px; display: grid; gap: 10px; align-content: start; }
+.log .h { color: #FF8A7A; } .log .u { color: var(--muted); } .log small { display: block; font: 9.5px "Michroma", sans-serif; letter-spacing: .14em; color: #555A62; margin-bottom: 2px; }
+form { display: flex; gap: 8px; }
+input { flex: 1; min-width: 0; background: #101114; border: 1px solid #2A2D33; border-radius: 4px; color: var(--ink); font: 16px "Inter"; padding: 10px 12px; }
+button { border: 1px solid #3A3D44; background: #1A1B1E; color: var(--ink); font: 11px "Michroma", sans-serif; letter-spacing: .14em; padding: 0 14px; border-radius: 4px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.foot { text-align: center; font-size: 13px; color: #6A6A68; } .foot a { color: #1A1A1A; }
+</style>
+</head>
+<body>
+<main>
+  <div class="console">
+    <div class="unit">
+      <div class="badge"><span class="n">HAL</span><span class="m">9000</span></div>
+      <div class="lens"><div class="eye" id="eye"></div></div>
+      <div class="grille" aria-hidden="true"></div>
+    </div>
+    <div class="screen">
+      <div class="status" id="status"></div>
+      <div class="log" id="log" aria-live="polite"><div class="h"><small>HAL</small>Good evening. I'm fully operational, and all the ship's systems are functioning within tolerance. How can I help you tonight?</div></div>
+      <form id="talk"><input id="text" maxlength="400" placeholder="Speak to the ship's computer…" aria-label="What you say" autocomplete="off"><button type="submit">SEND</button></form>
+    </div>
+  </div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. An AI plays the ship's computer, in its own words, and speaks in a generated voice. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/persona";
+const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[<&]/g, (c) => ({ "<": "&lt;", "&": "&amp;" })[c]);
+let history = [], audio;
+const launched = Date.UTC(2026, 0, 12);
+function readouts() {
+  const days = Math.floor((Date.now() - launched) / 864e5), jit = (a, b) => (a + Math.random() * (b - a)).toFixed(1);
+  const rows = [["MISSION DAY", days], ["DIST. JUPITER", `${(628 - days * .9).toFixed(0)}M KM`], ["HIBERNATION", "3 / 3 STABLE"], ["CABIN O₂", `${jit(20.8, 21)}%`],
+    ["AE-35 UNIT", "NOMINAL"], ["POD BAY", "SEALED"], ["REACTOR", `${jit(97, 99)}%`], ["COMMS DELAY", `${jit(31, 33)} MIN`]];
+  $("#status").innerHTML = rows.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+}
+readouts(); setInterval(readouts, 3000);
+function add(cls, who, t) { $("#log").insertAdjacentHTML("beforeend", `<div class="${cls}"><small>${who}</small>${esc(t)}</div>`); $("#log").scrollTop = 1e9; }
+$("#talk").addEventListener("submit", async (e) => {
+  e.preventDefault(); const t = $("#text").value.trim(); if (!t) return; $("#text").value = ""; add("u", "YOU", t); $("#eye").classList.add("talk");
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ who: "hal", history, text: t, speak: true }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error || "I'm having some difficulty with that.");
+    history.push({ who: "me", text: t }, { who: "them", text: d.text }); history = history.slice(-10); add("h", "HAL", d.text);
+    if (d.audio) { audio?.pause(); audio = new Audio(`data:audio/mpeg;base64,${d.audio}`); audio.onended = () => $("#eye").classList.remove("talk"); audio.play().catch(() => $("#eye").classList.remove("talk")); }
+    else setTimeout(() => $("#eye").classList.remove("talk"), 1500);
+  } catch (err) { $("#eye").classList.remove("talk"); add("h", "HAL", err.message === "Failed to fetch" ? "I seem to have lost the link to Earth for a moment. Please try again." : err.message); }
+});
+</script>
+</body>
+</html>

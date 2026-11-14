@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10202A">
+<meta name="robots" content="noindex">
+<meta name="description" content="A little seashell for your ear, full of an electronic ocean of sound.">
+<title>Seashell Radio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;700&display=swap">
+<style>
+/* A 1950s vision of tomorrow: a bedroom lit by a parlor wall, and on the pillow a pair of tiny shells that hum an
+   endless ocean of music and talk into your ears. Hold this one to your ear (headphones on) and tune it. */
+:root { color-scheme: dark; --deep: #10202A; --shell: #F7C6B0; --shell-2: #E38C79; --teal: #4FD1C5; --ink: #F3F6F4; --muted: #9FB6BA; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Nunito", system-ui, sans-serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 35%, #1E4250, var(--deep) 65%); }
+main { width: min(620px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 400 clamp(30px, 7vw, 50px) "Righteous", sans-serif; color: var(--shell); letter-spacing: .04em; text-shadow: 0 0 24px rgba(247,198,176,.35); }
+.sub { margin: 0; color: var(--muted); }
+.shell { width: min(300px, 70vw); cursor: pointer; transition: transform .3s; filter: drop-shadow(0 20px 30px rgba(0,0,0,.5)); }
+.shell.on { animation: hum 2.4s ease-in-out infinite; }
+@keyframes hum { 50% { transform: scale(1.03) rotate(-2deg); } }
+.shell:focus-visible { outline: 2px solid var(--teal); outline-offset: 6px; border-radius: 50%; }
+.dial { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.dial button { border: 1px solid rgba(79,209,197,.5); background: rgba(79,209,197,.08); color: var(--teal); font: 400 15px "Righteous", sans-serif; letter-spacing: .04em; padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+.dial button[aria-pressed="true"] { background: var(--teal); color: var(--deep); }
+.dial button:focus-visible, .ctl button:focus-visible { outline: 2px solid var(--shell); outline-offset: 2px; }
+.now { min-height: 3em; display: grid; gap: 2px; }
+.now b { font: 400 20px "Righteous", sans-serif; } .now span { color: var(--muted); font-size: 14px; }
+.ctl { display: flex; gap: 10px; align-items: center; }
+.ctl button { border: 1px solid var(--shell); background: rgba(247,198,176,.1); color: var(--shell); font: 400 15px "Righteous", sans-serif; padding: 8px 14px; border-radius: 10px; cursor: pointer; }
+input[type=range] { accent-color: var(--teal); }
+.foot { font-size: 13px; color: rgba(243,246,244,.4); } .foot a { color: var(--shell); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Seashell Radio</h1>
+  <p class="sub">Put your headphones in. Tap the shell to hear the sea, then tune it.</p>
+  <svg class="shell" id="shell" viewBox="0 0 300 300" tabindex="0" role="button" aria-label="The seashell: tap to listen">
+    <defs><radialGradient id="sg" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE6DA"/><stop offset=".6" stop-color="#F7C6B0"/><stop offset="1" stop-color="#C8705E"/></radialGradient>
+      <radialGradient id="mouth" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#8A2A3A"/><stop offset="1" stop-color="#F29A8A"/></radialGradient></defs>
+    <path d="M60 230 C 20 170, 40 70, 130 40 C 220 15, 280 90, 260 160 C 240 230, 160 270, 60 230 Z" fill="url(#sg)"/>
+    <g stroke="#C8705E" stroke-width="3" fill="none" opacity=".7"><path d="M130 40 C 150 90, 150 170, 110 240"/><path d="M180 35 C 200 90, 200 170, 160 250"/><path d="M225 60 C 240 110, 235 180, 205 235"/><path d="M85 60 C 95 110, 90 180, 70 228"/></g>
+    <ellipse cx="170" cy="170" rx="58" ry="40" fill="url(#mouth)" transform="rotate(-30 170 170)"/>
+    <g id="waves" stroke="#4FD1C5" stroke-width="3" fill="none" stroke-linecap="round" opacity="0"><path d="M240 110 q16 20 0 40"/><path d="M256 96 q26 34 0 68"/><path d="M272 82 q36 48 0 96"/></g>
+  </svg>
+  <div class="dial" id="dial"></div>
+  <div class="now" aria-live="polite"><b id="name">The sea</b><span id="where">The shell is silent.</span></div>
+  <div class="ctl"><button id="next" type="button">Another station</button><label>Volume <input type="range" id="vol" min="0" max="1" step=".05" value=".7" aria-label="Volume"></label></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Live stations from the free Radio Browser directory, streamed straight to your browser.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const TAGS = [["The sea", null], ["Jazz", "jazz"], ["Classical", "classical"], ["Ambient", "ambient"], ["Lo-fi", "lofi"], ["News", "news"], ["Oldies", "oldies"], ["Rock", "rock"]];
+const HOSTS = ["https://de1.api.radio-browser.info", "https://de2.api.radio-browser.info", "https://fi1.api.radio-browser.info"];
+let tag = null, list = [], idx = 0, actx, sea, audio = new Audio(), on = false;
+audio.preload = "none";
+$("#dial").innerHTML = TAGS.map(([n, t], i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${n}</button>`).join("");
+document.querySelectorAll("#dial button").forEach((b) => b.addEventListener("click", () => tune(+b.dataset.i)));
+function seaOn(v) {
+  // brown noise, slowly swelling and ebbing: the ocean in the shell
+  actx ||= new AudioContext(); if (sea) { sea.g.gain.setTargetAtTime(v ? .35 * +$("#vol").value : 0, actx.currentTime, .5); return; } if (!v) return;
+  const len = actx.sampleRate * 4, buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0); let last = 0;
+  for (let i = 0; i < len; i++) { last = (last + .02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+  const src = actx.createBufferSource(); src.buffer = buf; src.loop = true; const f = actx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 700;
+  const g = actx.createGain(); g.gain.value = 0; const swell = actx.createOscillator(), sg = actx.createGain(); swell.frequency.value = .09; sg.gain.value = .18; swell.connect(sg).connect(g.gain);
+  src.connect(f).connect(g).connect(actx.destination); src.start(); swell.start(); sea = { g }; g.gain.setTargetAtTime(.35 * +$("#vol").value, actx.currentTime, .5);
+}
+async function stations(t) {
+  for (const h of HOSTS) {
+    try { const r = await fetch(`${h}/json/stations/search?tag=${encodeURIComponent(t)}&order=clickcount&reverse=true&hidebroken=true&is_https=true&limit=40`); if (!r.ok) continue;
+      const d = await r.json(); return d.filter((s) => s.url_resolved?.startsWith("https://") && /MP3|AAC|OGG/i.test(s.codec)).sort(() => Math.random() - .5); } catch (e) {}
+  }
+  return [];
+}
+async function tune(i) {
+  document.querySelectorAll("#dial button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
+  tag = TAGS[i][1]; power(true);
+  if (!tag) { audio.pause(); seaOn(true); $("#name").textContent = "The sea"; $("#where").textContent = "An electronic ocean, endlessly rolling in."; return; }
+  $("#name").textContent = "Tuning…"; $("#where").textContent = TAGS[i][0]; list = await stations(tag); idx = 0; play();
+}
+function play() {
+  if (!list.length) { $("#name").textContent = "Only static"; $("#where").textContent = "No station answered. Try another band."; seaOn(true); return; }
+  const s = list[idx % list.length]; seaOn(false); audio.src = s.url_resolved; audio.volume = +$("#vol").value;
+  $("#name").textContent = s.name.trim().slice(0, 60); $("#where").textContent = [s.country, s.tags?.split(",").slice(0, 3).join(" · ")].filter(Boolean).join(" — ");
+  audio.play().catch(() => { idx++; if (idx < Math.min(list.length, 8)) play(); else { $("#name").textContent = "Only static"; $("#where").textContent = "The stations here aren't answering. Try another band."; } });
+}
+audio.addEventListener("error", () => { if (tag && on) { idx++; if (idx < Math.min(list.length, 8)) play(); } });
+$("#next").addEventListener("click", () => { if (!tag) return tune(1 + Math.floor(Math.random() * (TAGS.length - 1))); idx++; play(); });
+$("#vol").addEventListener("input", () => { audio.volume = +$("#vol").value; if (sea && !tag && on) seaOn(true); });
+function power(v) { on = v; $("#shell").classList.toggle("on", v); $("#waves").setAttribute("opacity", v ? 1 : 0); }
+function toggle() { if (on) { power(false); audio.pause(); seaOn(false); $("#where").textContent = "The shell is silent."; } else tune(TAGS.findIndex((t) => t[1] === tag) || 0); }
+$("#shell").addEventListener("click", toggle); $("#shell").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+</script>
+</body>
+</html>

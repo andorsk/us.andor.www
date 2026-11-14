@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06070D">
+<meta name="robots" content="noindex">
+<meta name="description" content="Weave a ward across a doorway. It rings when something crosses.">
+<title>Wards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Alegreya:ital@0;1&display=swap">
+<style>
+/* A darkened camp. A ward is woven across the tent's mouth: a thread of light only the weaver can see. When anything
+   crosses it, the thread flares and a bell rings in the weaver's head. Here the camera is the eye, and you draw the thread. */
+:root { color-scheme: dark; --night: #06070D; --thread: #9FE3FF; --flare: #FF6A3D; --ink: #E9ECF4; --muted: #8E95AB; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Alegreya", Georgia, serif; display: grid; justify-items: center; padding: 20px 14px 44px;
+  background: radial-gradient(ellipse at 50% 0%, #161A30, var(--night) 65%); }
+main { width: min(760px, 100%); display: grid; gap: 12px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 700 clamp(30px, 7vw, 50px) "Cinzel Decorative", serif; color: var(--thread); text-shadow: 0 0 18px rgba(159,227,255,.5); }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; max-width: 52ch; }
+.view { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #020205; border: 1px solid #1E2340; touch-action: none; }
+.view video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.6) brightness(.55) contrast(1.1); }
+.view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.view.ring { animation: ring .6s; }
+@keyframes ring { 0%, 100% { box-shadow: none; } 30% { box-shadow: 0 0 0 4px var(--flare), 0 0 60px var(--flare); } }
+.state { font-size: 20px; min-height: 1.4em; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+button { border: 1px solid var(--thread); background: rgba(159,227,255,.08); color: var(--thread); font: 700 13px "Cinzel Decorative", serif; letter-spacing: .06em; padding: 10px 14px; border-radius: 10px; cursor: pointer; }
+button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+label { color: var(--muted); display: flex; gap: 8px; align-items: center; } input[type=range] { accent-color: var(--thread); }
+ol { margin: 0; padding: 0; list-style: none; color: var(--muted); font-size: 16px; display: grid; gap: 2px; }
+.foot { font-size: 13px; color: rgba(233,236,244,.4); } .foot a { color: var(--thread); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Wards</h1>
+  <p class="sub">Point your camera at a doorway. Drag a line across it to weave the ward. When something crosses, the ward flares and rings.</p>
+  <div class="view" id="view"><video id="cam" playsinline muted hidden></video><canvas id="cv" width="640" height="480" aria-label="Camera view; drag to draw the ward"></canvas></div>
+  <div class="state" id="state" aria-live="polite">No ward woven.</div>
+  <div class="row"><button id="start" type="button">Open the eye (camera)</button><button id="clear" type="button">Unweave</button>
+    <label>Sensitivity <input type="range" id="sens" min="10" max="90" value="45" aria-label="Sensitivity"></label></div>
+  <ol id="log"></ol>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Motion is detected on your device; no picture is stored or sent. Close the page and the ward is gone.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const cam = $("#cam"), cv = $("#cv"), c = cv.getContext("2d", { willReadFrequently: true });
+const small = document.createElement("canvas"); small.width = 160; small.height = 120; const sc = small.getContext("2d", { willReadFrequently: true });
+let line = null, drag = null, prev = null, cool = 0, flare = 0;
+$("#start").addEventListener("click", async () => {
+  try { cam.srcObject = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); cam.hidden = false; await cam.play(); $("#start").textContent = "Eye open"; $("#state").textContent = "Now drag a line across the doorway."; }
+  catch (e) { $("#state").textContent = "No camera, or permission refused."; }
+});
+$("#clear").addEventListener("click", () => { line = null; $("#state").textContent = "No ward woven."; });
+const pos = (e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 640, (e.clientY - r.top) / r.height * 480]; };
+cv.addEventListener("pointerdown", (e) => { drag = [pos(e), pos(e)]; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", (e) => { if (drag) drag[1] = pos(e); });
+cv.addEventListener("pointerup", () => { if (drag && Math.hypot(drag[1][0] - drag[0][0], drag[1][1] - drag[0][1]) > 40) { line = drag; $("#state").textContent = "The ward is woven. It is listening."; } drag = null; });
+let actx; function bell() { try { actx ||= new AudioContext(); const t = actx.currentTime;
+  [880, 1320, 1760].forEach((f, i) => { const o = actx.createOscillator(), g = actx.createGain(); o.frequency.value = f; g.gain.setValueAtTime(.18 / (i + 1), t); g.gain.exponentialRampToValueAtTime(.0001, t + 1.6); o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 1.7); }); } catch (e) {} }
+function samples() { if (!line) return []; const [[x1, y1], [x2, y2]] = line, n = 60, pts = []; for (let i = 0; i <= n; i++) pts.push([x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n]); return pts; }
+function tick(t) {
+  c.clearRect(0, 0, 640, 480);
+  if (cam.srcObject && cam.videoWidth && line) {
+    sc.drawImage(cam, 0, 0, 160, 120); const d = sc.getImageData(0, 0, 160, 120).data, cur = new Uint8Array(160 * 120);
+    for (let i = 0; i < cur.length; i++) cur[i] = (d[i * 4] + d[i * 4 + 1] + d[i * 4 + 2]) / 3;
+    if (prev) { let hits = 0; const pts = samples(), thr = 100 - +$("#sens").value;
+      for (const [x, y] of pts) { const sx = Math.round(x / 4), sy = Math.round(y / 4); for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) { const k = (sy + dy) * 160 + sx + dx; if (k >= 0 && k < cur.length && Math.abs(cur[k] - prev[k]) > thr) hits++; } }
+      if (hits > pts.length * .35 && t > cool) { cool = t + 2500; flare = 1; bell(); $("#view").classList.remove("ring"); void $("#view").offsetWidth; $("#view").classList.add("ring");
+        const when = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }); $("#state").textContent = `Something crossed the ward at ${when}.`;
+        $("#log").insertAdjacentHTML("afterbegin", `<li>✦ crossed at ${when}</li>`); while ($("#log").children.length > 6) $("#log").lastChild.remove(); }
+    }
+    prev = cur;
+  } else prev = null;
+  const ln = drag || line;
+  if (ln) { const [[x1, y1], [x2, y2]] = ln; flare *= .96; c.lineCap = "round";
+    c.strokeStyle = flare > .05 ? `rgba(255,106,61,${.4 + flare * .6})` : "rgba(159,227,255,.85)"; c.shadowColor = flare > .05 ? "#FF6A3D" : "#9FE3FF"; c.shadowBlur = 18 + flare * 40;
+    c.lineWidth = 3 + flare * 6; c.setLineDash(drag ? [10, 8] : []); c.beginPath(); c.moveTo(x1, y1);
+    for (let i = 1; i <= 24; i++) { const k = i / 24; c.lineTo(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k + Math.sin(t / 200 + k * 12) * 2.5); } c.stroke(); c.shadowBlur = 0; c.setLineDash([]); }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
