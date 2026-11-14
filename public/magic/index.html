@@ -72,6 +72,12 @@ h1 em { font-style: italic; color: var(--l0); text-shadow: 0 0 22px var(--l0-glo
 .cite { margin: 0; font-style: italic; color: var(--muted); font-size: 17px; }
 .cite::before { content: "\2014\2002"; color: var(--gold); font-style: normal; }
 .lede { max-width: 62ch; margin: 0; font-size: 19px; line-height: 1.6; }
+.note { max-width: 62ch; margin: 6px 0 4px; padding: 20px 22px 18px; border: 1px solid var(--rule-strong); border-left: 3px solid var(--gold); border-radius: 4px 12px 12px 4px;
+  background: linear-gradient(180deg, rgba(226,194,117,.07), rgba(226,194,117,.03)), #12142A; position: relative; z-index: 1; }
+.note h2 { margin: 0 0 10px; font: 600 12px/1.4 var(--f-caps); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.note p { margin: 0 0 12px; font-size: 17.5px; line-height: 1.62; }
+.note p b { color: var(--gold-hi); font-weight: 600; }
+.note .sig { margin: 4px 0 0; text-align: right; font-family: var(--f-display); font-style: italic; font-size: 20px; color: var(--gold-hi); }
 
 /* The spectrum: magic to machine */
 .spectrum { margin-top: 18px; display: grid; gap: 12px; }
@@ -299,6 +305,15 @@ footer p { margin: 0 auto; max-width: 68ch; font-size: 16px; color: var(--muted)
       <p class="eyebrow"><svg aria-hidden="true"><use href="#fleuron"/></svg><span>Roadmap to Magic · <span id="nbooks">30</span> books, their magic, and the machines that caught up</span></p>
       <h1>Any sufficiently advanced <span class="tech">technology</span> is indistinguishable from <em>magic</em>.</h1>
       <p class="cite">Arthur C. Clarke, third law, <i>Profiles of the Future</i> (1973 edition)</p>
+      <aside class="note" aria-labelledby="note-h">
+        <h2 id="note-h">A note from Andor</h2>
+        <p>I started this because most of us don't notice how remarkable the technology around us already is. We romanticize magic and fantasy, but the world we actually live in is, in many ways, better than the storybooks.</p>
+        <p>Building these spells taught me two things.</p>
+        <p><b>Magic is often impractical.</b> Opening the Marauder's Map means saying "I solemnly swear that I am up to no good" out loud, every time. A tap or a glance does it silently. Many of the spells we envy are clumsier than the tools in our pockets.</p>
+        <p><b>Some magic is limited for good reason.</b> A live map of everyone's whereabouts is easy to build today. Secret surveillance is a real and harmful thing, which is why rules exist to protect us from it. The map here shows only made-up wanderers.</p>
+        <p>I love fantasy and science fiction, and this isn't meant to diminish those worlds. It's meant to help us appreciate our own, which we tend to look at with more skepticism than wonder.</p>
+        <p class="sig">— Andor</p>
+      </aside>
       <p class="lede">Writers have spent two centuries imagining what wands, stones and starships could do. Engineers have quietly been checking items off the list. A self-writing quill is a dictation app. Tom Riddle's diary is a chatbot. Teleportation is still a spell.</p>
       <section class="spectrum" aria-labelledby="verdicts-h">
         <h2 id="verdicts-h">The verdicts</h2>
