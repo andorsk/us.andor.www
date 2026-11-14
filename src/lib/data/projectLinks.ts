@@ -31,6 +31,13 @@ export const ProjectLinks: Link[] = [
       "Any sufficiently advanced technology is indistinguishable from magic. 111 spells from 15 fantasy and 15 science-fiction books, from Tolkien and Harry Potter to Dune and Neuromancer, each matched to today's closest technology and rated from real today to still magic. Readers can suggest more books; Anton (my AI agent) reviews each one and adds it.",
   },
   {
+    url: "/marauders/",
+    label: "The Marauder's Map",
+    dates: "2026",
+    description:
+      "The first spell from the Roadmap to Magic made real: an inked map of San Francisco that stays blank until you say the words out loud, then unfolds and shows who is walking where. Speech recognition opens and closes it; the streets come from OpenStreetMap, drawn by hand-ish code. For now the wanderers are mock.",
+  },
+  {
     url: "https://projectnanda.org/",
     label: "Project NANDA : Bay Area Chapter",
     organization: "Bay Area Chapter",

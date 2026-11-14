@@ -95,6 +95,24 @@ h1 em { font-style: italic; color: var(--l0); text-shadow: 0 0 22px var(--l0-glo
 .legend .nm { grid-column: 1 / -1; font: 600 13px/1.3 var(--f-caps); letter-spacing: .06em; margin-top: 6px; }
 .legend .ds { grid-column: 1 / -1; font-size: 14px; color: var(--muted); line-height: 1.3; }
 @media (max-width: 680px) { .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Made here: spells andor.us has turned into something you can try, and the ones a browser could do */
+.onsite { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.onsite button { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center;
+  padding: 12px 14px; border: 1px dashed var(--rule-strong); border-radius: 12px; background: var(--surface); color: var(--gold); transition: border-color .2s, box-shadow .2s; }
+.onsite button:hover { border-color: var(--gold); }
+.onsite button:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.onsite button[aria-pressed="true"] { border-style: solid; border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold), 0 0 24px rgba(226,194,117,.25); }
+.onsite b { font: 500 28px/1 var(--f-mono); font-variant-numeric: tabular-nums; grid-row: span 2; }
+.onsite .nm { font: 600 13px/1.3 var(--f-caps); letter-spacing: .06em; }
+.onsite .ds { font-size: 14px; color: var(--muted); line-height: 1.3; }
+.onsite .web { color: var(--ink); }
+@media (max-width: 680px) { .onsite { grid-template-columns: 1fr; } }
+.made { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0 20px 18px; }
+.made a, .made span { font: 600 12.5px/1 var(--f-caps); letter-spacing: .06em; padding: 7px 11px; border-radius: 999px; text-decoration: none; }
+.made a { color: #0A0C1A; background: var(--gold); box-shadow: 0 0 18px rgba(226,194,117,.35); }
+.made a:hover { background: var(--gold-hi); }
+.made a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.made span { color: var(--muted); border: 1px dashed var(--rule-strong); }
 
 /* Per-level tokens: radius and glow fall, grid rises */
 .lv-0 { --lc: var(--l0); --lbg: var(--l0-bg); --glow: var(--l0-glow); --grid: transparent; --rad: 16px; }
@@ -287,6 +305,7 @@ footer p { margin: 0 auto; max-width: 68ch; font-size: 16px; color: var(--muted)
         <div class="axis" aria-hidden="true"><span class="a0">Magic</span><span class="a3">Machine</span></div>
         <div class="bar" id="bar"></div>
         <div class="legend" id="legend"></div>
+        <div class="onsite" id="onsite"></div>
       </section>
     </header>
   </div>
@@ -486,7 +505,14 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const ORDER = [0, 1, 2, 3]; // left to right: magic to machine
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)");
-let genre = "All", level = null, q = "";
+let genre = "All", level = null, q = "", made = null;
+
+/* Made here: spells andor.us has built (each links to it), and the ones a browser alone could do (no hardware). */
+const BUILT = { "Marauder's Map": "/marauders/" };
+const WEB = new Set(["Tom Riddle's diary", "Quick-Quotes Quill", "Howler", "Marauder's Map", "Remembrall", "Doors of Durin",
+  "Open Sesame", "Moon-letters", "Sting glows blue", "Palantír", "Alethiometer", "Dæmons", "The Babel fish", "The Guide",
+  "The Voigt-Kampff test", "The Penfield mood organ", "The Librarian", "The clacks", "Atium", "Psychohistory",
+  "The Giant's Drink", "Parlor walls", "The Newspad", "The Cheshire Cat", "Lodestone resonator"]);
 const opened = new Set();
 
 function tally(rows) { const t = [0, 0, 0, 0]; rows.forEach(r => t[r[5]]++); return t; }
@@ -500,6 +526,9 @@ function renderHead() {
   const t = tally(S), n = S.length || 1;
   $("#bar").innerHTML = ORDER.map(l => `<span class="b${l}" style="width:${(t[l] / n * 100).toFixed(2)}%" title="${LEVELS[l].n}: ${t[l]}"></span>`).join("");
   $("#legend").innerHTML = ORDER.map(l => `<button type="button" class="lv-${l}" aria-pressed="${level === l}" data-l="${l}">${sig(l)}<b>${t[l]}</b><span class="nm">${LEVELS[l].n}</span><span class="ds">${LEVELS[l].d}</span></button>`).join("");
+  const nb = S.filter(r => BUILT[r[1]]).length, nw = S.filter(r => WEB.has(r[1])).length;
+  $("#onsite").innerHTML = `<button type="button" aria-pressed="${made === "built"}" data-m="built"><b>${nb}</b><span class="nm">Built on andor.us</span><span class="ds">Spells you can try here, now</span></button>`
+    + `<button type="button" class="web" aria-pressed="${made === "web"}" data-m="web"><b>${nw}</b><span class="nm">Buildable in a browser</span><span class="ds">No hardware needed: just a web page, a mic or a camera</span></button>`;
   const gs = ["All", "Fantasy", "Science fiction"];
   $("#genres").innerHTML = gs.map(g => `<button type="button" aria-pressed="${genre === g}" data-g="${g}">${g}</button>`).join("");
 }
@@ -510,6 +539,7 @@ function spellHTML(r) {
     <div class="magic"><span class="side">The spell</span><h3 class="m-name">${esc(r[1])}</h3><p class="m-does">${esc(r[2])}</p></div>
     <p class="seal"><span class="sig">${sig(l)}</span><span class="lbl">${LEVELS[l].n}</span><svg class="arrow" aria-hidden="true" focusable="false"><use href="#arrow"/></svg></p>
     <div class="today"><span class="side">Today</span><p class="t-name">${esc(r[3])}</p><p class="t-note">${esc(r[4])}</p></div>
+    ${BUILT[r[1]] ? `<p class="made"><a href="${BUILT[r[1]]}">✦ Built on andor.us · try it →</a></p>` : WEB.has(r[1]) ? `<p class="made"><span>◇ Buildable in a browser</span></p>` : ""}
   </article>`;
 }
 
@@ -521,6 +551,8 @@ function render() {
     if (!b) return false;
     if (genre !== "All" && b[3] !== genre) return false;
     if (level !== null && r[5] !== level) return false;
+    if (made === "built" && !BUILT[r[1]]) return false;
+    if (made === "web" && !WEB.has(r[1])) return false;
     if (words && !(r.slice(1, 5).join(" ") + " " + b[0] + " " + b[1]).toLowerCase().includes(words)) return false;
     return true;
   });
@@ -536,7 +568,7 @@ function render() {
     const mini = ORDER.map(l => `<span class="b${l}" style="width:${(t[l] / all.length * 100).toFixed(1)}%"></span>`).join("");
     const yr = typeof b[2] === "number" && b[2] < 1000 ? "c. 9th century" : b[2];
     const id = "bk-" + String(k).replace(/[^\w-]/g, "_");
-    const auto = !!words || level !== null;
+    const auto = !!words || level !== null || made !== null;
     const tease = all.slice().sort((a, c) => a[5] - c[5]).map(r => r[1]).join(" · ");
     return `<details class="book" id="${id}" data-k="${esc(k)}"${auto || opened.has(k) ? " open" : ""}>
       <summary class="spine">
@@ -582,7 +614,8 @@ function observeCards() {
 }
 
 document.addEventListener("click", e => {
-  const g = e.target.closest("[data-g]"), l = e.target.closest("[data-l]");
+  const g = e.target.closest("[data-g]"), l = e.target.closest("[data-l]"), m = e.target.closest("[data-m]");
+  if (m) { made = made === m.dataset.m ? null : m.dataset.m; render(); return; }
   if (g) { genre = g.dataset.g; render(); }
   if (l) { const v = +l.dataset.l; level = level === v ? null : v; render(); }
 });
