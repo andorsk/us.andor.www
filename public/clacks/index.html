@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0F18">
+<meta name="robots" content="noindex">
+<meta name="description" content="A message sent tower to tower by shutters and lamps.">
+<title>The Clacks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+SC:wght@500;700&family=Courier+Prime&display=swap">
+<style>
+/* Night over rolling hills. Two tall timber towers with a grid of shutters and lamps send a message along the line,
+   shutter by shutter. A name is kept moving in the overhead, forever. */
+:root { color-scheme: dark; --sky: #0B0F18; --sky-2: #1B2540; --hill: #0E1410; --timber: #4A3420; --lamp: #FFC861; --ink: #EDE3CF; --muted: #9AA2B4; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Alegreya", Georgia, serif; display: grid; justify-items: center; padding: 22px 14px 40px;
+  background: linear-gradient(180deg, var(--sky-2), var(--sky) 60%); }
+main { width: min(900px, 100%); display: grid; gap: 14px; }
+h1 { margin: 0; text-align: center; font: 700 clamp(28px, 6vw, 44px) "Alegreya SC", serif; letter-spacing: .04em; }
+.sub { margin: 0; text-align: center; color: var(--muted); font-style: italic; }
+.scene { position: relative; width: 100%; aspect-ratio: 2; border-radius: 10px; overflow: hidden; background: radial-gradient(ellipse at 70% 20%, #2A3658, var(--sky) 70%); box-shadow: 0 24px 50px rgba(0,0,0,.5); }
+.scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sh { fill: #1A120A; stroke: #6B4A2A; stroke-width: 1; transition: fill .12s; }
+.sh.on { fill: var(--lamp); filter: drop-shadow(0 0 6px var(--lamp)); }
+.beam { stroke: rgba(255,200,97,.0); stroke-width: 2; stroke-dasharray: 6 10; }
+.sending .beam { stroke: rgba(255,200,97,.35); animation: run .5s linear infinite; }
+@keyframes run { to { stroke-dashoffset: -16; } }
+form { display: flex; gap: 8px; }
+input { flex: 1; min-width: 0; background: rgba(237,227,207,.06); border: 1px solid rgba(237,227,207,.25); border-radius: 10px; color: var(--ink); font: 19px "Alegreya", serif; padding: 10px 12px; }
+button { border: 1px solid var(--lamp); background: rgba(255,200,97,.1); color: var(--lamp); font: 700 16px "Alegreya SC", serif; padding: 0 18px; border-radius: 10px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; }
+.tape { font: 18px "Courier Prime", monospace; background: #EDE3CF; color: #2B1E10; border-radius: 4px; padding: 10px 14px; min-height: 2.6em; letter-spacing: .08em; box-shadow: 0 8px 18px rgba(0,0,0,.35); white-space: pre-wrap; word-break: break-word; }
+.tape small { display: block; font: 12px "Alegreya SC", serif; color: #7A6648; letter-spacing: .08em; margin-bottom: 4px; }
+.code { font: 14px "Courier Prime", monospace; color: var(--muted); text-align: center; min-height: 1.3em; }
+.foot { font-size: 13px; color: rgba(237,227,207,.45); text-align: center; }
+.foot a { color: var(--lamp); }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Clacks</h1>
+  <p class="sub">A message, passed tower to tower across the country, faster than any horse.</p>
+  <div class="scene" id="scene"><svg viewBox="0 0 1000 500" id="svg" aria-label="Two semaphore towers on hills at night"></svg></div>
+  <p class="code" id="code" aria-hidden="true"></p>
+  <form id="send"><input id="msg" maxlength="80" placeholder="Write a message to send down the line" aria-label="Message"><button type="submit">Send</button></form>
+  <div class="tape" aria-live="polite"><small>Received at the far tower</small><span id="tape"></span></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Each letter is eight shutters: open or shut, the way a byte is ones and zeros.</p>
+</main>
+<script>
+const NS = "http://www.w3.org/2000/svg", svg = document.getElementById("svg"), $ = (s) => document.querySelector(s);
+const el = (t, a, p = svg) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+// stars, hills
+for (let i = 0; i < 90; i++) el("circle", { cx: Math.random() * 1000, cy: Math.random() * 260, r: Math.random() * 1.3 + .3, fill: `rgba(237,227,207,${.3 + Math.random() * .6})` });
+el("path", { d: "M0 400 Q 160 300 320 360 T 640 350 T 1000 330 L1000 500 L0 500 Z", fill: "#121A14" });
+el("path", { d: "M0 450 Q 220 380 460 430 T 1000 420 L1000 500 L0 500 Z", fill: "#0B110D" });
+function tower(x, base, h, scale) {
+  const g = el("g", { transform: `translate(${x} ${base}) scale(${scale})` });
+  el("path", { d: `M-26 0 L-14 ${-h} L14 ${-h} L26 0 Z`, fill: "#2E2014", stroke: "#4A3420" }, g);
+  for (let y = -20; y > -h; y -= 34) el("path", { d: `M${-26 + (-y / h) * 12} ${y} L${26 - (-y / h) * 12} ${y - 30} M${26 - (-y / h) * 12} ${y} L${-26 + (-y / h) * 12} ${y - 30}`, stroke: "#4A3420", "stroke-width": 2 }, g);
+  el("rect", { x: -40, y: -h - 120, width: 80, height: 122, rx: 3, fill: "#3A2818", stroke: "#6B4A2A" }, g);
+  const sh = [];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 2; c++) sh.push(el("rect", { x: -30 + c * 32, y: -h - 112 + r * 28, width: 28, height: 22, rx: 2, class: "sh" }, g));
+  return sh;
+}
+const near = tower(220, 395, 150, 1), far = tower(820, 340, 150, .55);
+el("path", { d: "M220 120 L820 230", class: "beam" });
+const bits = (ch) => ch.charCodeAt(0).toString(2).padStart(8, "0").slice(-8);
+const set = (sh, b) => sh.forEach((s, i) => s.classList.toggle("on", b[i] === "1"));
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+let queue = [], busy = false, idle = 0;
+async function transmit(text, label) {
+  busy = true; $("#scene").classList.add("sending"); if (label) $("#tape").textContent = "";
+  for (const ch of text) {
+    if (!label && queue.length) break;   // a real message cuts in on the overhead
+    const b = bits(ch); set(near, b); $("#code").textContent = `${ch === " " ? "␣" : ch}  ${b}`;
+    await wait(380); set(far, b); await wait(260);
+    if (label) $("#tape").textContent += ch.toUpperCase();
+  }
+  set(near, "00000000"); set(far, "00000000"); $("#code").textContent = ""; $("#scene").classList.remove("sending"); busy = false;
+}
+$("#send").addEventListener("submit", (e) => { e.preventDefault(); const t = $("#msg").value.trim(); if (!t) return; $("#msg").value = ""; queue.push(t); });
+// The overhead: when the line is quiet, a name keeps moving (GNU = send it on, Unchanged, and turn it around at the end).
+setInterval(async () => {
+  if (busy) return;
+  if (queue.length) { await transmit(queue.shift(), true); idle = 0; return; }
+  if (++idle >= 3) { idle = 0; await transmit("GNU Terry Pratchett", false); }
+}, 1500);
+transmit("GNU Terry Pratchett", false);
+</script>
+</body>
+</html>

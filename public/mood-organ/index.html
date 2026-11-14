@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#140D08">
+<meta name="robots" content="noindex">
+<meta name="description" content="Dial the mood you want to be in.">
+<title>Penfield Mood Organ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nixie+One&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* A bedside console in walnut and brass: three glowing nixie digits, a rotary dial, and a little card of codes.
+   Dial a mood and the room's light and sound change to match it. */
+:root { color-scheme: dark; --room: #140D08; --walnut: #4A2C17; --walnut-2: #2C190C; --brass: #C9A15A; --brass-hi: #F2D8A0; --nixie: #FF8A2A; --ink: #F1E3C9; --muted: #B59E80;
+  --mood: #3A2615; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Spectral", Georgia, serif; display: grid; justify-items: center; padding: 24px 14px 44px;
+  background: radial-gradient(ellipse at 50% 20%, var(--mood) 0%, var(--room) 70%); transition: background 2.5s ease; }
+main { width: min(620px, 100%); display: grid; gap: 16px; justify-items: center; text-align: center; }
+h1 { margin: 0; font: 600 clamp(26px, 6vw, 40px) "Spectral", serif; letter-spacing: .02em; }
+.sub { margin: 0; color: var(--muted); font-style: italic; }
+.console { width: 100%; border-radius: 22px; padding: 22px; display: grid; gap: 18px; justify-items: center;
+  background: linear-gradient(160deg, #6A3F21, var(--walnut) 40%, var(--walnut-2)); box-shadow: 0 30px 70px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.15), inset 0 0 0 3px rgba(201,161,90,.35); }
+.tubes { display: flex; gap: 10px; }
+.tube { width: 64px; height: 96px; border-radius: 30px 30px 10px 10px; background: radial-gradient(ellipse at 50% 40%, rgba(255,160,80,.12), rgba(20,10,5,.9));
+  border: 1px solid rgba(242,216,160,.25); display: grid; place-items: center; font: 400 62px "Nixie One", monospace; color: var(--nixie);
+  text-shadow: 0 0 8px var(--nixie), 0 0 22px rgba(255,120,40,.7); box-shadow: inset 0 0 18px rgba(0,0,0,.8); }
+.tube.off { color: rgba(255,138,42,.12); text-shadow: none; }
+.dial { position: relative; width: min(300px, 76vw); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, var(--brass-hi), var(--brass) 45%, #7A5A22); box-shadow: 0 8px 20px rgba(0,0,0,.5), inset 0 -6px 12px rgba(0,0,0,.25); }
+.dial button { position: absolute; width: 17%; aspect-ratio: 1; border-radius: 50%; border: 0; transform: translate(-50%, -50%); cursor: pointer;
+  background: radial-gradient(circle at 40% 35%, #2C190C, #110904); color: var(--brass-hi); font: 600 clamp(17px, 4.6vw, 22px) "Spectral", serif;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.3); }
+.dial button:active { transform: translate(-50%, -50%) scale(.92); }
+.dial .hub { position: absolute; inset: 34%; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #F7E3B4, #B88C44); display: grid; place-items: center;
+  font: italic 13px "Spectral", serif; color: #3A2410; text-align: center; padding: 6px; box-shadow: inset 0 2px 4px rgba(255,255,255,.4), 0 2px 6px rgba(0,0,0,.3); }
+button:focus-visible { outline: 2px solid var(--brass-hi); outline-offset: 3px; }
+.mood { min-height: 2.8em; font-size: clamp(19px, 4.4vw, 24px); font-style: italic; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn { border: 1px solid rgba(242,216,160,.45); background: rgba(242,216,160,.08); color: var(--brass-hi); font: 600 15px "Spectral", serif; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+.codes { width: 100%; text-align: left; background: #F1E3C9; color: #3A2410; border-radius: 6px; padding: 14px 18px; box-shadow: 0 10px 24px rgba(0,0,0,.35); transform: rotate(-.6deg); }
+.codes h2 { margin: 0 0 6px; font: 600 15px "Spectral", serif; letter-spacing: .08em; text-transform: uppercase; }
+.codes ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; columns: 1; }
+.codes li { display: flex; gap: 10px; font-size: 15px; cursor: pointer; }
+.codes b { font: 400 18px "Nixie One", monospace; color: #8A3A08; min-width: 3ch; }
+.foot { font-size: 13px; color: rgba(241,227,201,.45); }
+.foot a { color: var(--brass-hi); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Penfield Mood Organ</h1>
+  <p class="sub">Don't wait to feel it. Dial it.</p>
+  <div class="console">
+    <div class="tubes" aria-live="polite"><div class="tube off" id="t0">0</div><div class="tube off" id="t1">0</div><div class="tube off" id="t2">0</div></div>
+    <div class="dial" id="dial"><div class="hub">dial three digits</div></div>
+    <p class="mood" id="mood">Choose a code, or dial your own.</p>
+    <div class="row"><button class="btn" id="clear" type="button">Clear</button><button class="btn" id="stop" type="button">Silence</button></div>
+  </div>
+  <div class="codes"><h2>Codes, as dialed in this house</h2><ul id="codes"></ul></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The music is generated live in your browser. Turn your sound on.</p>
+</main>
+<script>
+// code: [mood, colour, chord (semitones from root), root Hz, texture]
+const MOODS = {
+  "101": ["A calm, unhurried morning.", "#4A3214", [0, 4, 7, 11], 196, "pad"],
+  "220": ["The urge to make something.", "#0F3B3A", [0, 4, 7, 14], 262, "arp"],
+  "314": ["Quiet curiosity about everything.", "#14274A", [0, 2, 4, 7, 9], 294, "pluck"],
+  "404": ["A gentle melancholy, the good kind.", "#24154A", [0, 3, 7, 10, 14], 175, "pad"],
+  "503": ["The pleasant tiredness after a long walk.", "#4A2414", [0, 7, 12], 110, "drone"],
+  "612": ["Focus, as if the room went quiet.", "#202428", [0, 7], 98, "noise"],
+  "777": ["Sudden, complete optimism.", "#5A4410", [0, 4, 7, 12, 16], 262, "swell"],
+  "990": ["Ready to call an old friend.", "#4A1A2A", [0, 4, 9, 12], 220, "bell"],
+};
+const $ = (s) => document.querySelector(s);
+const digits = [];
+const dial = $("#dial");
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].forEach((n, i) => {
+  const a = (-60 + i * 30) * Math.PI / 180, b = document.createElement("button");
+  b.type = "button"; b.textContent = n; b.setAttribute("aria-label", `Dial ${n}`);
+  b.style.left = `${50 + 38 * Math.cos(a)}%`; b.style.top = `${50 + 38 * Math.sin(a)}%`;
+  b.addEventListener("click", () => press(String(n))); dial.appendChild(b);
+});
+$("#codes").innerHTML = Object.entries(MOODS).map(([k, m]) => `<li data-c="${k}"><b>${k}</b><span>${m[0]}</span></li>`).join("");
+$("#codes").addEventListener("click", (e) => { const li = e.target.closest("[data-c]"); if (li) { digits.length = 0; [...li.dataset.c].forEach(press); } });
+function show() { for (let i = 0; i < 3; i++) { const t = $(`#t${i}`); t.textContent = digits[i] ?? "0"; t.classList.toggle("off", digits[i] === undefined); } }
+function press(d) {
+  if (digits.length >= 3) digits.length = 0;
+  digits.push(d); show();
+  if (digits.length === 3) set(digits.join(""));
+}
+$("#clear").addEventListener("click", () => { digits.length = 0; show(); $("#mood").textContent = "Choose a code, or dial your own."; });
+$("#stop").addEventListener("click", () => stopAll());
+
+// ---- sound ----
+let ctx, master, voices = [];
+function stopAll() { voices.forEach((v) => { try { v.stop(ctx.currentTime + 1.5); } catch (e) {} }); voices = []; if (master) master.gain.setTargetAtTime(0, ctx.currentTime, .5); }
+function set(code) {
+  const m = MOODS[code] ?? [`An unlisted mood (${code}). Something uncharted.`, "#2A2A2A", [0, 5, 7, 10], 140 + (+code % 200), "pad"];
+  $("#mood").textContent = m[0];
+  document.documentElement.style.setProperty("--mood", m[1]);
+  ctx ||= new (window.AudioContext || window.webkitAudioContext)();
+  stopAll();
+  master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination); master.gain.setTargetAtTime(.22, ctx.currentTime, 1.2);
+  const verb = ctx.createConvolver(); const len = ctx.sampleRate * 3, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+  verb.buffer = buf; const wet = ctx.createGain(); wet.gain.value = .55; verb.connect(wet).connect(master);
+  const [, , chord, root, tex] = m, hz = (s) => root * Math.pow(2, s / 12);
+  const osc = (f, type, g, at = 0, dur = 0) => {
+    const o = ctx.createOscillator(), a = ctx.createGain(), lp = ctx.createBiquadFilter(); o.type = type; o.frequency.value = f; lp.frequency.value = 1800;
+    a.gain.value = 0; o.connect(lp).connect(a); a.connect(master); a.connect(verb);
+    const t = ctx.currentTime + at; a.gain.setTargetAtTime(g, t, dur ? .01 : 1.5); if (dur) a.gain.setTargetAtTime(0, t + .05, dur);
+    o.start(t); if (dur) o.stop(t + dur * 8); else voices.push(o);
+  };
+  if (tex === "noise") {
+    const n = ctx.createBufferSource(), nb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = nb.getChannelData(0); let last = 0;
+    for (let i = 0; i < d.length; i++) { last = (last + .02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+    n.buffer = nb; n.loop = true; const g = ctx.createGain(); g.gain.value = .5; n.connect(g).connect(master); n.start(); voices.push(n);
+    chord.forEach((s) => osc(hz(s), "sine", .05));
+  } else if (tex === "drone") { chord.forEach((s, i) => osc(hz(s), i ? "triangle" : "sine", .09)); }
+  else { chord.forEach((s) => osc(hz(s), "sine", tex === "swell" ? .07 : .05)); }
+  if (["arp", "pluck", "bell", "swell"].includes(tex)) {
+    let i = 0; const every = { arp: .18, pluck: .42, bell: .9, swell: .6 }[tex];
+    const loop = setInterval(() => { if (!voices.length) return clearInterval(loop);
+      const s = chord[(tex === "arp" ? i : Math.floor(Math.random() * chord.length)) % chord.length] + (tex === "bell" ? 12 : 12 * (i % 2));
+      osc(hz(s), tex === "bell" ? "sine" : "triangle", tex === "swell" ? .06 : .09, 0, tex === "bell" ? .6 : .18); i++; }, every * 1000);
+  }
+}
+show();
+</script>
+</body>
+</html>

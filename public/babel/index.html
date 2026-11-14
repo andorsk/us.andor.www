@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04060D">
+<meta name="robots" content="noindex">
+<meta name="description" content="Pop it in your ear and understand anyone.">
+<title>Babel Fish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
+<style>
+/* Deep space and a small, yellow, leech-like fish that feeds on brainwaves. Speak; it hears; you hear yourself in
+   another language. */
+:root { color-scheme: dark; --space: #04060D; --fish: #FFD23F; --fish-2: #F29E1F; --ink: #EAF0FF; --muted: #8E9AB8; --glow: rgba(255,210,63,.55); }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Space Grotesk", system-ui, sans-serif; display: grid; justify-items: center; padding: 24px 16px 44px;
+  background: radial-gradient(ellipse at 50% 30%, #12183A 0%, var(--space) 65%); }
+canvas#stars { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; }
+main { width: min(620px, 100%); display: grid; gap: 16px; justify-items: center; text-align: center; }
+h1 { margin: 0; font-weight: 700; letter-spacing: -0.02em; font-size: clamp(30px, 7vw, 46px); }
+.sub { margin: 0; color: var(--muted); }
+.fish { width: min(320px, 70vw); aspect-ratio: 2; animation: swim 5s ease-in-out infinite; filter: drop-shadow(0 0 18px var(--glow)); }
+.fish.hearing { animation: swim 1.1s ease-in-out infinite; filter: drop-shadow(0 0 30px var(--glow)); }
+@keyframes swim { 0%,100% { transform: translate(0,0) rotate(-2deg); } 50% { transform: translate(14px,-8px) rotate(3deg); } }
+.tail { transform-origin: 70px 80px; animation: wag .6s ease-in-out infinite; }
+@keyframes wag { 50% { transform: rotate(14deg); } }
+.langs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.langs button { border: 1px solid rgba(234,240,255,.2); background: rgba(234,240,255,.04); color: var(--ink); font: 500 15px "Space Grotesk"; padding: 7px 14px; border-radius: 999px; cursor: pointer; }
+.langs button[aria-pressed="true"] { border-color: var(--fish); color: var(--fish); background: rgba(255,210,63,.08); }
+.mic { width: 84px; height: 84px; border-radius: 50%; border: 0; cursor: pointer; background: radial-gradient(circle at 35% 30%, #FFE680, var(--fish) 50%, var(--fish-2));
+  color: #3A2600; font: 700 15px "Space Grotesk"; box-shadow: 0 0 0 8px rgba(255,210,63,.08), 0 0 34px var(--glow); }
+.mic.on { animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 16px rgba(255,210,63,.05), 0 0 50px var(--glow); } }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--fish); outline-offset: 3px; }
+.card { width: 100%; text-align: left; border: 1px solid rgba(234,240,255,.12); border-radius: 16px; padding: 14px 16px; background: rgba(10,14,30,.7); display: grid; gap: 4px; }
+.card small { color: var(--muted); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+.card p { margin: 0; font-size: 19px; line-height: 1.45; min-height: 1.4em; }
+.card.out p { color: var(--fish); font-size: 22px; }
+.typed { display: flex; gap: 8px; width: 100%; }
+.typed input { flex: 1; min-width: 0; background: rgba(234,240,255,.05); border: 1px solid rgba(234,240,255,.18); border-radius: 12px; color: var(--ink); font: 17px "Space Grotesk"; padding: 10px 12px; }
+.typed button { border: 1px solid rgba(234,240,255,.25); background: none; color: var(--ink); border-radius: 12px; padding: 0 14px; font: 500 15px "Space Grotesk"; cursor: pointer; }
+.note { color: var(--muted); min-height: 1.4em; margin: 0; font-size: 15px; }
+.foot { font-size: 13px; color: rgba(234,240,255,.4); }
+.foot a { color: var(--fish); }
+</style>
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<main>
+  <h1>Babel Fish</h1>
+  <p class="sub">Put it in your ear. Speak, and be understood in any language.</p>
+  <svg class="fish" id="fish" viewBox="0 0 320 160" aria-hidden="true">
+    <defs><radialGradient id="body" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".5" stop-color="#FFD23F"/><stop offset="1" stop-color="#E08A12"/></radialGradient></defs>
+    <path class="tail" d="M78 80 L22 44 Q34 80 22 116 Z" fill="#F29E1F"/>
+    <path d="M70 80 C 100 30, 220 26, 280 70 C 292 80, 292 84, 280 92 C 220 134, 100 130, 70 80 Z" fill="url(#body)"/>
+    <path d="M150 44 C 170 20, 200 22, 214 40" fill="none" stroke="#F29E1F" stroke-width="7" stroke-linecap="round"/>
+    <path d="M110 70 q10 10 0 20 M135 66 q12 14 0 28 M160 64 q12 16 0 32" stroke="rgba(160,90,10,.45)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="252" cy="72" r="10" fill="#fff"/><circle cx="255" cy="72" r="5" fill="#1A1200"/>
+    <path d="M276 90 q-8 6 -16 2" stroke="#8A4F06" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+  <div class="langs" id="langs"></div>
+  <button class="mic" id="mic" type="button">Speak</button>
+  <div class="typed"><input id="typedIn" placeholder="…or type something to translate" maxlength="500" aria-label="Words to translate"><button id="typedGo" type="button">Translate</button></div>
+  <div class="card"><small id="fromLbl">You said</small><p id="said"></p></div>
+  <div class="card out"><small id="toLbl">The fish says</small><p id="heard" aria-live="polite"></p></div>
+  <p class="note" id="note"></p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Your browser hears you; an AI translates and speaks. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/babel";
+const $ = (s) => document.querySelector(s);
+const LANGS = ["Spanish", "French", "Japanese", "Mandarin", "Hindi", "Kannada", "German", "Italian", "Portuguese", "Korean", "Arabic", "English"];
+let to = "Spanish";
+$("#langs").innerHTML = LANGS.map((l) => `<button type="button" data-l="${l}" aria-pressed="${l === to}">${l}</button>`).join("");
+$("#langs").addEventListener("click", (e) => { const b = e.target.closest("[data-l]"); if (!b) return; to = b.dataset.l;
+  document.querySelectorAll("#langs button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.l === to))); });
+async function translate(text) {
+  text = text.trim(); if (!text) return;
+  $("#said").textContent = text; $("#heard").textContent = "…"; $("#fish").classList.add("hearing"); $("#note").textContent = "";
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, to }) });
+    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || "The fish is resting.");
+    $("#fromLbl").textContent = d.from ? `You said (${d.from})` : "You said"; $("#toLbl").textContent = `The fish says (${to})`;
+    $("#heard").textContent = d.text;
+    if (d.audio) new Audio(`data:audio/mpeg;base64,${d.audio}`).play().catch(() => {});
+  } catch (e) { $("#heard").textContent = ""; $("#note").textContent = e.message === "Failed to fetch" ? "The fish lost the signal. Try again in a moment." : e.message; }
+  $("#fish").classList.remove("hearing");
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null;
+$("#mic").addEventListener("click", () => {
+  if (!SR) { $("#typedIn").focus(); $("#note").textContent = "Your browser can't hear you; type instead."; return; }
+  if (rec) { rec.stop(); return; }
+  rec = new SR(); rec.interimResults = true; rec.lang = navigator.language || "en-US";
+  rec.onstart = () => { $("#mic").classList.add("on"); $("#mic").textContent = "Listening"; $("#fish").classList.add("hearing"); };
+  rec.onend = () => { rec = null; $("#mic").classList.remove("on"); $("#mic").textContent = "Speak"; };
+  rec.onresult = (e) => { const r = e.results[e.results.length - 1]; $("#said").textContent = r[0].transcript; if (r.isFinal) translate(r[0].transcript); };
+  rec.start();
+});
+$("#typedGo").addEventListener("click", () => translate($("#typedIn").value));
+$("#typedIn").addEventListener("keydown", (e) => { if (e.key === "Enter") translate(e.target.value); });
+// starfield
+const cv = $("#stars"), c = cv.getContext("2d"); let st = [];
+function size() { cv.width = innerWidth; cv.height = innerHeight; st = Array.from({ length: 160 }, () => [Math.random() * cv.width, Math.random() * cv.height, Math.random() * 1.4 + .2, Math.random()]); }
+size(); addEventListener("resize", size);
+(function draw(t) { c.clearRect(0, 0, cv.width, cv.height); for (const s of st) { c.fillStyle = `rgba(234,240,255,${.35 + .45 * Math.sin(t / 900 + s[3] * 9) ** 2})`; c.fillRect(s[0], s[1], s[2], s[2]); } requestAnimationFrame(draw); })(0);
+</script>
+</body>
+</html>

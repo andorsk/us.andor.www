@@ -511,7 +511,8 @@ let genre = "All", level = null, q = "", made = null;
 const BUILT = {
   "Marauder's Map": "/marauders/", "Tom Riddle's diary": "/diary/", "Howler": "/howler/", "Moon-letters": "/moon/",
   "Doors of Durin": "/durin/", "Open Sesame": "/durin/", "Quick-Quotes Quill": "/quill/", "The Guide": "/guide/",
-  "The Voigt-Kampff test": "/voight-kampff/",
+  "The Voigt-Kampff test": "/voight-kampff/", "Alethiometer": "/alethiometer/", "The Babel fish": "/babel/",
+  "The Penfield mood organ": "/mood-organ/", "The clacks": "/clacks/", "Palantír": "/palantir/",
 };
 try { const m = new URLSearchParams(location.search).get("made"); if (m === "built" || m === "web") made = m; } catch (e) {}
 const WEB = new Set(["Tom Riddle's diary", "Quick-Quotes Quill", "Howler", "Marauder's Map", "Remembrall", "Doors of Durin",

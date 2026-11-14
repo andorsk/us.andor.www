@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#120C14">
+<meta name="robots" content="noindex">
+<meta name="description" content="A golden instrument that tells the truth.">
+<title>The Alethiometer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cormorant+SC:wght@500;600&display=swap">
+<style>
+/* A heavy gold instrument the size of a watch, under crystal, on black velvet: 36 tiny pictures round the rim, three
+   short hands for the question, one long needle that answers. */
+:root { color-scheme: dark; --velvet: #120C14; --gold: #D9AE52; --gold-hi: #F7DB8E; --gold-lo: #7A5418; --ink: #F3E6C8; --muted: #B7A27E; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Cormorant Garamond", Georgia, serif; display: grid; justify-items: center; padding: 22px 14px 44px;
+  background: radial-gradient(ellipse at 50% 35%, #2B1A2E 0%, var(--velvet) 60%), var(--velvet); }
+main { width: min(640px, 100%); display: grid; gap: 14px; justify-items: center; text-align: center; }
+h1 { font: 600 clamp(28px, 6.4vw, 44px) "Cormorant SC", serif; margin: 0; letter-spacing: .05em; color: var(--gold-hi); }
+.sub { margin: 0; color: var(--muted); font-style: italic; font-size: 19px; }
+.dial { width: min(560px, 94vw); aspect-ratio: 1; }
+.dial svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 26px 40px rgba(0,0,0,.6)); }
+.sym { font: 600 12px "Cormorant SC", serif; fill: #3A2508; letter-spacing: .02em; transition: fill .4s; }
+.sym.on { fill: #FFF6D8; filter: drop-shadow(0 0 4px #FFE9A6); }
+.slot { fill: url(#plate); stroke: rgba(60,35,5,.5); stroke-width: .6; transition: fill .4s; }
+.slot.on { fill: url(#lit); }
+.needle { transition: transform 1.6s cubic-bezier(.3,1.35,.45,1); transform-origin: 300px 300px; }
+form { display: flex; gap: 8px; width: 100%; }
+input { flex: 1; min-width: 0; background: rgba(243,230,200,.06); border: 1px solid rgba(217,174,82,.4); border-radius: 999px; color: var(--ink); font: italic 20px "Cormorant Garamond", serif; padding: 10px 18px; }
+button { border: 1px solid var(--gold); background: linear-gradient(180deg, rgba(247,219,142,.2), rgba(122,84,24,.25)); color: var(--gold-hi); font: 600 17px "Cormorant SC", serif; letter-spacing: .06em; padding: 0 20px; border-radius: 999px; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
+.reading { min-height: 4.5em; display: grid; gap: 6px; }
+.chain { color: var(--gold-hi); font: 600 18px "Cormorant SC", serif; letter-spacing: .05em; }
+.answer { font-size: clamp(19px, 4.2vw, 23px); line-height: 1.45; font-style: italic; }
+.foot { font-size: 14px; color: rgba(243,230,200,.45); }
+.foot a { color: var(--gold); }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Alethiometer</h1>
+  <p class="sub">It always tells the truth. Reading it is the hard part.</p>
+  <div class="dial"><svg id="dial" viewBox="0 0 600 600" role="img" aria-label="A golden dial with 36 symbols and a needle">
+    <defs>
+      <radialGradient id="gold" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#FFF0B8"/><stop offset=".35" stop-color="#E7BE62"/><stop offset=".75" stop-color="#A97A2A"/><stop offset="1" stop-color="#5C3C0E"/></radialGradient>
+      <radialGradient id="plate" cx="50%" cy="30%" r="80%"><stop offset="0" stop-color="#F2D485"/><stop offset="1" stop-color="#B98A35"/></radialGradient>
+      <radialGradient id="lit" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#FFF8DC"/><stop offset="1" stop-color="#E9B94F"/></radialGradient>
+      <radialGradient id="face" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#2E1E10"/><stop offset="1" stop-color="#120B05"/></radialGradient>
+      <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+    </defs>
+    <circle cx="300" cy="300" r="292" fill="url(#gold)"/>
+    <circle cx="300" cy="300" r="276" fill="none" stroke="#5C3C0E" stroke-width="1.5"/>
+    <g id="ring"></g>
+    <circle cx="300" cy="300" r="168" fill="url(#face)" stroke="#5C3C0E" stroke-width="2"/>
+    <g id="engrave" stroke="#8A6526" stroke-width=".8" fill="none" opacity=".7"></g>
+    <g id="hands"></g>
+    <g class="needle" id="needle"><path d="M300 300 L300 112" stroke="#F7DB8E" stroke-width="4" stroke-linecap="round"/><path d="M300 104 l-7 18 h14 Z" fill="#F7DB8E"/><path d="M300 300 L300 340" stroke="#F7DB8E" stroke-width="6" stroke-linecap="round"/></g>
+    <circle cx="300" cy="300" r="14" fill="url(#gold)" stroke="#5C3C0E"/>
+    <circle cx="300" cy="300" r="292" fill="url(#glass)" pointer-events="none"/>
+  </svg></div>
+  <form id="ask"><input id="q" placeholder="Ask it a true question…" maxlength="300" aria-label="Your question" autocomplete="off"><button type="submit">Ask</button></form>
+  <div class="reading" aria-live="polite"><div class="chain" id="chain"></div><div class="answer" id="answer"></div></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Readings are made by an AI on the spot and aren't kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/alethiometer";
+const SYMBOLS = ["hourglass", "sun", "alpha and omega", "marionette", "serpent", "cauldron", "anchor", "angel", "helmet", "beehive", "moon", "madonna", "apple",
+  "bird", "bread", "ant", "bull", "candle", "chameleon", "cornucopia", "compass", "dolphin", "walled garden", "globe", "sword", "griffin", "horse", "camel",
+  "elephant", "crocodile", "baby", "lute", "owl", "thunderbolt", "tree", "wild man"];
+const NS = "http://www.w3.org/2000/svg", $ = (s) => document.querySelector(s);
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+const ring = $("#ring"), slots = [];
+SYMBOLS.forEach((name, i) => {
+  const a0 = (i / 36) * 360 - 90 - 5, a1 = a0 + 10, r0 = 176, r1 = 270, rad = (d) => d * Math.PI / 180;
+  const p = (r, a) => `${300 + r * Math.cos(rad(a))} ${300 + r * Math.sin(rad(a))}`;
+  const slot = el("path", { d: `M${p(r0, a0)} L${p(r1, a0)} A${r1} ${r1} 0 0 1 ${p(r1, a1)} L${p(r0, a1)} A${r0} ${r0} 0 0 0 ${p(r0, a0)} Z`, class: "slot" }, ring);
+  const mid = a0 + 5, tx = 300 + 223 * Math.cos(rad(mid)), ty = 300 + 223 * Math.sin(rad(mid));
+  // names run outward from the centre (each slot is narrow but long), flipped on the left so none read upside down
+  const flip = Math.cos(rad(mid)) < 0;
+  const t = el("text", { x: tx, y: ty, class: "sym", "text-anchor": "middle", "dominant-baseline": "middle", transform: `rotate(${flip ? mid + 180 : mid} ${tx} ${ty})` }, ring);
+  t.textContent = name.length > 12 ? name.replace("alpha and omega", "α · ω").replace("walled garden", "garden") : name;
+  slots.push([slot, t]);
+});
+for (let r = 40; r < 160; r += 22) el("circle", { cx: 300, cy: 300, r }, $("#engrave"));
+for (let i = 0; i < 24; i++) { const a = i * 15 * Math.PI / 180; el("path", { d: `M${300 + 40 * Math.cos(a)} ${300 + 40 * Math.sin(a)} L${300 + 160 * Math.cos(a)} ${300 + 160 * Math.sin(a)}` }, $("#engrave")); }
+const hands = $("#hands");
+const hand = (deg, len) => { const g = el("g", { transform: `rotate(${deg} 300 300)`, style: "transition: transform 1s ease" }, hands);
+  el("path", { d: `M300 300 L300 ${300 - len}`, stroke: "#C99A3E", "stroke-width": 3, "stroke-linecap": "round" }, g); el("circle", { cx: 300, cy: 300 - len, r: 5, fill: "#C99A3E" }, g); return g; };
+const H = [hand(0, 120), hand(120, 104), hand(240, 88)];
+let angle = 0;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+function point(i) { const target = (i / 36) * 360; let d = ((target - angle) % 360 + 360) % 360; angle += d + 360; $("#needle").style.transform = `rotate(${angle}deg)`; }
+function light(i, on) { slots[i][0].classList.toggle("on", on); slots[i][1].classList.toggle("on", on); }
+$("#ask").addEventListener("submit", async (e) => {
+  e.preventDefault(); const q = $("#q").value.trim(); if (!q) return;
+  slots.forEach((_, i) => light(i, false)); $("#chain").textContent = ""; $("#answer").textContent = "The needle begins to swing…";
+  // the three hands frame the question
+  H.forEach((h, k) => h.setAttribute("transform", `rotate(${(q.length * (k + 3) * 37) % 360} 300 300)`));
+  const spin = setInterval(() => { angle += 47; $("#needle").style.transform = `rotate(${angle}deg)`; }, 700);
+  let d;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q }) });
+    d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || "The needle won't settle.");
+  } catch (err) { clearInterval(spin); $("#answer").textContent = err.message === "Failed to fetch" ? "The needle won't settle. Try again in a moment." : err.message; return; }
+  clearInterval(spin); $("#answer").textContent = "";
+  const chain = [];
+  for (const [k, s] of d.symbols.entries()) {
+    const i = SYMBOLS.indexOf(s); point(i); await wait(1700); light(i, true);
+    chain.push(`${s}: ${d.meanings[k] || ""}`.trim()); $("#chain").textContent = chain.join("  ·  "); await wait(700);
+  }
+  $("#answer").textContent = d.answer;
+});
+</script>
+</body>
+</html>
