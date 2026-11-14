@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1A120B">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<meta name="description" content="A map that only opens for those who say the words.">
+<title>The Marauder's Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Homemade+Apple&display=swap">
+<style>
+/* An inked map on old parchment. Closed: a folded sheet that only answers to the spoken words. Open: the folds swing
+   out, ink draws the corridors, names appear on little banners and footprints walk between rooms. Everything here is
+   drawn for this page; the locations are made up. */
+:root {
+  --night: #1A120B; --night-2: #0F0A06;
+  --parch: #E9D7B0; --parch-2: #DCC392; --parch-3: #C9A86D; --edge: #8A6A3B;
+  --ink: #3B2414; --ink-soft: rgba(59, 36, 20, .62); --ink-faint: rgba(59, 36, 20, .3);
+  --blood: #6E1E14;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: radial-gradient(ellipse at 50% 30%, #2A1C10 0%, var(--night) 55%, var(--night-2) 100%);
+  color: var(--parch); font-family: "IM Fell English", Georgia, serif; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.stage { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 14px 40px; gap: 22px; }
+
+/* ---------- the folded map (closed) ---------- */
+.book { position: relative; width: min(560px, 92vw); aspect-ratio: 3 / 4; perspective: 1800px; }
+.leaf {
+  position: absolute; inset: 0; border-radius: 3px;
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(255,255,255,.35), transparent 45%),
+    radial-gradient(ellipse at 80% 90%, rgba(120,80,30,.35), transparent 50%),
+    radial-gradient(ellipse at 60% 40%, rgba(140,95,40,.18), transparent 60%),
+    linear-gradient(160deg, var(--parch) 0%, var(--parch-2) 55%, var(--parch-3) 100%);
+  box-shadow: 0 30px 60px rgba(0,0,0,.55), inset 0 0 60px rgba(110,70,25,.45), inset 0 0 6px rgba(80,50,20,.6);
+  filter: url(#grain);
+}
+.cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 9% 9%; color: var(--ink); }
+.cover .crest { width: 34%; opacity: .9; }
+.cover h1 { font-family: "IM Fell English SC", serif; font-weight: 400; font-size: clamp(30px, 7.4vw, 46px); line-height: 1.02; margin: 10px 0 6px; letter-spacing: .02em; }
+.cover p { font-style: italic; font-size: clamp(15px, 3.6vw, 19px); color: var(--ink-soft); margin: 4px 0; }
+.cover .hand { font-family: "Homemade Apple", cursive; font-size: clamp(13px, 3.2vw, 17px); color: var(--ink); margin-top: 18px; min-height: 2.6em; line-height: 1.7; }
+.ink-write { display: inline-block; white-space: pre-wrap; }
+.ink-write span { opacity: 0; filter: blur(2px); transition: opacity .35s ease, filter .5s ease; }
+.ink-write span.on { opacity: 1; filter: blur(0); }
+.fold-lines { position: absolute; inset: 0; pointer-events: none; background:
+  linear-gradient(90deg, transparent 32.9%, rgba(90,60,25,.25) 33.3%, transparent 33.8%, transparent 66.2%, rgba(90,60,25,.25) 66.6%, transparent 67%); }
+
+/* ---------- the open map ---------- */
+.map-wrap { position: relative; width: min(1180px, 96vw); display: none; perspective: 2200px; }
+.map-wrap.show { display: block; }
+.panels { position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; transform-style: preserve-3d; }
+.panel { position: relative; aspect-ratio: 16 / 30; transform-style: preserve-3d; transition: transform 1.25s cubic-bezier(.2,.75,.15,1); }
+.panel .leaf { box-shadow: 0 25px 50px rgba(0,0,0,.5), inset 0 0 50px rgba(110,70,25,.4); }
+.panel.l { transform-origin: right center; transform: rotateY(178deg); }
+.panel.r { transform-origin: left center; transform: rotateY(-178deg); }
+.map-wrap.unfolded .panel.l, .map-wrap.unfolded .panel.r { transform: rotateY(0deg); }
+.panel.l .leaf { border-radius: 3px 0 0 3px; } .panel.r .leaf { border-radius: 0 3px 3px 0; } .panel.c .leaf { border-radius: 0; }
+.drawing { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+@media (max-width: 720px) { .panel { aspect-ratio: 16 / 40; } }
+
+svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
+.room { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; filter: url(#wobble); }
+.room.thin { stroke-width: 1.2; stroke: var(--ink-soft); }
+.room.dash { stroke-dasharray: 2 7; stroke-width: 1.6; }
+.draw { stroke-dasharray: var(--len, 2000); stroke-dashoffset: var(--len, 2000); transition: stroke-dashoffset 2.4s ease-in-out; }
+.inked .draw { stroke-dashoffset: 0; }
+.closing .draw { transition-duration: 1.1s; stroke-dashoffset: var(--len, 2000); }
+.label { font-size: 22px; letter-spacing: .02em; opacity: 0; transition: opacity 1.2s ease 1.2s; }
+.label.small { font-size: 15px; font-style: italic; fill: var(--ink-soft); }
+.label.big { font-family: "IM Fell English SC", serif; font-size: 34px; }
+.inked .label { opacity: 1; }
+.closing .label { opacity: 0; transition-delay: 0s; transition-duration: .6s; }
+.walkers { opacity: 0; transition: opacity 1s ease 2.2s; }
+.inked .walkers { opacity: 1; }
+.closing .walkers { opacity: 0; transition: opacity .4s; }
+.foot { fill: var(--ink); }
+.banner rect { fill: var(--parch); stroke: var(--ink); stroke-width: 1.4; }
+.banner text { font-family: "Homemade Apple", cursive; font-size: 13px; }
+
+/* ---------- the incantation ---------- */
+.spell { width: min(560px, 92vw); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.wand {
+  border: 1px solid rgba(233,215,176,.35); background: rgba(233,215,176,.06); color: var(--parch);
+  font: inherit; font-size: 19px; letter-spacing: .02em; padding: 12px 22px; border-radius: 999px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px; transition: background .2s, box-shadow .2s;
+}
+.wand:hover { background: rgba(233,215,176,.12); }
+.wand:focus-visible { outline: 2px solid var(--parch-3); outline-offset: 3px; }
+.wand.listening { box-shadow: 0 0 0 6px rgba(233,215,176,.08), 0 0 28px rgba(233,215,176,.35); animation: glow 1.6s ease-in-out infinite; }
+@keyframes glow { 50% { box-shadow: 0 0 0 10px rgba(233,215,176,.05), 0 0 40px rgba(233,215,176,.5); } }
+.heard { font-style: italic; color: rgba(233,215,176,.8); min-height: 1.5em; font-size: 18px; }
+.hint { font-size: 14px; color: rgba(233,215,176,.5); }
+.typed { display: none; gap: 8px; width: 100%; }
+.typed.show { display: flex; }
+.typed input { flex: 1; min-width: 0; background: transparent; border: 0; border-bottom: 1px solid rgba(233,215,176,.4); color: var(--parch);
+  font: italic 19px "IM Fell English", serif; padding: 8px 4px; outline: none; }
+.typed button { background: none; border: 0; color: var(--parch-3); font: inherit; font-size: 17px; cursor: pointer; }
+.shake { animation: shake .45s; }
+@keyframes shake { 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+.note { font-family: "Homemade Apple", cursive; color: var(--parch-2); font-size: 15px; min-height: 1.6em; }
+@media (prefers-reduced-motion: reduce) {
+  .panel, .draw, .label, .walkers { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 .35  0 0 0 0 .22  0 0 0 0 .08  0 0 0 .22 0" result="g"/>
+    <feComposite in="g" in2="SourceGraphic" operator="in" result="gg"/><feBlend in="SourceGraphic" in2="gg" mode="multiply"/></filter>
+  <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="3.2"/></filter>
+</svg>
+
+<div class="stage">
+  <div class="book" id="book" aria-live="polite">
+    <div class="leaf cover">
+      <svg class="crest" viewBox="0 0 120 120" aria-hidden="true">
+        <g fill="none" stroke="#3B2414" stroke-width="2" stroke-linecap="round" filter="url(#wobble)">
+          <circle cx="60" cy="60" r="50"/><circle cx="60" cy="60" r="43" stroke-width="1" stroke-dasharray="2 5"/>
+          <path d="M60 18 L66 54 L102 60 L66 66 L60 102 L54 66 L18 60 L54 54 Z"/>
+          <path d="M60 36 L60 84 M36 60 L84 60" stroke-width="1"/>
+        </g>
+        <text x="60" y="13" text-anchor="middle" font-size="9" fill="#3B2414" font-family="IM Fell English SC">N</text>
+      </svg>
+      <h1>The Marauder's Map</h1>
+      <p>of Andor's realm, its corridors and its comings and goings</p>
+      <div class="hand"><span class="ink-write" id="coverInk"></span></div>
+    </div>
+    <div class="fold-lines"></div>
+  </div>
+
+  <div class="map-wrap" id="map">
+    <div class="panels">
+      <div class="panel l"><div class="leaf"></div></div>
+      <div class="panel c"><div class="leaf"></div></div>
+      <div class="panel r"><div class="leaf"></div></div>
+    </div>
+    <svg class="drawing" id="ink" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-label="Map of the realm"></svg>
+  </div>
+
+  <div class="spell">
+    <button class="wand" id="wand" type="button">✦ <span id="wandLabel">Speak the words</span></button>
+    <div class="heard" id="heard"></div>
+    <div class="typed" id="typed">
+      <input id="typedIn" placeholder="…or write the words" autocomplete="off" aria-label="The words">
+      <button id="typedGo" type="button">Say it</button>
+    </div>
+    <div class="note" id="note"></div>
+    <div class="hint" id="hint">It only opens for those who know what to say.</div>
+  </div>
+</div>
+
+<script>
+// ---------- the words ----------
+const OPEN = /solemnly\s+swear.*(up\s+to\s+)?no\s+good/i;
+const CLOSE = /mischief\s+managed?/i;
+const norm = (s) => s.toLowerCase().replace(/[^a-z\s]/g, " ").replace(/\s+/g, " ").trim();
+
+// ---------- the realm (made-up places and made-up wanderers: nothing here is a real location) ----------
+const ROOMS = [
+  // [label, x, y, w, h, kind]
+  ["The Workshop", 70, 90, 300, 210, ""], ["The Library of Notes", 440, 70, 320, 180, ""], ["The Observatory", 830, 90, 300, 220, ""],
+  ["The Great Hall", 360, 330, 480, 230, "big"], ["The Owlery", 70, 380, 220, 170, ""], ["The Kitchens", 930, 380, 200, 180, ""],
+  ["The Courtyard", 120, 640, 340, 230, ""], ["The Presidio Woods", 520, 640, 300, 260, ""], ["The Boathouse", 880, 660, 250, 200, ""],
+];
+const SMALL = [["where the code is forged", 220, 290], ["every meeting, remembered", 600, 245], ["the long view", 980, 300],
+  ["post comes and goes", 180, 540], ["kettle always on", 1030, 550], ["mind the eucalyptus", 670, 890]];
+const WALKERS = [
+  { name: "Anton", path: [[220, 200], [220, 320], [400, 450], [600, 420], [600, 160], [980, 200], [980, 460], [600, 470], [220, 200]], speed: 70 },
+  { name: "A Curious Cat", path: [[1030, 470], [880, 470], [880, 600], [700, 760], [600, 820], [300, 760], [300, 600], [1030, 470]], speed: 55 },
+  { name: "The Night Courier", path: [[180, 470], [360, 470], [520, 360], [760, 380], [1000, 760], [700, 720], [180, 470]], speed: 85 },
+  { name: "A Wandering Scholar", path: [[600, 150], [780, 150], [980, 150], [980, 250], [600, 250], [600, 150]], speed: 40 },
+];
+const PASSAGES = [[[370, 200], [440, 160]], [[760, 160], [830, 180]], [[290, 465], [360, 445]], [[840, 445], [930, 465]],
+  [[300, 560], [300, 640]], [[600, 560], [640, 640]], [[960, 560], [980, 660]]];
+
+const $ = (s) => document.querySelector(s);
+const ink = $("#ink");
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent = ink) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
+
+function drawRealm() {
+  ink.innerHTML = "";
+  const border = el("rect", { x: 22, y: 22, width: 1156, height: 956, class: "room thin draw", rx: 4 });
+  border.style.setProperty("--len", 4300);
+  for (const [name, x, y, w, h, kind] of ROOMS) {
+    const r = el("path", { d: `M${x} ${y} h${w} v${h} h${-w} Z`, class: "room draw" });
+    r.style.setProperty("--len", 2 * (w + h) + 40);
+    if (kind === "big") {  // pillars
+      for (let i = 1; i < 6; i++) { const c = el("circle", { cx: x + (w / 6) * i, cy: y + 40, r: 7, class: "room thin draw" }); c.style.setProperty("--len", 50); }
+    }
+    el("text", { x: x + w / 2, y: y + h / 2, "text-anchor": "middle", class: `label ${kind === "big" ? "big" : ""}` }).textContent = name;
+  }
+  for (const [[x1, y1], [x2, y2]] of PASSAGES) {
+    const p = el("path", { d: `M${x1} ${y1} L${x2} ${y2}`, class: "room dash draw" }); p.style.setProperty("--len", 200);
+  }
+  // a winding secret passage
+  const sp = el("path", { d: "M70 960 C 300 900, 380 990, 520 930 S 820 990, 1130 940", class: "room dash draw" });
+  sp.style.setProperty("--len", 1300);
+  el("text", { x: 600, y: 985, "text-anchor": "middle", class: "label small" }).textContent = "a passage few remember";
+  for (const [t, x, y] of SMALL) el("text", { x, y, "text-anchor": "middle", class: "label small" }).textContent = t;
+  // compass
+  const g = el("g", { transform: "translate(1105 905)", class: "label" });
+  el("path", { d: "M0 -38 L7 -7 L38 0 L7 7 L0 38 L-7 7 L-38 0 L-7 -7 Z", fill: "none", stroke: "#3B2414", "stroke-width": 1.6 }, g);
+  el("text", { x: 0, y: -44, "text-anchor": "middle", "font-size": 14 }, g).textContent = "N";
+  walkLayer = el("g", { class: "walkers" });
+}
+
+// ---------- footprints ----------
+let walkLayer, raf = 0, last = 0;
+const state = WALKERS.map((w) => ({ ...w, seg: 0, t: 0, step: 0, dist: 0, banner: null, prints: [] }));
+function footprint(x, y, ang, left) {
+  const g = el("g", { transform: `translate(${x} ${y}) rotate(${ang})` }, walkLayer);
+  const off = left ? -7 : 7;
+  el("ellipse", { cx: off, cy: 0, rx: 5.2, ry: 8.5, class: "foot" }, g);
+  el("circle", { cx: off, cy: -12, r: 3.2, class: "foot" }, g);
+  return { g, born: performance.now() };
+}
+function banner(name) {
+  const g = el("g", { class: "banner" }, walkLayer);
+  const w = name.length * 8.6 + 22;
+  el("rect", { x: -w / 2, y: -40, width: w, height: 22, rx: 3 }, g);
+  el("text", { x: 0, y: -24, "text-anchor": "middle" }, g).textContent = name;
+  return g;
+}
+function tick(now) {
+  const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
+  for (const w of state) {
+    if (!w.banner) w.banner = banner(w.name);
+    const a = w.path[w.seg], b = w.path[(w.seg + 1) % w.path.length];
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+    w.t += (w.speed * dt) / len;
+    if (w.t >= 1) { w.t = 0; w.seg = (w.seg + 1) % (w.path.length - 1); continue; }
+    const x = a[0] + (b[0] - a[0]) * w.t, y = a[1] + (b[1] - a[1]) * w.t;
+    const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI + 90;
+    w.dist += w.speed * dt;
+    if (w.dist > 26) { w.dist = 0; w.step ^= 1; w.prints.push(footprint(x, y, ang, w.step)); }
+    w.banner.setAttribute("transform", `translate(${x} ${y})`);
+    w.prints = w.prints.filter((p) => {
+      const age = (now - p.born) / 1000;
+      if (age > 4.5) { p.g.remove(); return false; }
+      p.g.setAttribute("opacity", String(Math.max(0, 1 - age / 4.5)));
+      return true;
+    });
+  }
+  raf = requestAnimationFrame(tick);
+}
+
+// ---------- opening and closing ----------
+let open = false;
+function inkWrite(target, text, speed = 45) {
+  target.innerHTML = "";
+  [...text].forEach((ch, i) => { const s = document.createElement("span"); s.textContent = ch; target.appendChild(s); setTimeout(() => s.classList.add("on"), i * speed); });
+}
+function openMap() {
+  if (open) return;
+  open = true;
+  note("");
+  inkWrite($("#coverInk"), "Messrs. of the realm bid you welcome.\nDo tread softly.");
+  setTimeout(() => {
+    $("#book").style.display = "none";
+    const m = $("#map");
+    drawRealm();
+    m.classList.add("show");
+    m.classList.remove("closing", "inked", "unfolded");
+    requestAnimationFrame(() => requestAnimationFrame(() => m.classList.add("unfolded")));
+    setTimeout(() => ink.classList.add("inked"), 900);
+    setTimeout(() => { last = 0; raf = requestAnimationFrame(tick); }, 2600);
+    $("#wandLabel").textContent = "Speak to close it";
+    $("#hint").textContent = "Say the other words when you're done.";
+  }, 2300);
+}
+function closeMap() {
+  if (!open) return;
+  open = false;
+  const m = $("#map");
+  ink.classList.add("closing");
+  ink.classList.remove("inked");
+  cancelAnimationFrame(raf);
+  setTimeout(() => m.classList.remove("unfolded"), 900);
+  setTimeout(() => {
+    m.classList.remove("show");
+    ink.classList.remove("closing");
+    $("#book").style.display = "";
+    inkWrite($("#coverInk"), "");
+    $("#wandLabel").textContent = "Speak the words";
+    $("#hint").textContent = "It only opens for those who know what to say.";
+    note("Mischief managed.");
+  }, 2300);
+}
+function note(t) { inkWrite($("#note"), t, 40); }
+function heard(text) {
+  $("#heard").textContent = text ? `“${text}”` : "";
+  const n = norm(text);
+  if (!open && OPEN.test(n)) return openMap();
+  if (open && CLOSE.test(n)) return closeMap();
+  if (n.length > 6) {
+    $("#book").classList.remove("shake"); void $("#book").offsetWidth;
+    if (!open) $("#book").classList.add("shake");
+    note(open ? "The map waits for the proper words." : "The parchment stays blank. Try again.");
+  }
+}
+
+// ---------- the voice ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+function listen() {
+  if (!SR) { $("#typed").classList.add("show"); $("#typedIn").focus(); note("Your browser can't hear you; write the words instead."); return; }
+  if (listening) { rec.stop(); return; }
+  rec = new SR();
+  rec.lang = "en-GB"; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
+  rec.onstart = () => { listening = true; $("#wand").classList.add("listening"); $("#heard").textContent = "…"; };
+  rec.onresult = (e) => {
+    const r = e.results[e.results.length - 1];
+    const alts = [...r].map((a) => a.transcript);
+    $("#heard").textContent = `“${alts[0]}”`;
+    if (r.isFinal) heard(alts.find((a) => (open ? CLOSE : OPEN).test(norm(a))) || alts[0]);
+  };
+  rec.onerror = (e) => { if (e.error === "not-allowed") note("The map needs your microphone to hear you."); };
+  rec.onend = () => { listening = false; $("#wand").classList.remove("listening"); };
+  rec.start();
+}
+$("#wand").addEventListener("click", listen);
+$("#typedGo").addEventListener("click", () => { heard($("#typedIn").value); $("#typedIn").value = ""; });
+$("#typedIn").addEventListener("keydown", (e) => { if (e.key === "Enter") { heard(e.target.value); e.target.value = ""; } });
+// Long-press the wand (or ?write in the URL) to write the words instead of speaking them.
+let press; $("#wand").addEventListener("pointerdown", () => { press = setTimeout(() => $("#typed").classList.add("show"), 700); });
+$("#wand").addEventListener("pointerup", () => clearTimeout(press));
+if (location.search.includes("write")) $("#typed").classList.add("show");
+</script>
+</body>
+</html>
