@@ -57,14 +57,29 @@ body {
 .map-wrap { position: relative; width: min(1180px, 96vw); display: none; perspective: 2200px; }
 .map-wrap.show { display: block; }
 .panels { position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; transform-style: preserve-3d; }
-.panel { position: relative; aspect-ratio: 16 / 30; transform-style: preserve-3d; transition: transform 1.25s cubic-bezier(.2,.75,.15,1); }
+.panel { position: relative; aspect-ratio: 2 / 5; transform-style: preserve-3d; transition: transform 1.25s cubic-bezier(.2,.75,.15,1); }
 .panel .leaf { box-shadow: 0 25px 50px rgba(0,0,0,.5), inset 0 0 50px rgba(110,70,25,.4); }
 .panel.l { transform-origin: right center; transform: rotateY(178deg); }
 .panel.r { transform-origin: left center; transform: rotateY(-178deg); }
 .map-wrap.unfolded .panel.l, .map-wrap.unfolded .panel.r { transform: rotateY(0deg); }
 .panel.l .leaf { border-radius: 3px 0 0 3px; } .panel.r .leaf { border-radius: 0 3px 3px 0; } .panel.c .leaf { border-radius: 0; }
 .drawing { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-@media (max-width: 720px) { .panel { aspect-ratio: 16 / 40; } }
+.map-wrap.unfolded .drawing { pointer-events: auto; touch-action: none; cursor: grab; }
+.st-major { fill: none; stroke: var(--ink); stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+.st-mid { fill: none; stroke: var(--ink-soft); stroke-width: 1.15; stroke-linecap: round; stroke-linejoin: round; }
+.st-minor { fill: none; stroke: var(--ink-faint); stroke-width: .55; stroke-linecap: round; }
+.park { fill: url(#hatch); stroke: var(--ink-soft); stroke-width: .9; }
+.water { fill: url(#waves); stroke: var(--ink-soft); stroke-width: .9; }
+.coast { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+.frame { fill: none; stroke: var(--ink); stroke-width: 2; } .frame.thin { stroke-width: .8; stroke: var(--ink-soft); }
+.label.hood { font-family: "IM Fell English SC", serif; font-size: 15px; fill: var(--ink); letter-spacing: .06em; paint-order: stroke; stroke: rgba(233,215,176,.85); stroke-width: 4px; }
+.label.park { font-style: italic; font-size: 14px; fill: var(--ink-soft); paint-order: stroke; stroke: rgba(233,215,176,.8); stroke-width: 3px; }
+.cartouche { fill: rgba(233,215,176,.92); stroke: var(--ink); stroke-width: 1.4; }
+.carto-title { font-family: "IM Fell English SC", serif; font-size: 26px; }
+.carto-sub { font-style: italic; font-size: 13px; fill: var(--ink-soft); }
+.compass { fill: rgba(233,215,176,.7); stroke: var(--ink); stroke-width: 1.2; }
+.compass-star { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+.banner .tails { fill: var(--parch-2); stroke: var(--ink); stroke-width: 1; }
 
 svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
 .room { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; filter: url(#wobble); }
@@ -83,7 +98,7 @@ svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
 .closing .walkers { opacity: 0; transition: opacity .4s; }
 .foot { fill: var(--ink); }
 .banner rect { fill: var(--parch); stroke: var(--ink); stroke-width: 1.4; }
-.banner text { font-family: "Homemade Apple", cursive; font-size: 13px; }
+.banner text { font-family: "Homemade Apple", cursive; font-size: 11px; }
 
 /* ---------- the incantation ---------- */
 .spell { width: min(560px, 92vw); display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
@@ -132,7 +147,7 @@ svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
         <text x="60" y="13" text-anchor="middle" font-size="9" fill="#3B2414" font-family="IM Fell English SC">N</text>
       </svg>
       <h1>The Marauder's Map</h1>
-      <p>of Andor's realm, its corridors and its comings and goings</p>
+      <p>of the city by the bay, its streets and its comings and goings</p>
       <div class="hand"><span class="ink-write" id="coverInk"></span></div>
     </div>
     <div class="fold-lines"></div>
@@ -144,7 +159,7 @@ svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
       <div class="panel c"><div class="leaf"></div></div>
       <div class="panel r"><div class="leaf"></div></div>
     </div>
-    <svg class="drawing" id="ink" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-label="Map of the realm"></svg>
+    <svg class="drawing" id="ink" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-label="Map of San Francisco"></svg>
   </div>
 
   <div class="spell">
@@ -159,101 +174,145 @@ svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
   </div>
 </div>
 
+<script src="realm.js"></script>
 <script>
 // ---------- the words ----------
 const OPEN = /solemnly\s+swear.*(up\s+to\s+)?no\s+good/i;
 const CLOSE = /mischief\s+managed?/i;
 const norm = (s) => s.toLowerCase().replace(/[^a-z\s]/g, " ").replace(/\s+/g, " ").trim();
 
-// ---------- the realm (made-up places and made-up wanderers: nothing here is a real location) ----------
-const ROOMS = [
-  // [label, x, y, w, h, kind]
-  ["The Workshop", 70, 90, 300, 210, ""], ["The Library of Notes", 440, 70, 320, 180, ""], ["The Observatory", 830, 90, 300, 220, ""],
-  ["The Great Hall", 360, 330, 480, 230, "big"], ["The Owlery", 70, 380, 220, 170, ""], ["The Kitchens", 930, 380, 200, 180, ""],
-  ["The Courtyard", 120, 640, 340, 230, ""], ["The Presidio Woods", 520, 640, 300, 260, ""], ["The Boathouse", 880, 660, 250, 200, ""],
-];
-const SMALL = [["where the code is forged", 220, 290], ["every meeting, remembered", 600, 245], ["the long view", 980, 300],
-  ["post comes and goes", 180, 540], ["kettle always on", 1030, 550], ["mind the eucalyptus", 670, 890]];
+// ---------- the realm: San Francisco, from the Presidio to the Embarcadero (OpenStreetMap, inked by hand-ish) ----------
+// Streets, parks, water and names are real (realm.js, built by scripts/marauders-build.py). The wanderers are MOCK:
+// made-up names walking real streets, until we decide what the map should really follow.
 const WALKERS = [
-  { name: "Anton", path: [[220, 200], [220, 320], [400, 450], [600, 420], [600, 160], [980, 200], [980, 460], [600, 470], [220, 200]], speed: 70 },
-  { name: "A Curious Cat", path: [[1030, 470], [880, 470], [880, 600], [700, 760], [600, 820], [300, 760], [300, 600], [1030, 470]], speed: 55 },
-  { name: "The Night Courier", path: [[180, 470], [360, 470], [520, 360], [760, 380], [1000, 760], [700, 720], [180, 470]], speed: 85 },
-  { name: "A Wandering Scholar", path: [[600, 150], [780, 150], [980, 150], [980, 250], [600, 250], [600, 150]], speed: 40 },
-];
-const PASSAGES = [[[370, 200], [440, 160]], [[760, 160], [830, 180]], [[290, 465], [360, 445]], [[840, 445], [930, 465]],
-  [[300, 560], [300, 640]], [[600, 560], [640, 640]], [[960, 560], [980, 660]]];
+  { name: "Anton", speed: 24 }, { name: "A Curious Cat", speed: 15 },
+  { name: "The Night Courier", speed: 30 }, { name: "A Wandering Scholar", speed: 12 },
+].map((w) => {
+  const r = REALM.routes[w.name];
+  return { ...w, path: r.concat(r.slice(0, -1).reverse()) };  // there and back again
+});
 
 const $ = (s) => document.querySelector(s);
 const ink = $("#ink");
 const NS = "http://www.w3.org/2000/svg";
 function el(tag, attrs, parent = ink) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; }
 
+let revealCircle, walkLayer, raf = 0, last = 0;
 function drawRealm() {
   ink.innerHTML = "";
-  const border = el("rect", { x: 22, y: 22, width: 1156, height: 956, class: "room thin draw", rx: 4 });
-  border.style.setProperty("--len", 4300);
-  for (const [name, x, y, w, h, kind] of ROOMS) {
-    const r = el("path", { d: `M${x} ${y} h${w} v${h} h${-w} Z`, class: "room draw" });
-    r.style.setProperty("--len", 2 * (w + h) + 40);
-    if (kind === "big") {  // pillars
-      for (let i = 1; i < 6; i++) { const c = el("circle", { cx: x + (w / 6) * i, cy: y + 40, r: 7, class: "room thin draw" }); c.style.setProperty("--len", 50); }
-    }
-    el("text", { x: x + w / 2, y: y + h / 2, "text-anchor": "middle", class: `label ${kind === "big" ? "big" : ""}` }).textContent = name;
+  const defs = el("defs", {});
+  const hatch = el("pattern", { id: "hatch", width: 7, height: 7, patternUnits: "userSpaceOnUse", patternTransform: "rotate(35)" }, defs);
+  el("line", { x1: 0, y1: 0, x2: 0, y2: 7, stroke: "rgba(59,36,20,.38)", "stroke-width": 1.1 }, hatch);
+  const waves = el("pattern", { id: "waves", width: 22, height: 9, patternUnits: "userSpaceOnUse" }, defs);
+  el("path", { d: "M0 5 Q 5.5 1 11 5 T 22 5", fill: "none", stroke: "rgba(59,36,20,.35)", "stroke-width": 0.9 }, waves);
+  const mask = el("mask", { id: "reveal", maskUnits: "userSpaceOnUse", x: -200, y: -200, width: 1600, height: 1400 }, defs);
+  el("rect", { x: -200, y: -200, width: 1600, height: 1400, fill: "black" }, mask);
+  revealCircle = el("circle", { cx: 600, cy: 500, r: 0, fill: "white", filter: "url(#bleed)" }, mask);
+  const bleed = el("filter", { id: "bleed", x: "-20%", y: "-20%", width: "140%", height: "140%" }, defs);
+  el("feTurbulence", { type: "fractalNoise", baseFrequency: ".018", numOctaves: 3, seed: 11, result: "t" }, bleed);
+  el("feDisplacementMap", { in: "SourceGraphic", in2: "t", scale: 90 }, bleed);
+
+  const realm = el("g", { mask: "url(#reveal)" });
+  const g = el("g", { filter: "url(#wobble)" }, realm);
+  const join = (arr) => arr.join(" ");
+  el("path", { d: join(REALM.water), class: "water" }, g);
+  el("path", { d: join(REALM.parks), class: "park" }, g);
+  el("path", { d: join(REALM.coast), class: "coast" }, g);
+  el("path", { d: join(REALM.minor), class: "st-minor" }, g);
+  el("path", { d: join(REALM.mid), class: "st-mid" }, g);
+  el("path", { d: join(REALM.major), class: "st-major" }, g);
+  el("rect", { x: 14, y: 14, width: 1172, height: 972, class: "frame" }, realm);
+  el("rect", { x: 22, y: 22, width: 1156, height: 956, class: "frame thin" }, realm);
+  for (const [name, x, y, kind] of REALM.labels) {
+    el("text", { x, y, "text-anchor": "middle", class: `label ${kind}` }).textContent = kind === "hood" ? name.replace("Marina District", "Marina").replace("Mission District", "Mission") : name;
   }
-  for (const [[x1, y1], [x2, y2]] of PASSAGES) {
-    const p = el("path", { d: `M${x1} ${y1} L${x2} ${y2}`, class: "room dash draw" }); p.style.setProperty("--len", 200);
-  }
-  // a winding secret passage
-  const sp = el("path", { d: "M70 960 C 300 900, 380 990, 520 930 S 820 990, 1130 940", class: "room dash draw" });
-  sp.style.setProperty("--len", 1300);
-  el("text", { x: 600, y: 985, "text-anchor": "middle", class: "label small" }).textContent = "a passage few remember";
-  for (const [t, x, y] of SMALL) el("text", { x, y, "text-anchor": "middle", class: "label small" }).textContent = t;
-  // compass
-  const g = el("g", { transform: "translate(1105 905)", class: "label" });
-  el("path", { d: "M0 -38 L7 -7 L38 0 L7 7 L0 38 L-7 7 L-38 0 L-7 -7 Z", fill: "none", stroke: "#3B2414", "stroke-width": 1.6 }, g);
-  el("text", { x: 0, y: -44, "text-anchor": "middle", "font-size": 14 }, g).textContent = "N";
+  // cartouche and compass
+  const c = el("g", { class: "label", transform: "translate(160 930)" });
+  el("rect", { x: -135, y: -42, width: 270, height: 62, rx: 4, class: "cartouche" }, c);
+  el("text", { x: 0, y: -12, "text-anchor": "middle", class: "carto-title" }, c).textContent = "San Francisco";
+  el("text", { x: 0, y: 10, "text-anchor": "middle", class: "carto-sub" }, c).textContent = "its streets, parks & byways";
+  const k = el("g", { transform: "translate(1110 900)", class: "label" });
+  el("circle", { r: 44, class: "compass" }, k);
+  el("path", { d: "M0 -40 L7 -7 L40 0 L7 7 L0 40 L-7 7 L-40 0 L-7 -7 Z", class: "compass-star" }, k);
+  el("text", { x: 0, y: -50, "text-anchor": "middle", "font-size": 15 }, k).textContent = "N";
   walkLayer = el("g", { class: "walkers" });
 }
 
+function reveal(to, ms, done) {
+  const from = +revealCircle.getAttribute("r"), t0 = performance.now();
+  const step = (now) => {
+    const k = Math.min(1, (now - t0) / ms), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    revealCircle.setAttribute("r", String(from + (to - from) * e));
+    if (k < 1) requestAnimationFrame(step); else done && done();
+  };
+  requestAnimationFrame(step);
+}
+
 // ---------- footprints ----------
-let walkLayer, raf = 0, last = 0;
-const state = WALKERS.map((w) => ({ ...w, seg: 0, t: 0, step: 0, dist: 0, banner: null, prints: [] }));
+const state = WALKERS.map((w) => ({ ...w, seg: Math.floor(Math.random() * 4), t: 0, step: 0, dist: 0, banner: null, prints: [] }));
 function footprint(x, y, ang, left) {
   const g = el("g", { transform: `translate(${x} ${y}) rotate(${ang})` }, walkLayer);
-  const off = left ? -7 : 7;
-  el("ellipse", { cx: off, cy: 0, rx: 5.2, ry: 8.5, class: "foot" }, g);
-  el("circle", { cx: off, cy: -12, r: 3.2, class: "foot" }, g);
+  const off = left ? -3.2 : 3.2;
+  el("ellipse", { cx: off, cy: 0, rx: 2.5, ry: 4.2, class: "foot" }, g);
+  el("circle", { cx: off, cy: -6, r: 1.6, class: "foot" }, g);
   return { g, born: performance.now() };
 }
 function banner(name) {
   const g = el("g", { class: "banner" }, walkLayer);
-  const w = name.length * 8.6 + 22;
-  el("rect", { x: -w / 2, y: -40, width: w, height: 22, rx: 3 }, g);
-  el("text", { x: 0, y: -24, "text-anchor": "middle" }, g).textContent = name;
+  const w = name.length * 7.2 + 18;
+  el("path", { d: `M${-w / 2 - 8} -31 L${-w / 2} -24 L${-w / 2 - 8} -17 L${-w / 2} -17 L${-w / 2} -31 Z M${w / 2 + 8} -31 L${w / 2} -24 L${w / 2 + 8} -17 L${w / 2} -17 L${w / 2} -31 Z`, class: "tails" }, g);
+  el("rect", { x: -w / 2, y: -34, width: w, height: 19, rx: 2 }, g);
+  el("text", { x: 0, y: -20.5, "text-anchor": "middle" }, g).textContent = name;
   return g;
 }
 function tick(now) {
   const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now;
   for (const w of state) {
     if (!w.banner) w.banner = banner(w.name);
-    const a = w.path[w.seg], b = w.path[(w.seg + 1) % w.path.length];
+    const n = w.path.length - 1;
+    const a = w.path[w.seg % n], b = w.path[(w.seg % n) + 1];
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
     w.t += (w.speed * dt) / len;
-    if (w.t >= 1) { w.t = 0; w.seg = (w.seg + 1) % (w.path.length - 1); continue; }
+    if (w.t >= 1) { w.t = 0; w.seg = (w.seg + 1) % n; continue; }
     const x = a[0] + (b[0] - a[0]) * w.t, y = a[1] + (b[1] - a[1]) * w.t;
     const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI + 90;
     w.dist += w.speed * dt;
-    if (w.dist > 26) { w.dist = 0; w.step ^= 1; w.prints.push(footprint(x, y, ang, w.step)); }
+    if (w.dist > 11) { w.dist = 0; w.step ^= 1; w.prints.push(footprint(x, y, ang, w.step)); }
     w.banner.setAttribute("transform", `translate(${x} ${y})`);
     w.prints = w.prints.filter((p) => {
       const age = (now - p.born) / 1000;
-      if (age > 4.5) { p.g.remove(); return false; }
-      p.g.setAttribute("opacity", String(Math.max(0, 1 - age / 4.5)));
+      if (age > 5) { p.g.remove(); return false; }
+      p.g.setAttribute("opacity", String(Math.max(0, 1 - age / 5)));
       return true;
     });
   }
   raf = requestAnimationFrame(tick);
 }
+
+// ---------- look around: drag to move, wheel or pinch to zoom ----------
+const VB = { x: 0, y: 0, w: 1200, h: 1000 };
+function setVB() { ink.setAttribute("viewBox", `${VB.x} ${VB.y} ${VB.w} ${VB.h}`); }
+function zoomAt(f, cx, cy) {
+  const nw = Math.min(1200, Math.max(240, VB.w * f)), k = nw / VB.w;
+  VB.x = cx - (cx - VB.x) * k; VB.y = cy - (cy - VB.y) * k; VB.w = nw; VB.h = nw / 1.2; clamp(); setVB();
+}
+function clamp() { VB.x = Math.min(1200 - VB.w, Math.max(0, VB.x)); VB.y = Math.min(1000 - VB.h, Math.max(0, VB.y)); }
+function toMap(ev) { const r = ink.getBoundingClientRect(); return [VB.x + (ev.clientX - r.left) / r.width * VB.w, VB.y + (ev.clientY - r.top) / r.height * VB.h]; }
+const pts = new Map(); let pinch = 0;
+ink.addEventListener("wheel", (e) => { if (!open) return; e.preventDefault(); const [x, y] = toMap(e); zoomAt(e.deltaY > 0 ? 1.15 : 1 / 1.15, x, y); }, { passive: false });
+ink.addEventListener("pointerdown", (e) => { if (!open) return; ink.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); });
+ink.addEventListener("pointermove", (e) => {
+  if (!pts.has(e.pointerId)) return;
+  const prev = pts.get(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+  const r = ink.getBoundingClientRect();
+  if (pts.size === 1) { VB.x -= (e.clientX - prev[0]) / r.width * VB.w; VB.y -= (e.clientY - prev[1]) / r.height * VB.h; clamp(); setVB(); return; }
+  const [p1, p2] = [...pts.values()], d = Math.hypot(p1[0] - p2[0], p1[1] - p2[1]);
+  if (pinch) { const mid = toMap({ clientX: (p1[0] + p2[0]) / 2, clientY: (p1[1] + p2[1]) / 2 }); zoomAt(pinch / d, mid[0], mid[1]); }
+  pinch = d;
+});
+const up = (e) => { pts.delete(e.pointerId); if (pts.size < 2) pinch = 0; };
+ink.addEventListener("pointerup", up); ink.addEventListener("pointercancel", up);
+ink.addEventListener("dblclick", () => { Object.assign(VB, { x: 0, y: 0, w: 1200, h: 1000 }); setVB(); });
 
 // ---------- opening and closing ----------
 let open = false;
@@ -273,10 +332,10 @@ function openMap() {
     m.classList.add("show");
     m.classList.remove("closing", "inked", "unfolded");
     requestAnimationFrame(() => requestAnimationFrame(() => m.classList.add("unfolded")));
-    setTimeout(() => ink.classList.add("inked"), 900);
+    setTimeout(() => { ink.classList.add("inked"); reveal(980, 2600); }, 900);
     setTimeout(() => { last = 0; raf = requestAnimationFrame(tick); }, 2600);
     $("#wandLabel").textContent = "Speak to close it";
-    $("#hint").textContent = "Say the other words when you're done.";
+    $("#hint").textContent = "Drag to look around, pinch or scroll to zoom. Say the other words when you're done.";
   }, 2300);
 }
 function closeMap() {
@@ -286,6 +345,8 @@ function closeMap() {
   ink.classList.add("closing");
   ink.classList.remove("inked");
   cancelAnimationFrame(raf);
+  reveal(0, 1100);
+  Object.assign(VB, { x: 0, y: 0, w: 1200, h: 1000 }); setVB();
   setTimeout(() => m.classList.remove("unfolded"), 900);
   setTimeout(() => {
     m.classList.remove("show");
