@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0B09">
+<meta name="robots" content="noindex">
+<meta name="description" content="A diary that writes back.">
+<title>The Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=IM+Fell+English:ital@0;1&family=La+Belle+Aurore&display=swap">
+<style>
+/* A small black diary, open on a desk by candlelight. Write on the right-hand page: your ink sinks into the paper and
+   vanishes, then an answer rises in another hand, lingers, and sinks away too. */
+:root {
+  color-scheme: dark;
+  --desk: #0E0B09; --leather: #17120F; --leather-hi: #2A211B;
+  --paper: #EDE3CC; --paper-2: #DDD0B1; --paper-edge: #B9A57D;
+  --ink-mine: #1F2A44; --ink-his: #2B1A10; --muted: #8C7B5E; --gilt: #A88B4A;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: radial-gradient(ellipse at 50% 35%, #2A1E14 0%, var(--desk) 60%); color: var(--paper);
+  font-family: "IM Fell English", Georgia, serif; display: grid; place-items: center; padding: 24px 12px; }
+.desk { width: min(980px, 100%); display: grid; gap: 18px; justify-items: center; }
+.book { position: relative; width: 100%; display: grid; grid-template-columns: 1fr 1fr; padding: 14px;
+  background: linear-gradient(135deg, var(--leather-hi), var(--leather) 40%, #0B0807); border-radius: 10px 14px 14px 10px;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.04); }
+.book::after { content: ""; position: absolute; left: 50%; top: 10px; bottom: 10px; width: 26px; transform: translateX(-50%);
+  background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(0,0,0,0) 40%, rgba(0,0,0,0) 60%, rgba(0,0,0,.35)); pointer-events: none; }
+.page { position: relative; min-height: min(70vh, 620px); padding: 34px 32px; background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.45), transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(120,90,40,.25), transparent 55%),
+    repeating-linear-gradient(0deg, transparent 0 33px, rgba(120,95,55,.07) 33px 34px),
+    linear-gradient(180deg, var(--paper), var(--paper-2));
+  box-shadow: inset 0 0 40px rgba(110,80,30,.35); }
+.page.left { border-radius: 4px 0 0 4px; } .page.right { border-radius: 0 4px 4px 0; }
+.left { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--ink-his); }
+.left .owner { font-family: "IM Fell English", serif; font-style: italic; font-size: 15px; color: var(--muted); }
+.left .name { font-family: "La Belle Aurore", cursive; font-size: clamp(26px, 5vw, 40px); margin: 6px 0 10px; color: #3A2616; opacity: .85; }
+.left .date { font-size: 13px; letter-spacing: .2em; color: var(--muted); }
+.left .rule { width: 60%; height: 1px; background: var(--paper-edge); margin: 18px 0; opacity: .6; }
+.left p.hint { font-size: 15px; color: #6E5B3E; max-width: 26ch; line-height: 1.5; font-style: italic; }
+.right { display: flex; flex-direction: column; }
+.ink { flex: 1; font-size: clamp(22px, 3.4vw, 30px); line-height: 34px; white-space: pre-wrap; word-break: break-word; }
+.ink .mine { font-family: "Cedarville Cursive", cursive; color: var(--ink-mine); font-size: .82em; }
+.ink .his { font-family: "La Belle Aurore", cursive; color: var(--ink-his); }
+.ink span.c { opacity: 0; filter: blur(3px); transition: opacity .45s ease, filter .6s ease; }
+.ink span.c.on { opacity: 1; filter: blur(0); }
+.sink { animation: sink 2.4s ease-in forwards; }
+@keyframes sink { 0% { opacity: 1; filter: blur(0); } 40% { opacity: .85; filter: blur(.4px); } 100% { opacity: 0; filter: blur(4px); transform: translateY(2px); } }
+textarea { width: 100%; resize: none; border: 0; outline: none; background: transparent; color: var(--ink-mine);
+  font: 24px/34px "Cedarville Cursive", cursive; min-height: 102px; caret-color: var(--ink-mine); }
+textarea::placeholder { color: rgba(43,26,16,.35); font-family: "IM Fell English", serif; font-style: italic; font-size: 18px; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); font-style: italic; }
+.quill { border: 0; background: none; color: var(--ink-his); font: italic 16px "IM Fell English", serif; cursor: pointer; padding: 6px 2px; }
+.quill:focus-visible, textarea:focus-visible { outline: 1px dashed rgba(43,26,16,.35); outline-offset: 4px; }
+.below { font-size: 14px; color: rgba(237,227,204,.5); text-align: center; max-width: 60ch; }
+.below a { color: var(--gilt); }
+.blot { position: absolute; width: 90px; height: 70px; right: 40px; bottom: 60px; background: radial-gradient(ellipse, rgba(30,20,12,.18), transparent 70%); border-radius: 50%; pointer-events: none; }
+@media (max-width: 720px) { .book { grid-template-columns: 1fr; } .book::after { display: none; } .page.left { display: none; } .page.right { border-radius: 4px; min-height: 70vh; } }
+@media (prefers-reduced-motion: reduce) { .sink { animation-duration: .4s; } .ink span.c { transition: none; } }
+</style>
+</head>
+<body>
+<main class="desk">
+  <div class="book">
+    <section class="page left" aria-hidden="true">
+      <span class="owner">this diary belongs to</span>
+      <span class="name">a student, long ago</span>
+      <span class="date">FIFTY YEARS AGO</span>
+      <span class="rule"></span>
+      <p class="hint">Every other page is blank. Write something on the right, and wait.</p>
+    </section>
+    <section class="page right">
+      <div class="ink" id="ink" aria-live="polite"></div>
+      <textarea id="pen" rows="3" placeholder="Write here, then press Enter…" aria-label="Write in the diary" maxlength="400"></textarea>
+      <div class="foot"><span id="state"></span><button class="quill" id="send" type="button">✒ Write</button></div>
+      <div class="blot"></div>
+    </section>
+  </div>
+  <p class="below">A diary that writes back, from the <a href="/magic/">Roadmap to Magic</a>. What you write is sent to an AI to answer and isn't kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/diary";
+const ink = document.getElementById("ink"), pen = document.getElementById("pen"), state = document.getElementById("state");
+const history = [];
+let busy = false;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+function write(text, cls, speed) {
+  const line = document.createElement("div"); line.className = cls; ink.replaceChildren(line);
+  [...text].forEach((ch, i) => { const s = document.createElement("span"); s.className = "c"; s.textContent = ch; line.appendChild(s);
+    setTimeout(() => s.classList.add("on"), i * speed); });
+  return wait(text.length * speed + 500).then(() => line);
+}
+async function send() {
+  const text = pen.value.trim();
+  if (!text || busy) return;
+  busy = true; pen.value = ""; pen.disabled = true;
+  const mine = await write(text, "mine", 0);
+  mine.querySelectorAll(".c").forEach((s) => s.classList.add("on"));
+  await wait(700); mine.classList.add("sink"); state.textContent = "The ink sinks into the page…";
+  let reply;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ history, text }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || "The page stays blank.");
+    reply = d.reply;
+    history.push({ who: "me", text }, { who: "diary", text: reply });
+  } catch (e) {
+    reply = null; state.textContent = e.message === "Failed to fetch" ? "The page stays blank. (Your network may be blocking the magic.)" : e.message;
+  }
+  await wait(1800);
+  ink.replaceChildren();
+  if (reply) {
+    state.textContent = "";
+    const his = await write(reply, "his", 55);
+    await wait(Math.max(3500, reply.length * 60));
+    his.classList.add("sink");
+    await wait(2400); ink.replaceChildren();
+  }
+  busy = false; pen.disabled = false; pen.focus();
+}
+pen.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+document.getElementById("send").addEventListener("click", send);
+pen.focus();
+</script>
+</body>
+</html>

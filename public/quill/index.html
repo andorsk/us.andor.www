@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2A1530">
+<meta name="robots" content="noindex">
+<meta name="description" content="A quill that takes dictation and writes on its own.">
+<title>Quick-Quotes Quill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Mrs+Saint+Delafield&display=swap">
+<style>
+/* A reporter's notepad and a long acid-green quill that writes by itself: in your words while you talk, then in its
+   own breathless, florid way when you let it loose. */
+:root { color-scheme: dark; --room: #2A1530; --room-2: #160A1A; --pad: #F3EBC9; --pad-line: rgba(80,110,160,.22); --margin: rgba(200,60,80,.35);
+  --acid: #3FBF1F; --acid-hi: #7CFF3A; --ink: #2E2418; --muted: #C9B6D6; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 40% 15%, #4A2655 0%, var(--room) 45%, var(--room-2) 100%); color: var(--pad);
+  font-family: "IM Fell English", Georgia, serif; display: grid; justify-items: center; padding: 24px 14px 48px; }
+main { width: min(720px, 100%); display: grid; gap: 14px; }
+h1 { font: 400 clamp(28px, 6vw, 42px) "IM Fell English SC", serif; margin: 0; text-align: center; }
+.sub { text-align: center; color: var(--muted); font-style: italic; margin: 0; }
+.pad { position: relative; min-height: 420px; padding: 54px 26px 28px 66px; border-radius: 4px 4px 8px 8px; color: var(--ink);
+  background: linear-gradient(90deg, transparent 52px, var(--margin) 52px, var(--margin) 54px, transparent 54px),
+    repeating-linear-gradient(180deg, transparent 0 39px, var(--pad-line) 39px 40px), linear-gradient(180deg, #F8F1D6, var(--pad));
+  background-position: 0 0, 0 22px, 0 0; box-shadow: 0 30px 60px rgba(0,0,0,.5); }
+.pad::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 22px; background: repeating-linear-gradient(90deg, #8C7F6A 0 3px, transparent 3px 24px);
+  border-radius: 4px 4px 0 0; opacity: .5; }
+.text { font: 34px/40px "Mrs Saint Delafield", cursive; white-space: pre-wrap; word-break: break-word; min-height: 80px; }
+.text.green { color: #1E7A0E; text-shadow: 0 0 1px rgba(60,190,30,.4); }
+.text .live { color: #6D6352; }
+.quill { position: absolute; width: 110px; height: 110px; left: 70px; top: 30px; pointer-events: none; transition: left .25s ease, top .25s ease;
+  transform-origin: 8% 92%; animation: bob 1.4s ease-in-out infinite; filter: drop-shadow(0 6px 6px rgba(0,0,0,.25)); }
+.writing .quill { animation: scribble .18s linear infinite; }
+@keyframes bob { 50% { transform: translateY(-6px) rotate(-2deg); } }
+@keyframes scribble { 0% { transform: rotate(-3deg) translateX(0); } 50% { transform: rotate(3deg) translateX(3px); } 100% { transform: rotate(-3deg) translateX(0); } }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.btn { border: 1px solid rgba(243,235,201,.35); background: rgba(243,235,201,.06); color: var(--pad); font: inherit; font-size: 17px; padding: 10px 20px; border-radius: 999px; cursor: pointer; }
+.btn.acid { border-color: var(--acid); color: var(--acid-hi); box-shadow: 0 0 18px rgba(63,191,31,.25); }
+.btn.listening { box-shadow: 0 0 0 6px rgba(124,255,58,.1), 0 0 26px rgba(124,255,58,.45); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn:focus-visible, textarea:focus-visible { outline: 2px solid var(--acid-hi); outline-offset: 3px; }
+textarea { width: 100%; min-height: 70px; background: rgba(243,235,201,.06); border: 1px solid rgba(243,235,201,.25); border-radius: 10px; color: var(--pad);
+  font: 18px "IM Fell English", serif; padding: 10px 12px; resize: vertical; }
+.note { text-align: center; color: var(--muted); font-style: italic; min-height: 1.4em; margin: 0; }
+.foot { font-size: 13px; color: rgba(243,235,201,.45); text-align: center; }
+.foot a { color: var(--acid-hi); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Quick-Quotes Quill</h1>
+  <p class="sub">Talk, and it takes it down. Then let it loose, and it writes the story it would rather tell.</p>
+  <div class="pad" id="pad">
+    <div class="text" id="text" aria-live="polite"></div>
+    <svg class="quill" id="quill" viewBox="0 0 110 110" aria-hidden="true">
+      <defs><linearGradient id="vane" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2E9A12"/><stop offset=".55" stop-color="#5BE02A"/><stop offset="1" stop-color="#A6FF6A"/></linearGradient></defs>
+      <path d="M8 102 L22 86" stroke="#3A2A12" stroke-width="3" stroke-linecap="round"/>
+      <path d="M20 88 C 30 60, 55 30, 104 4 C 86 34, 62 62, 26 92 Z" fill="url(#vane)"/>
+      <path d="M22 88 C 45 60, 72 32, 104 4" stroke="#1E6A0A" stroke-width="1.4" fill="none"/>
+      <path d="M40 70 l-10 2 M52 56 l-11 1 M64 43 l-11 0 M76 31 l-10 -1 M50 66 l2 -10 M62 52 l3 -10 M74 39 l3 -10" stroke="#2E9A12" stroke-width="1" />
+    </svg>
+  </div>
+  <div class="controls">
+    <button class="btn" id="talk" type="button">● Dictate</button>
+    <button class="btn acid" id="loose" type="button" disabled>✒ Let the quill write it</button>
+    <button class="btn" id="clear" type="button">New page</button>
+  </div>
+  <textarea id="typed" placeholder="…or write your notes here (who, what, where)" maxlength="800"></textarea>
+  <p class="note" id="note"></p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Dictation runs in your browser; "Let the quill write it" sends your notes to an AI. Nothing is kept.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/quill";
+const $ = (s) => document.querySelector(s);
+let notes = "", live = "";
+function show(green = false) {
+  const t = $("#text"); t.classList.toggle("green", green);
+  t.innerHTML = ""; t.append(document.createTextNode(notes + (notes && live ? " " : "")));
+  if (live) { const s = document.createElement("span"); s.className = "live"; s.textContent = live; t.append(s); }
+  follow();
+  $("#loose").disabled = !(notes.trim() || $("#typed").value.trim());
+}
+function follow() {   // the quill hovers where the writing ends
+  const t = $("#text"), mark = document.createElement("span"); mark.textContent = "\u200b"; t.append(mark);
+  const rc = mark.getBoundingClientRect(), pr = $("#pad").getBoundingClientRect(); mark.remove();
+  $("#quill").style.left = `${Math.max(56, Math.min(pr.width - 120, rc.right - pr.left - 6))}px`;
+  $("#quill").style.top = `${rc.top - pr.top - 96}px`;
+}
+async function writeOut(text) {   // the quill writes its own version, letter by letter
+  notes = ""; live = ""; $("#pad").classList.add("writing");
+  for (const ch of text) { notes += ch; show(true); await new Promise((r) => setTimeout(r, ch === " " ? 18 : 30)); }
+  $("#pad").classList.remove("writing");
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null;
+$("#talk").addEventListener("click", () => {
+  if (!SR) { $("#typed").focus(); $("#note").textContent = "Your browser can't take dictation; write your notes below."; return; }
+  if (rec) { rec.stop(); return; }
+  rec = new SR(); rec.lang = "en-GB"; rec.interimResults = true; rec.continuous = true;
+  rec.onstart = () => { $("#talk").classList.add("listening"); $("#talk").textContent = "■ Stop"; $("#pad").classList.add("writing"); };
+  rec.onend = () => { rec = null; $("#talk").classList.remove("listening"); $("#talk").textContent = "● Dictate"; live = ""; show(); $("#pad").classList.remove("writing"); };
+  rec.onresult = (e) => {
+    live = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const r = e.results[i]; if (r.isFinal) notes = (notes + " " + r[0].transcript.trim()).trim(); else live += r[0].transcript;
+    }
+    show();
+  };
+  rec.start();
+});
+$("#typed").addEventListener("input", () => { $("#loose").disabled = !($("#typed").value.trim() || notes.trim()); });
+$("#loose").addEventListener("click", async () => {
+  const text = [notes, $("#typed").value].filter((x) => x.trim()).join(". ");
+  $("#loose").disabled = true; $("#note").textContent = "The quill quivers with excitement…"; $("#pad").classList.add("writing");
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || "The quill has gone on strike.");
+    $("#note").textContent = ""; await writeOut(d.text);
+  } catch (e) { $("#note").textContent = e.message === "Failed to fetch" ? "The quill can't reach its newsroom. Try again in a moment." : e.message; $("#pad").classList.remove("writing"); }
+  $("#loose").disabled = false;
+});
+$("#clear").addEventListener("click", () => { notes = ""; live = ""; $("#typed").value = ""; show(); $("#note").textContent = ""; });
+window.addEventListener("resize", follow);
+show();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0C10">
+<meta name="robots" content="noindex">
+<meta name="description" content="A door that opens to a spoken password.">
+<title>The Doors of Durin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Noto+Sans+Runic&display=swap">
+<style>
+/* A sheer wall of dark stone under the moon. Silver lines, invisible by day, draw an arch, two trees, a crown and
+   seven stars. Speak the password and the lines blaze, the door parts down the middle, and the halls open. */
+:root { color-scheme: dark; --stone: #1A1D22; --stone-2: #23272E; --silver: #CFE0F5; --glow: rgba(170,205,255,.75); --muted: #8D97A8; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--silver); font-family: "IM Fell English", Georgia, serif; display: grid; justify-items: center;
+  padding: 22px 14px 40px; background: radial-gradient(ellipse at 50% 0%, #2A3245 0%, #0A0C10 60%); }
+main { width: min(720px, 100%); display: grid; gap: 16px; justify-items: center; text-align: center; }
+.wall { position: relative; width: 100%; aspect-ratio: .82; border-radius: 6px; overflow: hidden; perspective: 1400px;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 120px), repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 2px, transparent 2px 170px),
+  radial-gradient(ellipse at 50% 30%, var(--stone-2), var(--stone) 70%); box-shadow: inset 0 0 120px rgba(0,0,0,.75), 0 30px 60px rgba(0,0,0,.6); filter: url(#rock); }
+.halls { position: absolute; left: 25%; right: 25%; top: 22%; bottom: 6%; border-radius: 48% 48% 0 0 / 22% 22% 0 0; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 100%, #3A2A12 0%, #0A0806 70%); display: grid; place-items: center; }
+.halls a { color: #F2C77A; font: 400 clamp(15px, 3.4vw, 19px) "IM Fell English SC", serif; text-decoration: none; letter-spacing: .06em; opacity: 0; transition: opacity 1.4s 1.6s;
+  text-shadow: 0 0 14px rgba(242,199,122,.6); padding: 10px; }
+.open .halls a { opacity: 1; }
+.leaf { position: absolute; top: 22%; bottom: 6%; width: 25%; background: radial-gradient(ellipse at 50% 30%, var(--stone-2), var(--stone) 80%);
+  transition: transform 2.2s cubic-bezier(.3,.1,.2,1) .9s; }
+.leaf.l { left: 25%; transform-origin: left center; border-radius: 96% 0 0 0 / 22% 0 0 0; }
+.leaf.r { right: 25%; transform-origin: right center; border-radius: 0 96% 0 0 / 0 22% 0 0; }
+.open .leaf.l { transform: rotateY(78deg); } .open .leaf.r { transform: rotateY(-78deg); }
+svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ith { fill: none; stroke: var(--silver); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px var(--glow));
+  stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .55; transition: opacity 1.2s, filter 1.2s; }
+.drawn .ith { animation: draw 5s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.blaze .ith { opacity: 1; filter: drop-shadow(0 0 10px var(--glow)) drop-shadow(0 0 22px var(--glow)); }
+.open svg.lines .leafline { opacity: 0; transition: opacity .6s .6s; }
+.inscr { font-family: "Noto Sans Runic", sans-serif; fill: var(--silver); font-size: 17px; letter-spacing: 3px; opacity: 0; transition: opacity 2s 3s; filter: drop-shadow(0 0 4px var(--glow)); }
+.drawn .inscr { opacity: .7; } .blaze .inscr { opacity: 1; }
+h1 { font: 400 clamp(26px, 6vw, 40px) "IM Fell English SC", serif; margin: 0; letter-spacing: .04em; }
+.riddle { font-style: italic; color: var(--muted); margin: 0; font-size: 18px; }
+.speak { border: 1px solid rgba(207,224,245,.35); background: rgba(207,224,245,.06); color: var(--silver); font: inherit; font-size: 18px; padding: 11px 22px; border-radius: 999px; cursor: pointer; }
+.speak.listening { box-shadow: 0 0 0 6px rgba(207,224,245,.08), 0 0 30px var(--glow); }
+.speak:focus-visible, input:focus-visible { outline: 2px solid var(--silver); outline-offset: 3px; }
+.heard { min-height: 1.4em; font-style: italic; color: var(--muted); }
+.typed { display: flex; gap: 8px; width: min(420px, 100%); }
+.typed input { flex: 1; min-width: 0; background: transparent; border: 0; border-bottom: 1px solid rgba(207,224,245,.35); color: var(--silver); font: italic 18px "IM Fell English", serif; padding: 8px 4px; }
+.typed button { background: none; border: 0; color: var(--silver); font: inherit; cursor: pointer; }
+.foot { font-size: 13px; color: rgba(207,224,245,.45); }
+.foot a { color: var(--silver); }
+.shake { animation: shake .45s; } @keyframes shake { 25%,75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rock"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="4" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 .1  0 0 0 0 .11  0 0 0 0 .13  0 0 0 .55 0" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in" result="gg"/><feBlend in="SourceGraphic" in2="gg" mode="multiply"/></filter></svg>
+<main>
+  <h1>The Doors of Durin</h1>
+  <p class="riddle">The lines show only under the moon. Speak, friend, and enter.</p>
+  <div class="wall" id="wall">
+    <div class="halls"><a href="/magic/?made=built">Enter the hall of spells →</a></div>
+    <div class="leaf l"></div><div class="leaf r"></div>
+    <svg class="lines" viewBox="0 0 820 1000" aria-hidden="true">
+      <!-- arch and pillars -->
+      <path class="ith" pathLength="1" d="M205 940 L205 330 Q205 180 410 160 Q615 180 615 330 L615 940"/>
+      <path class="ith" pathLength="1" d="M225 940 L225 335 Q228 205 410 186 Q592 205 595 335 L595 940"/>
+      <path class="ith" pathLength="1" d="M190 330 h50 M580 330 h50 M190 940 h50 M580 940 h50"/>
+      <!-- the seam where the door parts -->
+      <path class="ith leafline" pathLength="1" d="M410 186 L410 940"/>
+      <!-- two trees -->
+      <path class="ith" pathLength="1" d="M265 930 C 262 780, 275 640, 300 520 M300 520 C 285 470, 255 450, 240 410 M300 520 C 318 470, 345 455, 360 420 M300 600 C 270 570, 255 560, 245 540 M300 600 C 330 575, 345 565, 352 548"/>
+      <path class="ith" pathLength="1" d="M555 930 C 558 780, 545 640, 520 520 M520 520 C 535 470, 565 450, 580 410 M520 520 C 502 470, 475 455, 460 420 M520 600 C 550 570, 565 560, 575 540 M520 600 C 490 575, 475 565, 468 548"/>
+      <!-- the anvil and hammer, the crown, seven stars, and the great star -->
+      <path class="ith" pathLength="1" d="M370 470 h80 l-12 22 h-56 Z M395 492 v28 h30 v-28 M425 440 l20 -24 M440 410 l14 14"/>
+      <path class="ith" pathLength="1" d="M375 330 l10 -28 l12 18 l13 -24 l13 24 l12 -18 l10 28 Z"/>
+      <path class="ith" pathLength="1" d="M410 640 l12 34 l36 2 l-28 22 l10 34 l-30 -20 l-30 20 l10 -34 l-28 -22 l36 -2 Z"/>
+      <path class="ith" pathLength="1" d="M300 270 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M340 240 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M375 222 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M410 216 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M445 222 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M480 240 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M520 270 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0"/>
+      <!-- inscription around the arch -->
+      <path id="arc" d="M240 330 Q240 150 410 135 Q580 150 580 330" fill="none"/>
+      <text class="inscr"><textPath href="#arc" startOffset="50%" text-anchor="middle" id="inscr"></textPath></text>
+    </svg>
+  </div>
+  <button class="speak" id="speak" type="button">✦ Speak the password</button>
+  <p class="heard" id="heard"></p>
+  <div class="typed"><input id="typedIn" placeholder="…or write it" aria-label="The password" autocomplete="off"><button id="typedGo" type="button">Say it</button></div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Your voice is turned into text by your own browser.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const R = { a: "ᚨ", b: "ᛒ", c: "ᚲ", d: "ᛞ", e: "ᛖ", f: "ᚠ", g: "ᚷ", h: "ᚺ", i: "ᛁ", k: "ᚲ", l: "ᛚ", m: "ᛗ", n: "ᚾ", o: "ᛟ", p: "ᛈ", r: "ᚱ", s: "ᛊ", t: "ᛏ", u: "ᚢ", w: "ᚹ", y: "ᛃ" };
+$("#inscr").textContent = "the doors of the realm open to friends speak and enter".split("").map((c) => R[c] ?? (c === " " ? "᛫" : "")).join("");
+requestAnimationFrame(() => $("#wall").classList.add("drawn"));
+const PASS = /\b(mellon|friend|friends)\b/i;
+let opened = false;
+function say(t) {
+  $("#heard").textContent = t ? `“${t}”` : "";
+  if (opened || !t.trim()) return;
+  if (PASS.test(t)) { opened = true; const w = $("#wall"); w.classList.add("blaze"); setTimeout(() => w.classList.add("open"), 700);
+    $("#speak").textContent = "The doors are open"; $("#speak").disabled = true; }
+  else { $("#wall").classList.remove("shake"); void $("#wall").offsetWidth; $("#wall").classList.add("shake");
+    $("#heard").textContent = `“${t}” …the stone does not move.`; }
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec;
+$("#speak").addEventListener("click", () => {
+  if (!SR) { $("#typedIn").focus(); $("#heard").textContent = "Your browser can't hear you; write the password instead."; return; }
+  rec = new SR(); rec.lang = "en-GB"; rec.interimResults = false; rec.maxAlternatives = 4;
+  rec.onstart = () => $("#speak").classList.add("listening");
+  rec.onend = () => $("#speak").classList.remove("listening");
+  rec.onresult = (e) => { const alts = [...e.results[0]].map((a) => a.transcript); say(alts.find((a) => PASS.test(a)) || alts[0]); };
+  rec.start();
+});
+$("#typedGo").addEventListener("click", () => { say($("#typedIn").value); $("#typedIn").value = ""; });
+$("#typedIn").addEventListener("keydown", (e) => { if (e.key === "Enter") { say(e.target.value); e.target.value = ""; } });
+</script>
+</body>
+</html>

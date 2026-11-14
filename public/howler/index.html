@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1B0F0C">
+<meta name="robots" content="noindex">
+<meta name="description" content="Someone has sent you a Howler.">
+<title>Howler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Homemade+Apple&display=swap">
+<style>
+/* A scarlet envelope with a black wax seal. Write one and get a link; open one and it shakes, bursts open, shouts its
+   message at you in a furious voice, and tears itself to shreds. */
+:root { color-scheme: dark; --hall: #1B0F0C; --red: #A3161A; --red-hi: #C8262B; --red-lo: #6E0B0E; --wax: #1A1414;
+  --paper: #EFE3C8; --ink: #2B1810; --muted: #B79E86; --gold: #C9A55A; }
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0; background: radial-gradient(ellipse at 50% 25%, #3A1E14 0%, var(--hall) 60%); color: var(--paper);
+  font-family: "IM Fell English", Georgia, serif; display: grid; place-items: center; padding: 28px 16px 48px; }
+main { width: min(560px, 100%); display: grid; gap: 18px; justify-items: center; text-align: center; }
+h1 { font-family: "IM Fell English SC", serif; font-weight: 400; font-size: clamp(30px, 7vw, 44px); margin: 0; letter-spacing: .03em; }
+.sub { color: var(--muted); font-style: italic; margin: 0; font-size: 17px; }
+.env { position: relative; width: min(420px, 90vw); aspect-ratio: 1.55; filter: drop-shadow(0 26px 30px rgba(0,0,0,.55)); cursor: default; }
+.env .body { position: absolute; inset: 0; background: linear-gradient(160deg, var(--red-hi), var(--red) 45%, var(--red-lo));
+  border-radius: 6px; overflow: hidden; }
+.env .body::before, .env .body::after { content: ""; position: absolute; bottom: 0; width: 60%; height: 100%; background: rgba(0,0,0,.12); }
+.env .body::before { left: 0; clip-path: polygon(0 0, 100% 62%, 0 100%); } .env .body::after { right: 0; clip-path: polygon(100% 0, 0 62%, 100% 100%); }
+.env .flap { position: absolute; left: 0; right: 0; top: 0; height: 62%; background: linear-gradient(180deg, #B81C21, #8C1014);
+  clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .5s cubic-bezier(.3,1.6,.5,1); border-radius: 6px 6px 0 0; }
+.env .seal { position: absolute; left: 50%; top: 52%; width: 22%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 30%, #4A3B3B, var(--wax) 60%); border-radius: 46% 54% 50% 50%; box-shadow: 0 3px 8px rgba(0,0,0,.5);
+  display: grid; place-items: center; color: #5E4C4C; font: 400 clamp(20px, 5vw, 30px) "IM Fell English SC", serif; }
+.env .to { position: absolute; left: 8%; bottom: 10%; font-family: "Homemade Apple", cursive; color: #F4D8C8; font-size: clamp(14px, 3.6vw, 19px); text-shadow: 0 1px 0 rgba(0,0,0,.3); }
+.env.twitch { animation: twitch .5s ease-in-out infinite; cursor: pointer; }
+@keyframes twitch { 0%,100% { transform: rotate(0) translateY(0); } 20% { transform: rotate(-3deg) translateY(-6px); } 40% { transform: rotate(2.5deg); } 60% { transform: rotate(-1.5deg) translateY(-3px); } 80% { transform: rotate(1deg); } }
+.env { transition: margin-top .45s ease; }
+.env.open { margin-top: clamp(80px, 26vw, 170px); }
+.env.open .flap { transform: rotateX(180deg) translateY(4px); z-index: 0; }
+.env .body { z-index: 1; } .env .mouth, .env .seal, .env .to, .env .shreds { z-index: 2; }
+.env.open .seal { opacity: 0; transition: opacity .3s; }
+.env.shout { animation: shout .16s linear infinite; }
+@keyframes shout { 0%,100% { transform: translate(0,0) scale(1.02); } 25% { transform: translate(-3px,1px) scale(1.04); } 50% { transform: translate(2px,-2px) scale(1.01); } 75% { transform: translate(-1px,2px) scale(1.05); } }
+.mouth { position: absolute; left: 50%; top: 18%; width: 46%; height: 30%; transform: translateX(-50%) scaleY(.1); background: radial-gradient(ellipse at 50% 30%, #2A0405, #0A0101 70%);
+  border-radius: 50% 50% 45% 45% / 30% 30% 70% 70%; transition: transform .2s; opacity: 0; }
+.env.shout .mouth { opacity: 1; animation: jaw .22s ease-in-out infinite; }
+@keyframes jaw { 0%,100% { transform: translateX(-50%) scaleY(.55); } 50% { transform: translateX(-50%) scaleY(1); } }
+.words { min-height: 3.6em; font-family: "IM Fell English SC", serif; font-size: clamp(20px, 5.4vw, 30px); line-height: 1.25; color: #FFE7DA;
+  text-shadow: 0 0 14px rgba(255,80,60,.55); letter-spacing: .02em; max-width: 30ch; }
+.words.loud { animation: loud .2s linear infinite; }
+@keyframes loud { 50% { transform: scale(1.03) rotate(-.6deg); } }
+.shreds { position: absolute; inset: 0; pointer-events: none; }
+.shreds i { position: absolute; width: 14%; height: 12%; background: var(--red); border-radius: 2px; opacity: 0; }
+.env.burst .body, .env.burst .flap, .env.burst .seal, .env.burst .mouth, .env.burst .to { opacity: 0; transition: opacity .2s; }
+.env.burst .shreds i { animation: fly 1.4s ease-out forwards; }
+@keyframes fly { 0% { opacity: 1; transform: translate(0,0) rotate(0); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--r)); } }
+.btn { border: 1px solid rgba(239,227,200,.4); background: rgba(239,227,200,.07); color: var(--paper); font: inherit; font-size: 18px;
+  padding: 11px 22px; border-radius: 999px; cursor: pointer; }
+.btn:hover { background: rgba(239,227,200,.13); }
+.btn:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+form { width: 100%; display: grid; gap: 12px; text-align: left; }
+label { font-size: 15px; color: var(--muted); display: grid; gap: 6px; }
+input, textarea { width: 100%; background: rgba(239,227,200,.06); border: 1px solid rgba(239,227,200,.25); border-radius: 10px; color: var(--paper);
+  font: 18px "IM Fell English", serif; padding: 10px 12px; }
+textarea { min-height: 96px; resize: vertical; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
+.link { width: 100%; display: flex; gap: 8px; align-items: center; background: rgba(239,227,200,.08); border-radius: 10px; padding: 10px 12px; }
+.link code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-size: 14px; color: var(--paper); }
+.note { color: var(--muted); font-size: 15px; font-style: italic; min-height: 1.4em; }
+.foot { font-size: 13px; color: rgba(239,227,200,.45); }
+.foot a { color: var(--gold); }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .env.twitch, .env.shout, .words.loud, .env.shout .mouth { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">Send a Howler</h1>
+  <p class="sub" id="sub">A letter that shouts its message out loud, at whoever opens it.</p>
+
+  <div class="env" id="env" aria-label="A red envelope">
+    <div class="body"></div><div class="mouth"></div><div class="flap"></div><div class="seal">H</div>
+    <div class="to" id="envTo"></div><div class="shreds" id="shreds"></div>
+  </div>
+  <div class="words" id="words" aria-live="assertive"></div>
+
+  <form id="compose">
+    <div class="row">
+      <label>To<input id="to" maxlength="40" placeholder="Ron" required></label>
+      <label>From<input id="from" maxlength="40" placeholder="Mum"></label>
+    </div>
+    <label>What should it shout?<textarea id="text" maxlength="400" placeholder="How dare you take that car! Absolutely disgusted!" required></textarea></label>
+    <button class="btn" type="submit" id="sendBtn">Seal and send</button>
+  </form>
+  <div class="link" id="linkBox" hidden><code id="link"></code><button class="btn" type="button" id="copy" style="padding:6px 14px;font-size:15px">Copy</button></div>
+  <button class="btn" type="button" id="openBtn" hidden>Open it</button>
+  <p class="note" id="note"></p>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The voice is AI. Howlers are kept so their link works; don't put anything private in one.</p>
+</main>
+<script>
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/howler";
+const $ = (s) => document.querySelector(s);
+const params = new URLSearchParams(location.search), hid = params.get("h");
+const note = (t) => { $("#note").textContent = t; };
+// shreds for the end
+for (let i = 0; i < 18; i++) { const s = document.createElement("i"); s.style.left = `${10 + Math.random() * 75}%`; s.style.top = `${10 + Math.random() * 75}%`;
+  s.style.setProperty("--dx", `${(Math.random() - .5) * 420}px`); s.style.setProperty("--dy", `${-60 - Math.random() * 260}px`); s.style.setProperty("--r", `${(Math.random() - .5) * 720}deg`);
+  s.style.animationDelay = `${Math.random() * .25}s`; $("#shreds").appendChild(s); }
+
+if (hid) receive(); else compose();
+
+function compose() {
+  $("#compose").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("#sendBtn").disabled = true; note("Sealing it…");
+    try {
+      const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: $("#to").value, from: $("#from").value, text: $("#text").value }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || "The owl refused to take it.");
+      $("#envTo").textContent = $("#to").value;
+      $("#link").textContent = d.url; $("#linkBox").hidden = false; $("#compose").hidden = true;
+      $("#title").textContent = "Your Howler is sealed"; $("#sub").textContent = "Send this link. It shouts when they open it.";
+      note("");
+    } catch (err) {
+      note(err.message === "Failed to fetch" ? "Couldn't reach the owlery. Try again in a moment." : err.message);
+    } finally { $("#sendBtn").disabled = false; }
+  });
+  $("#copy").addEventListener("click", () => navigator.clipboard.writeText($("#link").textContent).then(() => { $("#copy").textContent = "Copied"; }, () => {}));
+}
+
+async function receive() {
+  $("#compose").hidden = true;
+  $("#title").textContent = "You have a Howler";
+  $("#sub").textContent = "It's trembling. You'd better open it before it opens itself.";
+  let h;
+  try {
+    const r = await fetch(`${API}/${encodeURIComponent(hid)}`);
+    h = await r.json();
+    if (!r.ok) throw new Error(h.error || "This Howler has already burst.");
+  } catch (e) { $("#sub").textContent = e.message === "Failed to fetch" ? "The owl got lost. Try again in a moment." : e.message; return; }
+  $("#envTo").textContent = h.to;
+  $("#env").classList.add("twitch");
+  $("#openBtn").hidden = false;
+  const go = () => { $("#openBtn").hidden = true; $("#env").removeEventListener("click", go); open(h); };
+  $("#openBtn").addEventListener("click", go); $("#env").addEventListener("click", go);
+}
+
+function open(h) {
+  const env = $("#env");
+  env.classList.remove("twitch"); env.classList.add("open");
+  $("#sub").textContent = `From ${h.from}`;
+  const shout = `${h.to.toUpperCase()}! ${h.text.toUpperCase()}`;
+  setTimeout(() => {
+    env.classList.add("shout"); $("#words").classList.add("loud");
+    const words = shout.split(" "); let i = 0;
+    const tick = setInterval(() => { $("#words").textContent = words.slice(0, ++i).join(" "); if (i >= words.length) clearInterval(tick); }, 230);
+    const end = () => { env.classList.remove("shout"); $("#words").classList.remove("loud"); setTimeout(() => env.classList.add("burst"), 400);
+      setTimeout(() => { $("#sub").innerHTML = `It tore itself to shreds. <a href="/howler/" style="color:var(--gold)">Send one back?</a>`; }, 1800); };
+    if (h.audio) {
+      const a = new Audio(`data:audio/mpeg;base64,${h.audio}`); a.volume = 1;
+      a.onended = end; a.play().catch(() => setTimeout(end, Math.max(3500, words.length * 300)));
+    } else setTimeout(end, Math.max(3500, words.length * 300));
+  }, 500);
+}
+</script>
+</body>
+</html>

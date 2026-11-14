@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0F1A">
+<meta name="robots" content="noindex">
+<meta name="description" content="Letters that only show under the right moon.">
+<title>Moon-letters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Noto+Sans+Runic&display=swap">
+<style>
+/* An old map of a lonely mountain, drawn East-up, with runes in red ink. Hold it to the moonlight: if tonight's moon is
+   the one the letters were written under, silver runes rise between the red ones and the secret can be read. */
+:root { color-scheme: dark; --night: #0B0F1A; --night-2: #121A2C; --parch: #E7D7B3; --parch-2: #D6C095; --ink: #3A2616;
+  --red: #8C2318; --silver: #DDE6F5; --silver-glow: rgba(200,220,255,.75); --muted: #9AA3B8; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 70% 10%, #1F2A44 0%, var(--night) 55%, #06080F 100%);
+  color: var(--parch); font-family: "IM Fell English", Georgia, serif; display: grid; justify-items: center; padding: 24px 14px 48px; }
+main { width: min(900px, 100%); display: grid; gap: 16px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+h1 { font-family: "IM Fell English SC", serif; font-weight: 400; margin: 0; font-size: clamp(28px, 6vw, 42px); }
+.moonbox { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 15px; }
+.moonbox canvas { width: 54px; height: 54px; }
+.map { position: relative; aspect-ratio: 1.35; border-radius: 4px; overflow: hidden;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.35), transparent 50%), radial-gradient(ellipse at 75% 90%, rgba(120,80,30,.35), transparent 55%),
+  linear-gradient(160deg, var(--parch), var(--parch-2)); box-shadow: 0 30px 60px rgba(0,0,0,.55), inset 0 0 70px rgba(110,70,25,.45); }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map svg text { font-family: "IM Fell English", serif; fill: var(--ink); }
+.map svg text.runes { font-family: "Noto Sans Runic", "Segoe UI Historic", sans-serif; }
+.red { fill: var(--red); font-size: 20px; letter-spacing: 2px; }
+.silver { fill: var(--silver); font-size: 22px; letter-spacing: 2px; opacity: 0; transition: opacity 2.5s ease; filter: drop-shadow(0 0 6px var(--silver-glow)); }
+.lit .silver { opacity: 1; }
+.moonlight { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 70% 35%, rgba(190,210,255,.0), rgba(10,15,30,.0)); transition: background 2s; }
+.lit .moonlight { background: radial-gradient(circle at 65% 40%, rgba(200,220,255,.28), rgba(10,15,30,.35) 70%); }
+.reading { min-height: 3em; text-align: center; font-size: clamp(18px, 4vw, 22px); font-style: italic; color: var(--silver); text-shadow: 0 0 12px var(--silver-glow); }
+.status { text-align: center; color: var(--muted); font-size: 16px; }
+.btn { justify-self: center; border: 1px solid rgba(221,230,245,.4); background: rgba(221,230,245,.06); color: var(--silver); font: inherit; font-size: 18px;
+  padding: 11px 22px; border-radius: 999px; cursor: pointer; }
+.btn:hover { background: rgba(221,230,245,.12); }
+.btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--silver); outline-offset: 3px; }
+details { border-top: 1px solid rgba(221,230,245,.15); padding-top: 12px; }
+summary { cursor: pointer; color: var(--muted); font-size: 16px; }
+form { display: grid; gap: 10px; margin-top: 12px; }
+label { display: grid; gap: 6px; color: var(--muted); font-size: 15px; }
+textarea, select { background: rgba(221,230,245,.05); border: 1px solid rgba(221,230,245,.25); border-radius: 10px; color: var(--parch); font: 18px "IM Fell English", serif; padding: 10px 12px; }
+.link { display: flex; gap: 8px; align-items: center; background: rgba(221,230,245,.06); border-radius: 10px; padding: 10px 12px; }
+.link code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font-size: 13px; }
+.foot { font-size: 13px; color: rgba(231,215,179,.45); text-align: center; }
+.foot a { color: var(--silver); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Moon-letters</h1>
+    <div class="moonbox"><canvas id="moonIcon" width="108" height="108" aria-hidden="true"></canvas><span id="tonight"></span></div>
+  </div>
+  <div class="map" id="map">
+    <svg viewBox="0 0 1350 1000" aria-label="An old map of a lonely mountain">
+      <g fill="none" stroke="#3A2616" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="18" y="18" width="1314" height="964" stroke-width="1.4"/>
+        <!-- the mountain and its spurs -->
+        <path d="M675 210 L560 330 L470 420 L380 560 M675 210 L790 330 L880 420 L980 560 M675 210 L640 400 L590 520 M675 210 L715 400 L770 520 M560 330 L520 470 M790 330 L830 470"/>
+        <path d="M560 330 q-60 20 -110 80 M790 330 q60 20 110 80" stroke-width="1.2"/>
+        <!-- the river and its marshes -->
+        <path d="M700 520 C 720 600, 650 660, 690 740 S 760 860, 720 960" stroke-width="1.6"/>
+        <path d="M640 900 q20 -10 40 0 M740 880 q20 -10 40 0 M610 940 q20 -10 40 0" stroke-width="1"/>
+        <!-- the woods -->
+        <g stroke-width="1.2"><path d="M150 760 l12 -26 l12 26 M180 790 l12 -26 l12 26 M120 820 l12 -26 l12 26 M210 830 l12 -26 l12 26 M160 860 l12 -26 l12 26 M240 770 l12 -26 l12 26"/></g>
+        <!-- the side door: a small arch on the western spur -->
+        <path d="M455 425 q8 -18 16 0 v14 h-16 Z" stroke="#8C2318" stroke-width="2"/>
+        <path d="M445 410 L405 370" stroke="#8C2318" stroke-width="1.2" marker-end="url(#ah)"/>
+        <!-- compass: East is up, as on the old dwarf maps -->
+        <circle cx="1210" cy="150" r="54" stroke-width="1.4"/>
+        <path d="M1210 92 L1220 140 L1268 150 L1220 160 L1210 208 L1200 160 L1152 150 L1200 140 Z" stroke-width="1.4"/>
+      </g>
+      <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="none" stroke="#8C2318"/></marker></defs>
+      <text x="1210" y="80" text-anchor="middle" font-size="22">E</text>
+      <text x="675" y="185" text-anchor="middle" font-size="34" style="font-family:'IM Fell English SC',serif">The Lonely Mountain</text>
+      <text x="200" y="900" text-anchor="middle" font-size="22" font-style="italic">the old wood</text>
+      <text x="780" y="980" text-anchor="middle" font-size="20" font-style="italic">the running river</text>
+      <!-- red runes everyone can see -->
+      <text class="runes red" x="860" y="820" id="redA"></text>
+      <text class="runes red" x="860" y="860" id="redB"></text>
+      <!-- the moon-letters: silver, only under the right moon -->
+      <text class="runes silver" x="160" y="440" id="silverA"></text>
+      <text class="runes silver" x="160" y="482" id="silverB"></text>
+    </svg>
+    <div class="moonlight"></div>
+  </div>
+  <p class="status" id="status"></p>
+  <button class="btn" type="button" id="hold">Hold it up to the moonlight</button>
+  <p class="reading" id="reading" aria-live="polite"></p>
+
+  <details>
+    <summary>Write your own moon-letters</summary>
+    <form id="make">
+      <label>Your secret<textarea id="secret" maxlength="140" rows="3" placeholder="Meet me by the old oak when the bells ring."></textarea></label>
+      <label>Only readable under
+        <select id="phase"><option value="0">a new moon</option><option value="1">a waxing crescent</option><option value="2">a half moon (first quarter)</option>
+          <option value="3">a waxing gibbous moon</option><option value="4" selected>a full moon</option><option value="5">a waning gibbous moon</option>
+          <option value="6">a half moon (last quarter)</option><option value="7">a waning crescent</option></select></label>
+      <button class="btn" type="submit">Write it in moon-letters</button>
+    </form>
+    <div class="link" id="linkBox" hidden><code id="link"></code><button class="btn" type="button" id="copy" style="padding:6px 14px;font-size:15px">Copy</button></div>
+  </details>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. The moon's phase is worked out from the date; nothing is sent anywhere.</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const PHASES = ["new moon", "waxing crescent", "first-quarter half moon", "waxing gibbous moon", "full moon", "waning gibbous moon", "last-quarter half moon", "waning crescent"];
+const SYN = 29.530588853, EPOCH = Date.UTC(2000, 0, 6, 18, 14) / 864e5;   // a known new moon
+const age = (t = Date.now()) => (((t / 864e5 - EPOCH) % SYN) + SYN) % SYN;   // days since new moon
+const phaseOf = (a) => Math.floor(((a / SYN) * 8 + 0.5)) % 8;
+function nextPhase(p, from = Date.now()) {      // the next date that phase begins
+  const a = age(from), center = (p / 8) * SYN, start = (((center - SYN / 16) - a) % SYN + SYN) % SYN;
+  return new Date(from + start * 864e5);
+}
+// Latin -> runes (Elder Futhark)
+const R = { a: "ᚨ", b: "ᛒ", c: "ᚲ", d: "ᛞ", e: "ᛖ", f: "ᚠ", g: "ᚷ", h: "ᚺ", i: "ᛁ", j: "ᛃ", k: "ᚲ", l: "ᛚ", m: "ᛗ", n: "ᚾ", o: "ᛟ", p: "ᛈ", q: "ᚲ", r: "ᚱ", s: "ᛊ", t: "ᛏ", u: "ᚢ", v: "ᚹ", w: "ᚹ", x: "ᛉ", y: "ᛃ", z: "ᛉ" };
+const runes = (s) => s.toLowerCase().replace(/th/g, "ᚦ").replace(/ng/g, "ᛜ").split("").map((c) => R[c] ?? (c === " " ? " ᛫ " : c)).join("");
+function split(s, n) { const w = s.split(" "); const a = []; let line = ""; for (const x of w) { if ((line + " " + x).trim().length > n) { a.push(line.trim()); line = x; } else line += " " + x; } a.push(line.trim()); return a; }
+
+// the letter: from the link (#m=…) or the default one on this map
+const DEFAULT = { text: "The side door opens to whoever stands at the grey stone as the last light of day falls.", phase: 4 };
+let letter = DEFAULT;
+try { const m = location.hash.match(/m=([^&]+)/); if (m) { const d = JSON.parse(decodeURIComponent(escape(atob(m[1])))); if (d.text) letter = { text: String(d.text).slice(0, 140), phase: +d.phase % 8 }; } } catch (e) {}
+
+const red = split(runes("Here is the hidden side door where the dwarves once walked"), 22);
+$("#redA").textContent = red[0] || ""; $("#redB").textContent = red[1] || "";
+const sil = split(runes(letter.text), 40);
+$("#silverA").textContent = sil[0] || ""; $("#silverB").textContent = (sil[1] || "") + (sil[2] ? " " + sil[2] : "");
+
+// tonight's moon
+const nowPhase = phaseOf(age());
+$("#tonight").textContent = `Tonight: a ${PHASES[nowPhase]}`;
+drawMoon($("#moonIcon"), age() / SYN);
+$("#status").textContent = `These moon-letters were written under a ${PHASES[letter.phase]}.`;
+
+$("#hold").addEventListener("click", () => {
+  $("#map").classList.add("lit");
+  if (nowPhase === letter.phase) {
+    $("#reading").textContent = `“${letter.text}”`;
+    $("#status").textContent = `The ${PHASES[nowPhase]} is shining. The moon-letters show.`;
+  } else {
+    setTimeout(() => $("#map").classList.remove("lit"), 1800);
+    const d = nextPhase(letter.phase);
+    $("#reading").textContent = "";
+    $("#status").textContent = `The moon is wrong. These letters need a ${PHASES[letter.phase]}: come back on ${d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}.`;
+  }
+});
+if (nowPhase !== letter.phase) document.querySelectorAll(".silver").forEach((t) => t.style.opacity = 0);
+
+$("#make").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = $("#secret").value.trim(); if (!text) return;
+  const enc = btoa(unescape(encodeURIComponent(JSON.stringify({ text, phase: +$("#phase").value }))));
+  $("#link").textContent = `${location.origin}/moon/#m=${enc}`; $("#linkBox").hidden = false;
+});
+$("#copy").addEventListener("click", () => navigator.clipboard.writeText($("#link").textContent).then(() => { $("#copy").textContent = "Copied"; }, () => {}));
+
+function drawMoon(cv, f) {   // f: 0 new -> .5 full -> 1 new
+  const c = cv.getContext("2d"), r = 46, cx = 54, cy = 54;
+  c.clearRect(0, 0, 108, 108);
+  c.fillStyle = "#1A2236"; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "#E9EEF8"; c.beginPath();
+  const waxing = f < .5, k = Math.cos(f * 2 * Math.PI);   // 1 new, -1 full
+  c.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, !waxing);
+  c.ellipse(cx, cy, Math.abs(k) * r, r, 0, Math.PI / 2, -Math.PI / 2, waxing ? k > 0 : k < 0);
+  c.fill();
+}
+</script>
+</body>
+</html>

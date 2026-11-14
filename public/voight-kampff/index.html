@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080604">
+<meta name="robots" content="noindex">
+<meta name="description" content="Can you tell a human from a machine?">
+<title>Voigt-Kampff Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Libre+Baskerville:ital@0;1&display=swap">
+<style>
+/* An interrogation machine in a smoky office: an amber monitor with the subject's iris, a bellows breathing on the
+   desk, and a question at a time. Here the subject is you, and the question is which of two lines a human wrote. */
+:root { color-scheme: dark; --office: #080604; --amber: #FFB547; --amber-dim: rgba(255,181,71,.5); --amber-faint: rgba(255,181,71,.16); --cyan: #69E3FF; --muted: #A08868; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--amber); font-family: "Share Tech Mono", ui-monospace, monospace; display: grid; justify-items: center; padding: 22px 14px 44px;
+  background: radial-gradient(ellipse at 30% 0%, rgba(255,181,71,.12), transparent 50%), linear-gradient(180deg, #120D08, var(--office)); }
+body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: repeating-linear-gradient(105deg, rgba(255,181,71,.035) 0 2px, transparent 2px 70px); }
+main { width: min(860px, 100%); display: grid; gap: 14px; position: relative; }
+.rig { display: grid; grid-template-columns: 280px 1fr; gap: 14px; }
+@media (max-width: 720px) { .rig { grid-template-columns: 1fr; } }
+.panel { border: 1px solid var(--amber-faint); border-radius: 10px; background: rgba(20,14,8,.85); padding: 14px; box-shadow: inset 0 0 30px rgba(0,0,0,.6); }
+.eye { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: #000; }
+.eye canvas { width: 100%; height: 100%; display: block; }
+.eye::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 2px, transparent 2px 4px); pointer-events: none; }
+.read { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin-top: 12px; font-size: 13px; color: var(--amber-dim); }
+.read b { color: var(--amber); font-weight: 400; font-variant-numeric: tabular-nums; }
+.bar { height: 6px; border-radius: 3px; background: var(--amber-faint); overflow: hidden; margin-top: 4px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--amber); transition: width .4s; }
+h1 { font-family: "Share Tech Mono", monospace; font-weight: 400; letter-spacing: .25em; font-size: clamp(18px, 4vw, 24px); margin: 0; }
+.q { font-size: 14px; color: var(--amber-dim); letter-spacing: .08em; margin: 2px 0 12px; }
+.choices { display: grid; gap: 10px; }
+.choice { text-align: left; border: 1px solid var(--amber-faint); background: rgba(255,181,71,.04); color: #F5E6CF; font: italic 17px/1.5 "Libre Baskerville", Georgia, serif;
+  padding: 14px 16px; border-radius: 8px; cursor: pointer; transition: border-color .2s, background .2s; }
+.choice:hover { border-color: var(--amber); background: rgba(255,181,71,.08); }
+.choice:focus-visible, .btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.choice.right { border-color: #7CFF9B; background: rgba(124,255,155,.08); }
+.choice.wrong { border-color: #FF6B5E; background: rgba(255,107,94,.08); }
+.choice .src { display: block; font: 12px "Share Tech Mono", monospace; color: var(--amber-dim); margin-top: 8px; font-style: normal; letter-spacing: .06em; }
+.status { min-height: 1.5em; font-size: 14px; color: var(--cyan); letter-spacing: .05em; }
+.btn { border: 1px solid var(--amber); background: none; color: var(--amber); font: 15px "Share Tech Mono", monospace; letter-spacing: .12em; padding: 9px 16px; border-radius: 6px; cursor: pointer; }
+.verdict { font-size: clamp(22px, 5vw, 32px); letter-spacing: .12em; color: var(--amber); margin: 6px 0; }
+.foot { font-size: 12px; color: var(--muted); text-align: center; letter-spacing: .03em; }
+.foot a { color: var(--amber); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>VOIGT-KAMPFF · EMPATHY TEST</h1>
+  <div class="rig">
+    <div class="panel">
+      <div class="eye"><canvas id="eye" width="400" height="400" aria-hidden="true"></canvas></div>
+      <div class="read">
+        <span>QUESTION</span><b id="qn">1 / 8</b>
+        <span>CORRECT</span><b id="score">0</b>
+        <span>RESPONSE</span><b id="rt">—</b>
+        <span>PUPIL</span><b id="pupil">4.1 mm</b>
+      </div>
+      <div class="bar"><i id="prog"></i></div>
+    </div>
+    <div class="panel" id="test">
+      <p class="q">WHICH OF THESE DID A HUMAN BEING WRITE? REACT QUICKLY.</p>
+      <div class="choices" id="choices"></div>
+      <p class="status" id="status" aria-live="polite"></p>
+      <button class="btn" id="next" type="button" hidden>NEXT QUESTION</button>
+    </div>
+    <div class="panel" id="done" hidden>
+      <p class="q">TEST COMPLETE</p>
+      <p class="verdict" id="verdict"></p>
+      <p id="explain" style="font-family:'Libre Baskerville',serif;color:#F5E6CF;line-height:1.6"></p>
+      <button class="btn" id="again" type="button">TEST AGAIN</button>
+    </div>
+  </div>
+  <p class="foot">From the <a href="/magic/">Roadmap to Magic</a>. Human lines are from public-domain books; the others were written by an AI to imitate them.</p>
+</main>
+<script>
+// [human line, source, machine imitation]
+const ROUNDS = [
+  ["It is not down in any map; true places never are.", "Herman Melville, Moby-Dick (1851)", "The sea keeps its secrets in plain sight; every chart is merely a promise the ocean never signed."],
+  ["I declare after all there is no enjoyment like reading!", "Jane Austen, Pride and Prejudice (1813)", "There is surely no delight quite so complete as an afternoon given over entirely to a good book."],
+  ["Beware; for I am fearless, and therefore powerful.", "Mary Shelley, Frankenstein (1818)", "Be warned, for having nothing left to fear, I have become stronger than you can possibly imagine."],
+  ["I am no bird; and no net ensnares me.", "Charlotte Brontë, Jane Eyre (1847)", "I am not a caged creature, and no trap can hold me, for my will is entirely my own."],
+  ["I went to the woods because I wished to live deliberately.", "Henry David Thoreau, Walden (1854)", "I retreated into the forest because I longed to live with intention and purpose."],
+  ["Why, sometimes I've believed as many as six impossible things before breakfast.", "Lewis Carroll, Through the Looking-Glass (1871)", "At times I have managed to believe half a dozen impossible things before I've even had my morning tea."],
+  ["So we beat on, boats against the current, borne back ceaselessly into the past.", "F. Scott Fitzgerald, The Great Gatsby (1925)", "And so we keep pressing forward, like small boats rowing upstream, endlessly carried back toward what was."],
+  ["It was the best of times, it was the worst of times.", "Charles Dickens, A Tale of Two Cities (1859)", "It was an era of remarkable promise, and at the very same moment an era of profound despair."],
+];
+const $ = (s) => document.querySelector(s);
+let order, i, score, shownAt, pupilTarget = 4.1, pupil = 4.1;
+function start() { order = [...ROUNDS].sort(() => Math.random() - .5); i = 0; score = 0; $("#done").hidden = true; $("#test").hidden = false; ask(); }
+function ask() {
+  const [h, src, m] = order[i], humanFirst = Math.random() < .5;
+  $("#qn").textContent = `${i + 1} / ${order.length}`; $("#score").textContent = score; $("#prog").style.width = `${(i / order.length) * 100}%`;
+  $("#status").textContent = ""; $("#next").hidden = true;
+  const items = humanFirst ? [[h, true, src], [m, false]] : [[m, false], [h, true, src]];
+  $("#choices").innerHTML = "";
+  items.forEach(([t, human, s]) => { const b = document.createElement("button"); b.className = "choice"; b.type = "button"; b.textContent = `“${t}”`;
+    b.dataset.human = human ? "1" : ""; b.dataset.src = s || ""; b.addEventListener("click", () => pick(b)); $("#choices").appendChild(b); });
+  shownAt = performance.now(); pupilTarget = 3.6 + Math.random();
+}
+function pick(b) {
+  if (!$("#next").hidden) return;
+  const ms = performance.now() - shownAt, ok = !!b.dataset.human;
+  if (ok) score++;
+  $("#rt").textContent = `${(ms / 1000).toFixed(2)} s`; $("#score").textContent = score;
+  pupilTarget = ok ? 3.2 + Math.random() * .5 : 6 + Math.random() * 1.2;   // a wrong answer dilates the pupil
+  [...$("#choices").children].forEach((c) => { c.disabled = true; c.classList.add(c.dataset.human ? "right" : "wrong");
+    const s = document.createElement("span"); s.className = "src"; s.textContent = c.dataset.human ? `HUMAN · ${c.dataset.src}` : "MACHINE · written by an AI"; c.appendChild(s); });
+  $("#status").textContent = ok ? "RESPONSE CONSISTENT WITH HUMAN READER." : "IRREGULAR RESPONSE. NOTED.";
+  if (++i < order.length) $("#next").hidden = false; else setTimeout(finish, 1200);
+}
+function finish() {
+  $("#prog").style.width = "100%"; $("#test").hidden = true; $("#done").hidden = false;
+  const v = score >= 7 ? ["HUMAN", "You heard the people behind the words. The machine's lines are smooth and sensible; the human ones are stranger and sharper."]
+    : score >= 4 ? ["INCONCLUSIVE", "Some lines fooled you. Machines are good at the shape of a sentence. People leave odd, specific fingerprints."]
+    : ["REPLICANT SUSPECTED", "The machine's lines felt more human to you. You're not alone: polished, balanced prose is exactly what fools people."];
+  $("#verdict").textContent = `${v[0]} · ${score}/${order.length}`; $("#explain").textContent = v[1];
+}
+$("#next").addEventListener("click", ask); $("#again").addEventListener("click", start);
+// the eye: an amber iris with a pupil that dilates and twitches
+const cv = $("#eye"), c = cv.getContext("2d");
+function drawEye(t) {
+  pupil += (pupilTarget - pupil) * .05; $("#pupil").textContent = `${pupil.toFixed(1)} mm`;
+  c.fillStyle = "#000"; c.fillRect(0, 0, 400, 400);
+  const g = c.createRadialGradient(200, 200, 10, 200, 200, 190); g.addColorStop(0, "#2A1A08"); g.addColorStop(.35, "#7A4A12"); g.addColorStop(.7, "#C98A2E"); g.addColorStop(1, "#1A0E04");
+  c.fillStyle = g; c.beginPath(); c.arc(200, 200, 170, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = "rgba(255,200,120,.25)"; c.lineWidth = 1;
+  for (let a = 0; a < Math.PI * 2; a += Math.PI / 60) { const w = Math.sin(a * 7 + t / 900) * 6; c.beginPath(); c.moveTo(200 + Math.cos(a) * 60, 200 + Math.sin(a) * 60); c.lineTo(200 + Math.cos(a) * (165 + w), 200 + Math.sin(a) * (165 + w)); c.stroke(); }
+  const pr = 22 + pupil * 9 + Math.sin(t / 300) * 1.5;
+  c.fillStyle = "#000"; c.beginPath(); c.arc(200, 200, pr, 0, Math.PI * 2); c.fill();
+  c.fillStyle = "rgba(255,240,220,.85)"; c.beginPath(); c.ellipse(150, 150, 16, 10, -.6, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = "rgba(105,227,255,.6)"; c.lineWidth = 1.5; c.beginPath(); c.arc(200, 200, pr + 8, 0, Math.PI * 2); c.stroke();
+  c.fillStyle = "rgba(255,181,71,.12)"; c.fillRect(0, (t / 8) % 400, 400, 3);
+  requestAnimationFrame(drawEye);
+}
+requestAnimationFrame(drawEye); start();
+</script>
+</body>
+</html>
