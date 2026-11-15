@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F1E8">
+<meta name="description" content="If you could carry one thing back in time, what would it be? Twenty eras from the 1600s to the 2020s, twenty answers, each told as a short story.">
+<title>One Thing Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=Inter:wght@400;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#F5F1E8;--ink:#1D1B17;--mut:#6B655A;--line:#D8D0BE;--card:#FFFDF8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14130F;--ink:#EEE8DA;--mut:#A39C8C;--line:#34302A;--card:#1C1A16}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14130F;--ink:#EEE8DA;--mut:#A39C8C;--line:#34302A;--card:#1C1A16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Inter,system-ui,sans-serif}
+.wrap{width:min(920px,100%);margin:0 auto;padding:28px 16px 64px}
+.top{font-size:14px} .top a{color:var(--mut);text-decoration:none}
+h1{font:700 clamp(44px,10vw,92px)/.95 Fraunces,serif;letter-spacing:-.02em;margin:22px 0 12px}
+.lede{font:italic 400 clamp(19px,2.6vw,23px)/1.45 Fraunces,serif;color:var(--mut);max-width:40ch;margin:0 0 18px}
+.rules{font-size:15px;color:var(--mut);max-width:62ch}
+.jump{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 30px}
+.jump a{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--a);border-radius:6px;padding:4px 8px;background:var(--card)}
+.jump a:hover,.jump a:focus-visible{border-color:var(--a)}
+ol.line{list-style:none;margin:0;padding:0;position:relative}
+ol.line::before{content:"";position:absolute;left:118px;top:0;bottom:0;width:2px;background:var(--line)}
+.era a{display:grid;grid-template-columns:100px 40px 1fr;gap:18px;align-items:start;padding:14px 0;color:inherit;text-decoration:none}
+.yr{font:700 18px/1.2 Fraunces,serif;text-align:right;padding-top:9px}
+.chip{width:40px;height:40px;border-radius:50%;background:var(--bgc);color:var(--a);display:grid;place-items:center;position:relative;z-index:1;box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--a)}
+.chip svg{width:26px;height:26px}
+.txt{display:grid;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:border-color .15s,transform .15s}
+.era a:hover .txt,.era a:focus-visible .txt{border-color:var(--a);transform:translateX(3px)}
+.era a:focus-visible{outline:none} .era a:focus-visible .txt{outline:2px solid var(--a);outline-offset:2px}
+.txt b{font:700 21px/1.2 Fraunces,serif;color:var(--a)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .txt b{filter:brightness(1.5)}}
+.txt small{color:var(--mut);font-size:13px}
+@media (max-width:620px){ol.line::before{left:20px}.era a{grid-template-columns:40px 1fr;gap:12px}.yr{grid-column:2;text-align:left;padding:0;font-size:16px}.chip{grid-row:1/3;grid-column:1}.txt{grid-column:2}}
+.foot{margin-top:34px;font-size:14px;color:var(--mut)} .foot a{color:var(--ink)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><a href="/">← andor.us</a></div>
+  <h1>One Thing Back</h1>
+  <p class="lede">If you could carry one thing back in time, a technology or a piece of information, what would it be?</p>
+  <p class="rules">My rules: it has to work with what that era already had, in the hands of whoever would listen. One answer per century until 1800, then every twenty years, then every decade. Each one is a short story, set in its time and styled like it, with a note on the real history underneath.</p>
+  <nav class="jump" aria-label="Jump to an era"><a href="/back-in-time/1600s/" style="--a:#8A2A1A">1600s</a><a href="/back-in-time/1700s/" style="--a:#6A3A12">1700s</a><a href="/back-in-time/1800/" style="--a:#1E3A5F">1800–1819</a><a href="/back-in-time/1820/" style="--a:#6A1F1F">1820–1839</a><a href="/1854/" style="--a:#7A1E14">1840–1859</a><a href="/back-in-time/1860/" style="--a:#9A2A1A">1860–1879</a><a href="/back-in-time/1880/" style="--a:#1F4E5A">1880–1899</a><a href="/back-in-time/1900s/" style="--a:#2E5E2E">1900s</a><a href="/back-in-time/1910s/" style="--a:#B22222">1910s</a><a href="/back-in-time/1920s/" style="--a:#8A6A10">1920s</a><a href="/back-in-time/1930s/" style="--a:#C8102E">1930s</a><a href="/back-in-time/1940s/" style="--a:#D35400">1940s</a><a href="/back-in-time/1950s/" style="--a:#E8505B">1950s</a><a href="/back-in-time/1960s/" style="--a:#E30613">1960s</a><a href="/back-in-time/1970s/" style="--a:#D2691E">1970s</a><a href="/back-in-time/1980s/" style="--a:#1E7A1E">1980s</a><a href="/back-in-time/1990s/" style="--a:#0000EE">1990s</a><a href="/back-in-time/2000s/" style="--a:#2B7BD8">2000s</a><a href="/back-in-time/2010s/" style="--a:#2196F3">2010s</a><a href="/back-in-time/2020s/" style="--a:#8B7BFF">2020s</a></nav>
+  <ol class="line"><li class="era" style="--a:#8A2A1A;--bgc:#E9DFC6;--inkc:#231C12">
+      <a href="/back-in-time/1600s/">
+        <span class="yr">The 1600s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 30c0-8 8-12 20-12s20 4 20 12v8c0 6-6 10-20 10S12 44 12 38z"/><path d="M14 22l-6-6M50 22l6-6"/><circle cx="26" cy="30" r="2"/><circle cx="38" cy="30" r="2"/><path d="M26 40c4 3 8 3 12 0"/><path d="M20 48v8M44 48v8"/></svg></span>
+        <span class="txt"><b>The Milkmaid&#x27;s Hands</b><span>Cowpox protects against smallpox. Scratch it into the arm.</span><small>Spring, 1665 · A dairy farm in Dorset</small></span>
+      </a></li><li class="era" style="--a:#6A3A12;--bgc:#D9C49A;--inkc:#2B1E10">
+      <a href="/back-in-time/1700s/">
+        <span class="yr">The 1700s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 34c0-12 10-20 22-20s22 8 22 20-10 18-22 18S10 46 10 34z"/><path d="M8 34h-4M56 34h4"/><path d="M32 14c2-6 8-8 12-6-2 4-6 6-12 6z"/><path d="M20 30q12-8 24 0" opacity=".6"/></svg></span>
+        <span class="txt"><b>A Chest of Lemons</b><span>Fresh citrus prevents and cures scurvy. Don&#x27;t boil it.</span><small>March, 1741 · A man-of-war rounding Cape Horn</small></span>
+      </a></li><li class="era" style="--a:#1E3A5F;--bgc:#F4EEE2;--inkc:#22201C">
+      <a href="/back-in-time/1800/">
+        <span class="yr">1800–1819</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 30h48c0 14-10 22-24 22S8 44 8 30z"/><path d="M14 30c4-4 32-4 36 0"/><path d="M28 10c-6 8-6 12 0 14 6-2 6-6 0-14z"/><path d="M24 52v6h16v-6"/></svg></span>
+        <span class="txt"><b>Wash Your Hands</b><span>Childbed fever is carried on the doctors&#x27; hands. Wash them in chloride of lime.</span><small>Winter, 1812 · A lying-in hospital in Edinburgh</small></span>
+      </a></li><li class="era" style="--a:#6A1F1F;--bgc:#F2EFE6;--inkc:#1E1C18">
+      <a href="/back-in-time/1820/">
+        <span class="yr">1820–1839</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M26 8h12M28 8v14L14 50c-2 4 0 8 6 8h24c6 0 8-4 6-8L36 22V8"/><path d="M20 42h24"/><path d="M42 14c6-2 10 0 12 4" opacity=".6"/></svg></span>
+        <span class="txt"><b>A Sponge of Ether</b><span>Ether vapour makes surgery painless. It was already on the shelf.</span><small>November, 1832 · An operating theatre in London</small></span>
+      </a></li><li class="era" style="--a:#7A1E14;--bgc:#EFE6D2;--inkc:#1F1A14">
+      <a href="/1854/">
+        <span class="yr">1840–1859</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 22h30v20c0 8-6 12-15 12s-15-4-15-12z"/><path d="M44 28h6c4 0 4 10 0 10h-6"/><path d="M24 14c0-4 4-4 4-8M32 14c0-4 4-4 4-8"/></svg></span>
+        <span class="txt"><b>Salt, Sugar, Water</b><span>A cup of boiled water, sugar and salt saves cholera patients.</span><small>Autumn, 1854 · Soho, London</small></span>
+      </a></li><li class="era" style="--a:#9A2A1A;--bgc:#EDE0C4;--inkc:#2A1E14">
+      <a href="/back-in-time/1860/">
+        <span class="yr">1860–1879</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 22v28"/><ellipse cx="32" cy="38" rx="4" ry="12"/><path d="M28 30L10 18M36 30l18-12M28 36L12 44M36 36l16 8M28 42L16 56M36 42l12 14"/><path d="M32 22l0-14"/><path d="M28 26c-10-10-16-6-18-2M36 26c10-10 16-6 18-2" opacity=".6"/></svg></span>
+        <span class="txt"><b>Cover the Water Barrels</b><span>Mosquitoes carry yellow fever and malaria. Kill them where they breed.</span><small>August, 1878 · Memphis, Tennessee</small></span>
+      </a></li><li class="era" style="--a:#1F4E5A;--bgc:#F3E5C8;--inkc:#1E2A2E">
+      <a href="/back-in-time/1880/">
+        <span class="yr">1880–1899</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M26 6h12v8l4 6v34c0 2-2 4-4 4H26c-2 0-4-2-4-4V20l4-6z"/><path d="M22 30h20"/><path d="M28 2h8v4h-8z"/><path d="M26 38h12M26 46h12" opacity=".5"/></svg></span>
+        <span class="txt"><b>Heat the Baby&#x27;s Milk</b><span>Milk carries the diseases that kill babies. Heat it, cool it, keep it cold.</span><small>July, 1885 · A tenement on the Lower East Side, New York</small></span>
+      </a></li><li class="era" style="--a:#2E5E2E;--bgc:#F2E6CF;--inkc:#22261C">
+      <a href="/back-in-time/1900s/">
+        <span class="yr">The 1900s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 8c8 6 10 18 8 32-2 10-6 16-8 16s-6-6-8-16c-2-14 0-26 8-32z"/><path d="M28 18h8M27 26h10M27 34h10M28 42h8"/><path d="M24 54c-8-4-12-14-10-24M40 54c8-4 12-14 10-24"/></svg></span>
+        <span class="txt"><b>Soak the Corn in Lime</b><span>Pellagra is a diet disease. Treat corn with lime, and add beans, milk or meat.</span><small>Summer, 1908 · A cotton-mill village in South Carolina</small></span>
+      </a></li><li class="era" style="--a:#B22222;--bgc:#E9E2D0;--inkc:#1C2E4A">
+      <a href="/back-in-time/1910s/">
+        <span class="yr">The 1910s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="12" y="8" width="40" height="48"/><path d="M32 8v48M12 32h40"/><path d="M4 24c6 2 6 8 0 10M4 40c6 2 6 8 0 10" opacity=".7"/><path d="M58 22c-6 2-6 8 0 10" opacity=".7"/></svg></span>
+        <span class="txt"><b>Cancel the Parade</b><span>This flu spreads in crowds and stale air. Cancel gatherings early; open the windows.</span><small>September, 1918 · Philadelphia</small></span>
+      </a></li><li class="era" style="--a:#8A6A10;--bgc:#0F1A1A;--inkc:#EDE3C8">
+      <a href="/back-in-time/1920s/">
+        <span class="yr">The 1920s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="32" cy="36" rx="26" ry="12"/><ellipse cx="32" cy="32" rx="26" ry="12"/><circle cx="26" cy="31" r="5"/><circle cx="26" cy="31" r="10" stroke-dasharray="2 3"/><path d="M42 28h2M46 34h2M38 36h2"/></svg></span>
+        <span class="txt"><b>Inject the Mice</b><span>Fleming&#x27;s mould juice works inside the body. Test it in mice, then purify it.</span><small>October, 1928 · St Mary&#x27;s Hospital, Paddington</small></span>
+      </a></li><li class="era" style="--a:#C8102E;--bgc:#F7E9C6;--inkc:#1A1A1A">
+      <a href="/back-in-time/1930s/">
+        <span class="yr">The 1930s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="36" width="44" height="8"/><path d="M40 36v8"/><path d="M54 30c-4-4 0-8-4-12M58 28c-4-4 0-8-4-12" opacity=".6"/><circle cx="32" cy="40" r="22" opacity=".35"/><path d="M16 24l32 32" opacity=".5"/></svg></span>
+        <span class="txt"><b>Count the Smokers</b><span>Cigarettes cause lung cancer and heart disease. Prove it with a simple count.</span><small>Winter, 1936 · A hospital chest ward in Ohio</small></span>
+      </a></li><li class="era" style="--a:#D35400;--bgc:#EAE4D3;--inkc:#1E2228">
+      <a href="/back-in-time/1940s/">
+        <span class="yr">The 1940s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8l32 44"/><path d="M8 50h48"/><rect x="40" y="44" width="14" height="12" rx="2"/><path d="M14 4l6 2-2 6"/><path d="M8 30c4-2 8-2 10 2" opacity=".6"/></svg></span>
+        <span class="txt"><b>The V-Shaped Belt</b><span>A three-point seat belt, anchored low beside the hip, halves the deaths in a crash.</span><small>Spring, 1947 · A body shop in Detroit</small></span>
+      </a></li><li class="era" style="--a:#E8505B;--bgc:#F6F1E3;--inkc:#22313A">
+      <a href="/back-in-time/1950s/">
+        <span class="yr">The 1950s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="14" width="24" height="42" rx="3"/><rect x="18" y="20" width="16" height="12"/><path d="M38 24h8l6 6v18c0 4 4 4 4 0V30"/><path d="M10 56h32"/><path d="M22 42h8" opacity=".6"/></svg></span>
+        <span class="txt"><b>Take the Lead Out</b><span>Lead in petrol is poisoning everyone, especially children. Ban it now, not in 2021.</span><small>1953 · A geochemistry lab in Pasadena</small></span>
+      </a></li><li class="era" style="--a:#E30613;--bgc:#FFFFFF;--inkc:#111111">
+      <a href="/back-in-time/1960s/">
+        <span class="yr">The 1960s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 56h52M6 56V8"/><path d="M8 50l6-2 4 3 6-4 4 2 6-5 4 2 6-7 4 1 6-10 4-1"/><circle cx="54" cy="14" r="2"/></svg></span>
+        <span class="txt"><b>The Curve on Mauna Loa</b><span>The carbon curve keeps rising and the planet warms. Start building clean power now.</span><small>November, 1965 · Washington, D.C.</small></span>
+      </a></li><li class="era" style="--a:#D2691E;--bgc:#F4E3C1;--inkc:#3B2416">
+      <a href="/back-in-time/1970s/">
+        <span class="yr">The 1970s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 6C24 20 16 30 16 40a16 16 0 0032 0c0-10-8-20-16-34z"/><path d="M24 40a8 8 0 008 8" opacity=".6"/></svg></span>
+        <span class="txt"><b>Screen the Blood</b><span>A silent virus is spreading through blood and sex. Screen blood products and use condoms.</span><small>1978 · A blood bank and a clinic, New York</small></span>
+      </a></li><li class="era" style="--a:#1E7A1E;--bgc:#050A05;--inkc:#7CFF7C">
+      <a href="/back-in-time/1980s/">
+        <span class="yr">The 1980s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="32" r="10"/><path d="M30 32h28M50 32v8M44 32v6"/><circle cx="20" cy="32" r="3"/></svg></span>
+        <span class="txt"><b>Sign Every Message</b><span>Build identity and encryption into the internet before it scales.</span><small>December, 1982 · A university machine room</small></span>
+      </a></li><li class="era" style="--a:#0000EE;--bgc:#C0C0C0;--inkc:#000000">
+      <a href="/back-in-time/1990s/">
+        <span class="yr">The 1990s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="10" y="24" width="44" height="16" rx="8"/><path d="M32 24v16"/><path d="M16 50l-4 6M48 50l4 6" opacity=".5"/></svg></span>
+        <span class="txt"><b>Read the Letter</b><span>The famous &#x27;less than 1% addiction&#x27; claim was a five-sentence letter. Treat strong opioids with great care.</span><small>1996 · A family doctor&#x27;s office in Appalachia</small></span>
+      </a></li><li class="era" style="--a:#2B7BD8;--bgc:#E8F4FF;--inkc:#1E2B3A">
+      <a href="/back-in-time/2000s/">
+        <span class="yr">The 2000s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8c20 8 20 16 0 24s-20 16 0 24M52 8c-20 8-20 16 0 24s20 16 0 24"/><path d="M18 14h28M22 20h20M22 44h20M18 50h28"/></svg></span>
+        <span class="txt"><b>Fund the mRNA Lab</b><span>Modified mRNA in fat bubbles will make vaccines in days. Fund it and build the factories now.</span><small>2005 · A basement lab in Philadelphia</small></span>
+      </a></li><li class="era" style="--a:#2196F3;--bgc:#FAFAFA;--inkc:#212121">
+      <a href="/back-in-time/2010s/">
+        <span class="yr">The 2010s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 34l20-4 16-20h6l-8 20 18-2 4-6h4l-2 10 2 10h-4l-4-6-18-2 8 20h-6L24 34z"/></svg></span>
+        <span class="txt"><b>One Sensor Isn&#x27;t Enough</b><span>Never let one sensor command the flight controls, and tell the pilots it&#x27;s there.</span><small>2016 · An aircraft design review</small></span>
+      </a></li><li class="era" style="--a:#8B7BFF;--bgc:#0B0B0F;--inkc:#ECECF1">
+      <a href="/back-in-time/2020s/">
+        <span class="yr">The 2020s</span>
+        <span class="chip"><svg viewBox="0 0 64 64" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22h34a6 6 0 10-6-6M6 34h46a6 6 0 11-6 6M6 46h24"/><circle cx="50" cy="20" r="2" opacity=".6"/><circle cx="56" cy="30" r="1.5" opacity=".6"/></svg></span>
+        <span class="txt"><b>It&#x27;s in the Air</b><span>The new coronavirus spreads through the air. Ventilate, filter, mask, and meet outside.</span><small>January, 2020 · An office, a school, a restaurant</small></span>
+      </a></li></ol>
+  <p class="foot">The stories are fiction; the notes are history, with sources on each page. None of it is medical advice. By <a href="/">Andor</a>.</p>
+</main>
+</body>
+</html>

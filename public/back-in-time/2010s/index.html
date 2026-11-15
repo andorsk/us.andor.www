@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAFAFA">
+<meta name="description" content="The 2010s: if I could carry one thing back, it would be this. Never let one sensor command the flight controls, and tell the pilots it&#x27;s there.">
+<title>One Sensor Isn&#x27;t Enough · One Thing Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>:root{color-scheme:light;--bg:#FAFAFA;--ink:#212121;--mut:#616161;--acc:#2196F3;--card:#FFFFFF;--tf:'Roboto', sans-serif;--bf:'Roboto', sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.65 var(--bf)}
+a{color:var(--acc)}
+.sheet{width:min(760px,100%);margin:0 auto;padding:22px 18px 56px}
+.top{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:18px}
+.top a{text-decoration:none}
+.mast{text-align:center;margin-bottom:22px}
+.when{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.mast h1{margin:6px 0 6px;font:400 clamp(34px,7.4vw,62px)/1.04 var(--tf)}
+.dek{margin:0 auto;max-width:44ch;font-style:italic;color:var(--mut);font-size:19px}
+.ico{display:flex;justify-content:center;color:var(--acc);margin:4px 0 18px}
+.story p{margin:0 0 15px}
+.story p:first-of-type::first-letter{float:left;font:400 3.6em/.86 var(--tf);margin:.06em .1em 0 0;color:var(--acc)}
+.box{border:2px solid var(--acc);background:var(--card);padding:14px 18px;margin:22px 0;border-radius:6px}
+.box h3{margin:0 0 6px;font:400 22px var(--tf);color:var(--acc)}
+.box ol{margin:0;padding-left:1.3em}.box li{margin:3px 0}
+h2{font:400 26px var(--tf);margin:34px 0 10px;color:var(--acc)}
+.why p{margin:0 0 12px}.why ul{padding-left:1.2em}.why li{margin-bottom:7px}
+.small{font-size:15px;color:var(--mut)}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid color-mix(in srgb,var(--ink) 25%,transparent);margin-top:30px;padding-top:14px;font-size:16px}
+.nav a{text-decoration:none}
+body{font-size:18px}.mast{background:var(--acc);color:#fff;padding:24px;border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.2);text-align:left}.mast .when,.mast .dek{color:#E3F2FD}.box{border:0;box-shadow:0 1px 4px rgba(0,0,0,.18);border-radius:2px}</style>
+</head>
+<body>
+<article class="sheet">
+  <div class="top"><a href="/back-in-time/">← One Thing Back: all eras</a><span>The 2010s</span></div>
+  <header class="mast">
+    <div class="when">2016 · An aircraft design review</div>
+    <h1>One Sensor Isn&#x27;t Enough</h1>
+    <p class="dek">Never let one sensor command the flight controls, and tell the pilots it&#x27;s there.</p>
+  </header>
+  <div class="ico"><svg viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 34l20-4 16-20h6l-8 20 18-2 4-6h4l-2 10 2 10h-4l-4-6-18-2 8 20h-6L24 34z"/></svg></div>
+  <section class="story"><p>The new version of the airliner had bigger, more efficient engines, mounted further forward. In some situations that made the nose want to pitch up. The fix was software: a system that, if it sensed the nose was too high, would quietly trim it back down.</p><p>On paper it was elegant. In the review, someone asked which sensor it listened to. The answer was one: a small vane on the side of the nose that measured the angle of the wind.</p><p>I was a contractor in that room, invented for this story, and I had come back from a future where that vane had failed twice, on two different aircraft, and the software had pushed the nose down again and again while the crews fought it without knowing what it was. Three hundred and forty-six people.</p><p>I didn't need new technology. I needed three things on the whiteboard. Compare two sensors, and if they disagree, switch the system off. Never let it push more than once without the pilot's say. And put it in the manual and the training, so that every crew knows it exists and how to stop it.</p><p>Somebody said it would add cost. Somebody said pilot training would need simulators. Both were true.</p><p>Both were cheaper.</p></section>
+  <div class="box"><h3>On the whiteboard</h3><ol><li>Any automated control must use at least two sensors.</li><li>If they disagree, disable the automation and alert the crew.</li><li>Limit how much authority it has, and how often it can act.</li><li>Tell the pilots it exists. Train them on it.</li></ol></div>
+  <section class="why">
+    <h2>A note on why</h2>
+    <p>Two crashes, five months apart, killed 346 people. The investigations found the design relied on a single sensor and that pilots had not been told about the system.</p><p>The lesson reaches beyond aviation, to any automation that acts on its own, including AI: redundancy, limits, and telling the humans what it does.</p>
+    <ul><li>Lion Air Flight 610 crashed on 29 October 2018 (189 killed); Ethiopian Airlines Flight 302 crashed on 10 March 2019 (157 killed).</li><li>Investigations found the MCAS software relied on input from a single angle-of-attack sensor, and that it was not described in pilot manuals.</li><li>The aircraft type was grounded worldwide from March 2019 until changes, including using two sensors, were approved.</li></ul>
+    <p><b>Runners-up for this era:</b> &#x27;it&#x27;s airborne&#x27; for 2020; mRNA; &#x27;build trust into AI agents from the start&#x27;.</p>
+    <p class="small">The design review and the contractor are invented. The crashes and the investigation findings are real. This is a story about history, not medical, legal or safety advice.</p>
+    <p class="small">Further reading: <a href="https://en.wikipedia.org/wiki/Boeing_737_MAX_groundings">Boeing 737 MAX groundings</a> · <a href="https://en.wikipedia.org/wiki/Maneuvering_Characteristics_Augmentation_System">Maneuvering Characteristics Augmentation System</a></p>
+  </section>
+  <nav class="nav" aria-label="Eras"><a href="/back-in-time/2000s/">← The 2000s</a><a href="/back-in-time/">All eras</a><a href="/back-in-time/2020s/">The 2020s →</a></nav>
+</article>
+</body>
+</html>

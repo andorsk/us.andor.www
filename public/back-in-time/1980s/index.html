@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050A05">
+<meta name="description" content="The 1980s: if I could carry one thing back, it would be this. Build identity and encryption into the internet before it scales.">
+<title>Sign Every Message · One Thing Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+<style>:root{color-scheme:dark;--bg:#050A05;--ink:#7CFF7C;--mut:#3FAF3F;--acc:#B6FFB6;--card:#0A140A;--tf:'VT323', monospace;--bf:'VT323', monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.65 var(--bf)}
+a{color:var(--acc)}
+.sheet{width:min(760px,100%);margin:0 auto;padding:22px 18px 56px}
+.top{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:18px}
+.top a{text-decoration:none}
+.mast{text-align:center;margin-bottom:22px}
+.when{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.mast h1{margin:6px 0 6px;font:400 clamp(34px,7.4vw,62px)/1.04 var(--tf)}
+.dek{margin:0 auto;max-width:44ch;font-style:italic;color:var(--mut);font-size:19px}
+.ico{display:flex;justify-content:center;color:var(--acc);margin:4px 0 18px}
+.story p{margin:0 0 15px}
+.story p:first-of-type::first-letter{float:left;font:400 3.6em/.86 var(--tf);margin:.06em .1em 0 0;color:var(--acc)}
+.box{border:2px solid var(--acc);background:var(--card);padding:14px 18px;margin:22px 0;border-radius:6px}
+.box h3{margin:0 0 6px;font:400 22px var(--tf);color:var(--acc)}
+.box ol{margin:0;padding-left:1.3em}.box li{margin:3px 0}
+h2{font:400 26px var(--tf);margin:34px 0 10px;color:var(--acc)}
+.why p{margin:0 0 12px}.why ul{padding-left:1.2em}.why li{margin-bottom:7px}
+.small{font-size:15px;color:var(--mut)}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid color-mix(in srgb,var(--ink) 25%,transparent);margin-top:30px;padding-top:14px;font-size:16px}
+.nav a{text-decoration:none}
+body{font-size:23px;text-shadow:0 0 6px rgba(124,255,124,.45)}body::after{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.25) 2px 3px)}.mast h1::before{content:'> '}.story p:first-of-type::first-letter{font-size:inherit;float:none;margin:0;color:inherit}</style>
+</head>
+<body>
+<article class="sheet">
+  <div class="top"><a href="/back-in-time/">← One Thing Back: all eras</a><span>The 1980s</span></div>
+  <header class="mast">
+    <div class="when">December, 1982 · A university machine room</div>
+    <h1>Sign Every Message</h1>
+    <p class="dek">Build identity and encryption into the internet before it scales.</p>
+  </header>
+  <div class="ico"><svg viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="32" r="10"/><path d="M30 32h28M50 32v8M44 32v6"/><circle cx="20" cy="32" r="3"/></svg></div>
+  <section class="story"><p>In a few weeks, every machine on the network would switch to a new protocol, and the switch was going to be permanent. The engineers in the machine room were tired and cheerful. The network had a few hundred hosts, all run by people who knew each other.</p><p>Mail was the favourite thing on it. Anyone could send a message to anyone, and the protocol simply believed whoever the message said it was from. Why wouldn't it? Everyone was a colleague.</p><p>I had come back from a world where that small kindness had grown into billions of fake messages a day, where a stranger could pretend to be your bank, your boss or your mother, and where whole industries existed to guess who was real.</p><p>I didn't need to invent anything. Public-key cryptography had been published six years earlier. I asked for something boring: that every host prove who it is, every message carry a signature, and every connection be encrypted by default. Make identity a part of the plumbing, not an afterthought.</p><p>One of the engineers asked who would manage all the keys. That is the right question, I said. Start answering it now, while you all still know each other's names.</p><p>They kept the protocol as it was. But one of them started signing his mail. Then another. Then a list of them did, as a joke, and the joke was called a web of trust.</p></section>
+  <div class="box"><h3>The protocol change</h3><ol><li>Every host proves its identity with a key.</li><li>Every message is signed by its sender.</li><li>Every connection is encrypted by default.</li><li>Design how keys are issued and revoked before you need it.</li></ol></div>
+  <section class="why">
+    <h2>A note on why</h2>
+    <p>The internet was built for a small group of people who trusted each other, and it scaled to billions who don't. Spam, phishing and impersonation trace straight back to protocols that believed whatever they were told.</p><p>This one is personal: I work on identity and trust for AI agents, and the same mistake is waiting to be made again.</p>
+    <ul><li>The ARPANET switched to TCP/IP on 1 January 1983.</li><li>The email protocol SMTP (1982) had no built-in way to verify a sender. Ways to authenticate senders (SPF, DKIM, DMARC) were added decades later.</li><li>Diffie–Hellman key exchange (1976) and RSA (1977) were published before the switch.</li><li>The Morris worm of 1988 was one of the first major attacks to spread across the internet.</li></ul>
+    <p><b>Runners-up for this era:</b> HIV prevention; the risks of opioids; mRNA.</p>
+    <p class="small">The machine room and the engineers are invented. The 1983 switch, SMTP and the history of public-key cryptography are real. This is a story about history, not medical, legal or safety advice.</p>
+    <p class="small">Further reading: <a href="https://en.wikipedia.org/wiki/Flag_day_(computing)">Flag day (computing)</a> · <a href="https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol">Simple Mail Transfer Protocol</a> · <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">Public-key cryptography</a></p>
+  </section>
+  <nav class="nav" aria-label="Eras"><a href="/back-in-time/1970s/">← The 1970s</a><a href="/back-in-time/">All eras</a><a href="/back-in-time/1990s/">The 1990s →</a></nav>
+</article>
+</body>
+</html>
