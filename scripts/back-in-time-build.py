@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from back_in_time_data import ERAS  # noqa: E402
+from back_in_time_data import ERAS, ME  # noqa: E402
 
 OUT = Path(__file__).resolve().parent.parent / "public" / "back-in-time"
 
@@ -96,6 +96,14 @@ def icon(k: str, size: int = 64, sw: float = 2.2) -> str:
             f'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{I[k]}</svg>')
 
 
+def mine(e: dict) -> str:
+    m = ME[e["slug"]]
+    kit = "".join(f"<li>{esc(k)}</li>" for k in m["kit"])
+    return (f'<section class="me" aria-labelledby="me-{e["slug"]}"><div class="k">And for myself: a good life in {esc(e["era"].replace("The ", "the "))}</div>'
+            f'<h3 id="me-{e["slug"]}">{esc(m["title"])}</h3><p>{esc(m["text"])}</p><ul>{kit}</ul>'
+            f'<p class="small">{esc(m["fact"])} Hindsight, not advice.</p></section>')
+
+
 def href(e: dict) -> str:
     return e.get("href") or f"/back-in-time/{e['slug']}/"
 
@@ -120,6 +128,10 @@ a{color:var(--acc)}
 h2{font:400 26px var(--tf);margin:34px 0 10px;color:var(--acc)}
 .why p{margin:0 0 12px}.why ul{padding-left:1.2em}.why li{margin-bottom:7px}
 .small{font-size:15px;color:var(--mut)}
+.me{margin:26px 0;padding:16px 18px;border-radius:8px;background:color-mix(in srgb,var(--acc) 10%,var(--card));border:1px dashed var(--acc)}
+.me .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.me h3{margin:2px 0 8px;font:400 26px/1.15 var(--tf);color:var(--acc)}
+.me p{margin:0 0 8px}.me ul{margin:0 0 8px;padding-left:1.2em}
 .nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid color-mix(in srgb,var(--ink) 25%,transparent);margin-top:30px;padding-top:14px;font-size:16px}
 .nav a{text-decoration:none}
 """
@@ -133,6 +145,7 @@ def page(e: dict, prev: dict | None, nxt: dict | None) -> str:
     story = "".join(f"<p>{p}</p>" for p in e["story"])
     box = f'<div class="box"><h3>{esc(e["box"][0])}</h3><ol>{"".join(f"<li>{esc(x)}</li>" for x in e["box"][1])}</ol></div>'
     why = "".join(f"<p>{p}</p>" for p in e["why"])
+    me = mine(e)
     facts = "".join(f"<li>{f}</li>" for f in e["facts"])
     src = " · ".join(f'<a href="{esc(u)}">{esc(lbl)}</a>' for lbl, u in e["sources"])
     pv = f'<a href="{href(prev)}">← {esc(prev["era"])}</a>' if prev else "<span></span>"
@@ -159,6 +172,7 @@ def page(e: dict, prev: dict | None, nxt: dict | None) -> str:
   <div class="ico">{icon(e['icon'], 72, 1.8)}</div>
   <section class="story">{story}</section>
   {box}
+  {me}
   <section class="why">
     <h2>A note on why</h2>
     {why}
@@ -182,7 +196,7 @@ def master() -> str:
       <a href="{href(e)}">
         <span class="yr">{esc(e['era'])}</span>
         <span class="chip">{icon(e['icon'], 40, 2.4)}</span>
-        <span class="txt"><b>{esc(e['title'])}</b><span>{esc(e['thing'])}</span><small>{esc(e['when'])} · {esc(e['where'])}</small></span>
+        <span class="txt"><b>{esc(e['title'])}</b><span>{esc(e['thing'])}</span><span class="mine"><i>For me:</i> {esc(ME[e['slug']]['title'])}</span><small>{esc(e['when'])} · {esc(e['where'])}</small></span>
       </a></li>""")
     jump = "".join(f'<a href="{href(e)}" style="--a:{T[e["theme"]].get("mc", T[e["theme"]]["acc"])}">{esc(e["era"].replace("The ", ""))}</a>' for e in ERAS)
     return f"""<!doctype html>
@@ -221,6 +235,7 @@ ol.line::before{{content:"";position:absolute;left:118px;top:0;bottom:0;width:2p
 .txt b{{font:700 21px/1.2 Fraunces,serif;color:var(--a)}}
 @media (prefers-color-scheme:dark){{:root:not([data-theme="light"]) .txt b{{filter:brightness(1.5)}}}}
 .txt small{{color:var(--mut);font-size:13px}}
+.mine{{font-size:15px;color:var(--mut)}} .mine i{{font-style:normal;font-weight:600;color:var(--a)}}
 @media (max-width:620px){{ol.line::before{{left:20px}}.era a{{grid-template-columns:40px 1fr;gap:12px}}.yr{{grid-column:2;text-align:left;padding:0;font-size:16px}}.chip{{grid-row:1/3;grid-column:1}}.txt{{grid-column:2}}}}
 .foot{{margin-top:34px;font-size:14px;color:var(--mut)}} .foot a{{color:var(--ink)}}
 </style>
@@ -229,11 +244,11 @@ ol.line::before{{content:"";position:absolute;left:118px;top:0;bottom:0;width:2p
 <main class="wrap">
   <div class="top"><a href="/">← andor.us</a></div>
   <h1>One Thing Back</h1>
-  <p class="lede">If you could carry one thing back in time, a technology or a piece of information, what would it be?</p>
-  <p class="rules">My rules: it has to work with what that era already had, in the hands of whoever would listen. One answer per century until 1800, then every twenty years, then every decade. Each one is a short story, set in its time and styled like it, with a note on the real history underneath.</p>
+  <p class="lede">If you could carry one thing back in time (a technology, a piece of knowledge, an idea, a habit), what would it be?</p>
+  <p class="rules">Two answers for every era. <b>For the world:</b> one technology or piece of knowledge that era could use straight away, told as a short story set in its time and styled like it. <b>For me:</b> the idea, habit or bit of hindsight that would give me a good life there. One era per century until 1800, then every twenty years, then every decade. Each page has the real history underneath.</p>
   <nav class="jump" aria-label="Jump to an era">{jump}</nav>
   <ol class="line">{''.join(cards)}</ol>
-  <p class="foot">The stories are fiction; the notes are history, with sources on each page. None of it is medical advice. By <a href="/">Andor</a>.</p>
+  <p class="foot">The stories are fiction; the notes are history, with sources on each page. None of it is medical or financial advice. By <a href="/">Andor</a>.</p>
 </main>
 </body>
 </html>
