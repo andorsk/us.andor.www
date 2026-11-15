@@ -24,6 +24,13 @@ export const ProjectLinks: Link[] = [
       "A small runtime agentic PDP (policy decision point) that decides, live, what an AI agent is allowed to do. Part of building the infrastructure for the agentic web.",
   },
   {
+    url: "/singularity/",
+    label: "Roadmap to Singularity",
+    dates: "2026",
+    description:
+      "A market map of where AI is heading over the next 1, 2 and 5 years: the technical breakthroughs that have to happen on the way, the opportunities they open up, and where I'm placing bets.",
+  },
+  {
     url: "/magic/",
     label: "Roadmap to Magic",
     dates: "2026",
