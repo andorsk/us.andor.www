@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0B1E">
+<meta name="description" content="The rule book for Night Market, a bluffing card game for 2 to 6 players.">
+<title>Night Market Rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito+Sans:wght@400;600;800&display=swap">
+<style>
+:root { color-scheme: dark; --night: #0E0B1E; --lantern: #FF6A3D; --gold: #E8C46A; --ink: #FFF7E8; --muted: #B7AACB; --line: rgba(232,196,106,.25); --good: #8CCB5E; --bad: #FF5A5A; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); font: 18px/1.6 "Cormorant Garamond", Georgia, serif; background: radial-gradient(ellipse at 50% -10%, #3A1E3A, var(--night) 55%); }
+.wrap { width: min(820px, 100%); margin: 0 auto; padding: 26px 16px 60px; display: grid; gap: 22px; }
+a { color: var(--gold); }
+.top { display: flex; justify-content: space-between; font: 600 14px "Nunito Sans", sans-serif; }
+h1 { margin: 0; font: 700 clamp(36px, 8vw, 60px)/1.05 "Cormorant SC", serif; color: var(--gold); text-align: center; text-shadow: 0 0 22px rgba(255,106,61,.4); }
+.tagline { text-align: center; font-style: italic; font-size: 21px; color: var(--muted); margin: -8px 0 0; }
+.facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font: 600 14px "Nunito Sans", sans-serif; }
+.facts span { border: 1px solid var(--line); border-radius: 99px; padding: 5px 12px; color: var(--gold); }
+section { background: rgba(26,20,51,.75); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+h2 { margin: 0 0 8px; font: 700 26px "Cormorant SC", serif; color: var(--gold); letter-spacing: .04em; }
+h2 small { font: 600 13px "Nunito Sans"; color: var(--muted); letter-spacing: .1em; margin-right: 8px; }
+p { margin: 0 0 10px; } ol, ul { margin: 0 0 10px; padding-left: 1.3em; } li { margin-bottom: 6px; }
+b { color: var(--ink); font-weight: 600; } .hot { color: var(--lantern); } .good { color: var(--good); } .bad { color: var(--bad); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; justify-items: center; }
+.cards .card { --w: 100%; max-width: 180px; }
+.callout { border-left: 3px solid var(--lantern); padding: 8px 14px; background: rgba(255,106,61,.08); border-radius: 0 10px 10px 0; margin: 10px 0; }
+table { width: 100%; border-collapse: collapse; font: 15px "Nunito Sans", sans-serif; } td, th { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; } th { color: var(--gold); font-weight: 800; }
+.cta { text-align: center; } .cta a { display: inline-block; background: var(--lantern); color: #1A0A04; font: 800 16px "Nunito Sans"; padding: 12px 22px; border-radius: 12px; text-decoration: none; }
+CARD_CSS_SLOT
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="/night-market/">← Back to the market</a><a href="/magic/">andor.us</a></div>
+  <h1>Night Market</h1>
+  <p class="tagline">The rule book</p>
+  <div class="facts"><span>2–6 players (best with 3–5)</span><span>About 20 minutes</span><span>Bluffing · deduction</span></div>
+
+  <section>
+    <h2><small>I</small>The idea</h2>
+    <p>You run a stall in a lantern-lit night market. Behind your counter are two hidden <b>character cards</b>, the people who work for you. Each character has a power, and on your turn you may <b>claim</b> any character's power, <i>whether or not you actually hold that card</i>.</p>
+    <p>Anyone may <b class="hot">call</b> your claim. Get caught bluffing and you pay a fine. Call an honest claim and <i>you</i> pay.</p>
+    <p>The market is open for <b>6 hours</b> (6 rounds). When the last lantern burns out, the stallholder with the <b>most coins wins</b>. Nobody is ever knocked out; every coin counts until the end.</p>
+  </section>
+
+  <section>
+    <h2><small>II</small>The cast</h2>
+    <p>The deck has <b>18 cards</b>: three of each of these six characters.</p>
+    <div class="cards" id="cast"></div>
+  </section>
+
+  <section>
+    <h2><small>III</small>Setting up</h2>
+    <ol>
+      <li>One player opens a table and shares the invite link. Friends join with just a name.</li>
+      <li>The host opens the market. Seating is shuffled.</li>
+      <li>Everyone gets <b>2 hidden cards</b> and <b>3 coins</b>. The lantern pot starts empty.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><small>IV</small>Your turn</h2>
+    <ol>
+      <li><b>Pay the stall fee.</b> 1 coin goes from you into the <span class="hot">lantern pot</span> (if you have any coins). This happens automatically.</li>
+      <li><b>Choose one move:</b>
+        <ul>
+          <li><b>Haggle:</b> take 2 coins from the bank. This is not a claim, so nobody can call it.</li>
+          <li><b>Claim a character:</b> announce one of the six characters and use its power. You don't have to hold it.</li>
+        </ul></li>
+      <li>If you claimed a character, everyone else gets <b>12 seconds</b> to <span class="hot">call it</span> or let it pass. If everyone lets it pass, or time runs out, your power happens.</li>
+    </ol>
+    <p>You have 90 seconds for a turn. If you doze off, you automatically Haggle.</p>
+  </section>
+
+  <section>
+    <h2><small>V</small>Calling a bluff</h2>
+    <p>The first player to press <b>Call it!</b> challenges the claim. The market checks the claimer's hidden cards:</p>
+    <table>
+      <tr><th></th><th>What happens</th></tr>
+      <tr><td class="bad">The claimer was bluffing</td><td>The claim fails, and the claimer pays the caller <b>2 coins</b> (or everything they have).</td></tr>
+      <tr><td class="good">The claimer was honest</td><td>The caller pays the claimer <b>2 coins</b>. The claimer's proven card is shuffled into the deck and they draw a fresh one, so everyone knows what they <i>had</i>, not what they <i>have</i>. Then the power happens as normal.</td></tr>
+    </table>
+    <div class="callout">Haggle can never be called. Only character claims can.</div>
+  </section>
+
+  <section>
+    <h2><small>VI</small>The powers in detail</h2>
+    <ul>
+      <li><b>Peddler:</b> take 3 coins from the bank.</li>
+      <li><b>Pickpocket:</b> choose a stallholder and take up to 2 of their coins.</li>
+      <li><b>Lamplighter:</b> take every coin in the lantern pot. The pot grows by 1 every turn, so the longer nobody claims the Lamplighter, the bigger the prize.</li>
+      <li><b>Fortune-teller:</b> choose a stallholder and name a character. If they hold at least one card of it, they pay you <b>3</b>. If not, you pay them <b>1</b>. The answer is announced to the table.</li>
+      <li><b>Fence:</b> choose a stallholder and one of your cards. You give them that card and take one of theirs at random. Only the two of you learn which cards moved.</li>
+      <li><b>Ferryman:</b> draw 2 cards from the deck, look at all 4, keep any 2 and return the other 2. Nobody else sees what you kept.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><small>VII</small>End of the night</h2>
+    <p>Each time play returns to the first seat, an hour passes and a lantern goes dark. After the 6th hour the market closes. <b>Most coins wins</b>; ties share the win. Coins left in the lantern pot belong to nobody.</p>
+    <p>The host can call a <b>rematch</b> with the same table, and new friends can join between games.</p>
+  </section>
+
+  <section>
+    <h2><small>VIII</small>Tips from the old stallholders</h2>
+    <ul>
+      <li>Claims are cheap, calls are risky. A caller who's wrong pays the claimer and still has to watch the power land.</li>
+      <li>After an honest claim is called, the claimer has drawn a <i>new</i> card. Use that.</li>
+      <li>The Fortune-teller rewards memory: who has claimed what, who was called, and what moved under the table.</li>
+      <li>Watch the lantern pot. When it gets fat, everyone suddenly "has" a Lamplighter.</li>
+      <li>Haggling is safe but slow. You won't win the night on 2 coins a turn.</li>
+    </ul>
+  </section>
+
+  <p class="cta"><a href="/night-market/">Open a table</a></p>
+</div>
+<script type="module">
+import { ORDER, card, DEFS, CARD_CSS } from "../cards.js";
+document.querySelector("style").textContent = document.querySelector("style").textContent.replace("CARD_CSS_SLOT", CARD_CSS);
+document.body.insertAdjacentHTML("afterbegin", DEFS);
+document.querySelector("#cast").innerHTML = ORDER.map((k) => card(k)).join("");
+</script>
+</body>
+</html>

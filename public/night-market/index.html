@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E0B1E">
+<meta name="description" content="Night Market: a bluffing card game for 2 to 6 friends. Claim powers you may not have. Call their bluffs. Be the richest when the lanterns burn out.">
+<title>Night Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Nunito+Sans:wght@400;600;800&display=swap">
+<style>
+/* A night market under strings of paper lanterns. Stalls around a square, a fat lantern pot in the middle collecting
+   stall fees, and in your hand two painted cards nobody else can see. */
+:root { color-scheme: dark; --night: #0E0B1E; --night-2: #1A1433; --lantern: #FF6A3D; --gold: #E8C46A; --ink: #FFF7E8; --muted: #B7AACB; --line: rgba(232,196,106,.25); --good: #8CCB5E; --bad: #FF5A5A; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; color: var(--ink); font-family: "Nunito Sans", system-ui, sans-serif; background: radial-gradient(ellipse at 50% -10%, #3A1E3A, var(--night) 60%); }
+.strings { position: fixed; inset: 0 0 auto 0; height: 90px; pointer-events: none; z-index: 0; }
+.wrap { position: relative; z-index: 1; width: min(1060px, 100%); margin: 0 auto; padding: 74px 16px 48px; display: grid; gap: 14px; }
+header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+h1 { margin: 0; font: 700 clamp(30px, 6vw, 46px) "Cormorant SC", serif; letter-spacing: .06em; color: var(--gold); text-shadow: 0 0 20px rgba(255,106,61,.4); }
+header a { color: var(--gold); font-weight: 600; }
+.panel { background: rgba(26,20,51,.82); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.center { text-align: center; display: grid; gap: 12px; justify-items: center; }
+.lede { font: italic 500 20px/1.45 "Cormorant Garamond", serif; color: var(--muted); max-width: 52ch; margin: 0; }
+input { background: rgba(255,247,232,.06); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); font: 17px "Nunito Sans"; padding: 10px 12px; min-width: 0; }
+button { border: 1px solid var(--gold); background: rgba(232,196,106,.12); color: var(--gold); font: 800 14px "Nunito Sans"; letter-spacing: .04em; padding: 10px 16px; border-radius: 10px; cursor: pointer; }
+button.hot { background: var(--lantern); border-color: var(--lantern); color: #1A0A04; }
+button:disabled { opacity: .4; cursor: default; }
+button:focus-visible, input:focus-visible, .pick:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; align-items: center; }
+.err { color: var(--bad); min-height: 1.3em; font-weight: 600; }
+[hidden] { display: none !important; }
+/* status bar */
+.bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
+.lanterns { display: flex; gap: 6px; align-items: center; } .lanterns span { font-size: 13px; color: var(--muted); margin-left: 6px; }
+.lan { width: 16px; height: 22px; border-radius: 6px; background: #3A2A3A; } .lan.lit { background: radial-gradient(circle at 50% 40%, #FFE08A, var(--lantern) 60%, #9A1A1A); box-shadow: 0 0 12px rgba(255,106,61,.7); }
+.stat { font-weight: 800; } .stat small { font-weight: 400; color: var(--muted); margin-right: 4px; }
+.invite { font-size: 14px; color: var(--muted); }
+/* stallholders */
+.stalls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stall { border: 1px solid var(--line); border-radius: 14px; padding: 10px; background: rgba(14,11,30,.6); display: grid; gap: 6px; justify-items: center; position: relative; }
+.stall.turn { border-color: var(--lantern); box-shadow: 0 0 0 1px var(--lantern), 0 0 24px rgba(255,106,61,.35); }
+.stall.me { background: rgba(232,196,106,.08); }
+.stall b { font-size: 16px; } .stall .coins { color: var(--gold); font-weight: 800; }
+.stall .hand { display: flex; gap: 4px; } .stall .hand .card.sm { --w: 34px; }
+.tag { position: absolute; top: -9px; right: 10px; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: var(--lantern); color: #1A0A04; }
+.pick { cursor: pointer; } .pick:hover { border-color: var(--gold); }
+/* the call banner */
+.call { border-color: var(--lantern); background: linear-gradient(180deg, rgba(255,106,61,.16), rgba(26,20,51,.9)); }
+.call h2 { margin: 0; font: 700 24px "Cormorant SC", serif; }
+.timer { height: 6px; width: min(420px, 100%); background: #2A2040; border-radius: 3px; overflow: hidden; } .timer i { display: block; height: 100%; background: var(--lantern); transition: width 1s linear; }
+/* your hand and moves */
+.mine { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: start; }
+@media (max-width: 760px) { .mine { grid-template-columns: 1fr; } }
+.yours { display: flex; gap: 10px; justify-content: center; } .yours .card { --w: 140px; }
+h3 { margin: 0 0 8px; font: 700 18px "Cormorant SC", serif; letter-spacing: .06em; color: var(--gold); }
+.moves { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.move { text-align: left; display: grid; gap: 2px; padding: 9px 11px; border-color: var(--line); color: var(--ink); background: rgba(14,11,30,.6); font-weight: 600; }
+.move b { color: var(--gold); font-size: 15px; } .move small { color: var(--muted); font-weight: 400; font-size: 12.5px; line-height: 1.3; }
+.move.held { border-color: var(--good); } .move.held b::after { content: " · in hand"; color: var(--good); font-size: 11px; }
+.move.bluff b::after { content: " · bluff"; color: var(--bad); font-size: 11px; }
+.step { display: grid; gap: 10px; }
+.notes { display: grid; gap: 4px; font-size: 14px; color: var(--good); }
+.offer { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; } .offer .card { cursor: pointer; --w: 120px; opacity: .55; } .offer .card.on { opacity: 1; outline: 3px solid var(--gold); }
+/* the log */
+.log { max-height: 260px; overflow-y: auto; display: grid; gap: 4px; font-size: 14.5px; color: var(--muted); }
+.log div:last-child { color: var(--ink); }
+.results { display: grid; gap: 6px; width: min(420px, 100%); } .results div { display: flex; justify-content: space-between; padding: 8px 12px; border-radius: 10px; background: rgba(14,11,30,.6); }
+.results div:first-child { background: rgba(232,196,106,.18); color: var(--gold); font-weight: 800; }
+.foot { text-align: center; font-size: 13px; color: rgba(255,247,232,.4); } .foot a { color: var(--gold); }
+CARD_CSS_SLOT
+</style>
+</head>
+<body>
+<svg class="strings" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true" id="strings"></svg>
+<div class="wrap">
+  <header><h1>Night Market</h1><a href="/night-market/rules/">Rule book</a></header>
+
+  <section class="panel center" id="entry">
+    <p class="lede">A bluffing game for 2 to 6 friends. Claim the powers of characters you may not have, call each other's bluffs, and be the richest stallholder when the lanterns burn out.</p>
+    <div class="row"><input id="name" maxlength="16" placeholder="Your name" aria-label="Your name" autocomplete="nickname"></div>
+    <div class="row"><button class="hot" id="create" type="button">Open a new table</button><button id="join" type="button" hidden>Join table</button></div>
+    <div class="err" id="err0" role="alert"></div>
+    <p class="invite">Opening a table gives you a link to send to friends. Nobody needs an account.</p>
+  </section>
+
+  <section id="game" hidden>
+    <div class="panel bar">
+      <div class="lanterns" id="lanterns"></div>
+      <div class="stat"><small>Lantern pot</small><span id="pot">0</span></div>
+      <div class="stat"><small>Deck</small><span id="deck">0</span></div>
+      <div class="row"><span class="invite">Table <b id="code"></b></span><button id="copy" type="button">Copy invite link</button></div>
+    </div>
+    <div class="stalls" id="stalls" style="margin-top:12px"></div>
+
+    <div class="panel center" id="lobby" style="margin-top:12px" hidden>
+      <h3>Waiting for stallholders</h3>
+      <p class="lede" id="lobbyText"></p>
+      <div class="row"><button class="hot" id="start" type="button">Open the market</button><button id="leave" type="button">Leave table</button></div>
+    </div>
+
+    <div class="panel center call" id="call" style="margin-top:12px" hidden>
+      <h2 id="callText"></h2><div class="timer"><i id="callTimer"></i></div>
+      <div class="row" id="callBtns"><button class="hot" id="doCall" type="button">Call it! (fine: 2)</button><button id="doPass" type="button">Let it pass</button></div>
+      <div class="invite" id="callWait"></div>
+    </div>
+
+    <div class="panel center" id="over" style="margin-top:12px" hidden>
+      <h3>The lanterns burn out</h3><div class="results" id="results"></div>
+      <div class="row"><button class="hot" id="again" type="button">Rematch</button><button id="leave2" type="button">Leave table</button></div>
+    </div>
+
+    <div class="panel mine" id="mine" style="margin-top:12px" hidden>
+      <div><h3>Your stall</h3><div class="yours" id="yours"></div><div class="notes" id="notes" style="margin-top:8px"></div></div>
+      <div>
+        <div id="turnArea">
+          <h3 id="turnTitle"></h3>
+          <div class="timer" id="turnTimerWrap" style="margin-bottom:10px"><i id="turnTimer"></i></div>
+          <div class="moves" id="moves"></div>
+          <div class="step" id="step" hidden></div>
+        </div>
+        <div id="ferryArea" hidden><h3>The Ferryman: keep two</h3><div class="offer" id="offer"></div><div class="row" style="margin-top:10px"><button class="hot" id="keep" type="button" disabled>Keep these two</button></div></div>
+        <div class="err" id="err" role="alert"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px"><h3>The market crier</h3><div class="log" id="log" aria-live="polite"></div></div>
+  </section>
+  <p class="foot">An original game for andor.us. Rules: <a href="/night-market/rules/">the rule book</a>. Tables are kept in memory only and close after 12 quiet hours.</p>
+</div>
+<script type="module">
+import { CHARS, ORDER, card, back, DEFS, CARD_CSS } from "./cards.js";
+document.querySelector("style").textContent = document.querySelector("style").textContent.replace("CARD_CSS_SLOT", CARD_CSS);
+document.body.insertAdjacentHTML("afterbegin", DEFS);
+const API = "https://ubuntu-dev.tail89681.ts.net/api/public/spells/market";
+const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[<&"]/g, (c) => ({ "<": "&lt;", "&": "&amp;", '"': "&quot;" })[c]);
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }, del: (k) => { try { localStorage.removeItem(k); } catch (e) {} } };
+let code = new URLSearchParams(location.search).get("t")?.toUpperCase().slice(0, 5) || "", token = code ? store.get(`nm:${code}`) : null, S = null, timer = 0, plan = null, keep = new Set(), lastLog = 0;
+$("#name").value = store.get("nm:name") || "";
+// lantern strings
+$("#strings").innerHTML = [0, 1].map((r) => { const y0 = 18 + r * 26; let s = `<path d="M0 ${y0} Q600 ${y0 + 34} 1200 ${y0}" stroke="#4A3A4A" stroke-width="1.5" fill="none"/>`;
+  for (let x = 40 + r * 40; x < 1200; x += 80) { const y = y0 + 34 * (1 - Math.pow((x - 600) / 600, 2)) / 2 * 2 * .5 + 6; const col = ["#FF6A3D", "#E8C46A", "#E84A6A", "#FF8A3D"][(x / 80 + r) % 4 | 0]; s += `<rect x="${x - 7}" y="${y}" width="14" height="18" rx="6" fill="${col}" opacity=".85"/><circle cx="${x}" cy="${y + 9}" r="16" fill="${col}" opacity=".12"/>`; }
+  return s; }).join("");
+async function api(body) {
+  const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const d = await r.json().catch(() => ({ error: "The market is unreachable." }));
+  if (!r.ok) throw new Error(d.error || "Something went wrong.");
+  return d;
+}
+const fail = (e, where = "#err") => { $(where).textContent = e.message === "Failed to fetch" ? "Can't reach the market. Check your connection and try again." : e.message; };
+function enter(d) { code = d.code; token = d.token; store.set(`nm:${code}`, token); history.replaceState(null, "", `?t=${code}`); $("#entry").hidden = true; $("#game").hidden = false; render(d); poll(); }
+if (code) { $("#join").hidden = false; $("#join").textContent = `Join table ${code}`; $("#create").classList.remove("hot"); $("#join").classList.add("hot"); }
+const myName = () => { const n = $("#name").value.trim(); if (!n) throw new Error("Tell the market your name first."); store.set("nm:name", n); return n; };
+$("#create").addEventListener("click", async () => { $("#err0").textContent = ""; try { enter(await api({ op: "create", name: myName() })); } catch (e) { fail(e, "#err0"); } });
+$("#join").addEventListener("click", async () => { $("#err0").textContent = ""; try { enter(await api({ op: "join", code, name: myName(), token })); } catch (e) { fail(e, "#err0"); } });
+if (code && token) api({ op: "state", code, token }).then((d) => { if (d.you) enter({ ...d, token }); }).catch(() => {});
+async function poll() { clearTimeout(timer); try { render(await api({ op: "state", code, token })); } catch (e) { if (/No market/.test(e.message)) { $("#log").insertAdjacentHTML("beforeend", "<div>This table has closed.</div>"); return; } }
+  timer = setTimeout(poll, document.hidden ? 4000 : 1200); }
+document.addEventListener("visibilitychange", () => { if (!document.hidden && token) poll(); });
+async function send(body) { $("#err").textContent = ""; try { render(await api({ code, token, ...body })); } catch (e) { fail(e); } }
+function render(d) {
+  S = d; const me = d.you, p = d.players, phase = d.phase, mine = me && p[d.turn] && me.index === d.turn;
+  $("#code").textContent = d.code;
+  // lanterns: one per hour, dark once burned
+  $("#lanterns").innerHTML = Array.from({ length: d.hours }, (_, i) => `<i class="lan ${phase === "lobby" || i >= d.hour - 1 ? "lit" : ""}"></i>`).join("") + `<span>${phase === "lobby" ? `${d.hours} hours` : phase === "over" ? "closed" : `hour ${d.hour} of ${d.hours}`}</span>`;
+  $("#pot").textContent = d.pot; $("#deck").textContent = d.deck;
+  const pickable = plan && plan.need === "target";
+  $("#stalls").innerHTML = p.map((x, i) => `<div class="stall ${i === d.turn && phase !== "lobby" && phase !== "over" ? "turn" : ""} ${me && me.index === i ? "me" : ""} ${pickable && me.index !== i ? "pick" : ""}" data-i="${i}" ${pickable && me.index !== i ? 'tabindex="0" role="button"' : ""}>
+    ${x.host ? '<span class="tag">host</span>' : ""}<b>${esc(x.name)}${me && me.index === i ? " (you)" : ""}</b><span class="coins">${phase === "lobby" ? "ready" : `${x.coins} coin${x.coins === 1 ? "" : "s"}`}</span>
+    <div class="hand">${phase === "lobby" ? "" : back({ small: true }) + back({ small: true })}</div></div>`).join("");
+  document.querySelectorAll(".stall.pick").forEach((el) => { const go = () => choose("target", +el.dataset.i); el.addEventListener("click", go); el.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); }); });
+  $("#lobby").hidden = phase !== "lobby"; $("#over").hidden = phase !== "over"; $("#mine").hidden = !me || phase === "lobby";
+  if (phase === "lobby") { $("#lobbyText").textContent = `${p.length} of 6 at the table. ${p.length < 2 ? "Send the invite link to friends." : p.length < 3 ? "Two can play; three or more is better." : "Ready when the host is."}`;
+    $("#start").hidden = !me?.host; $("#start").disabled = p.length < 2; }
+  if (phase === "over") { $("#results").innerHTML = [...p].sort((a, b) => b.coins - a.coins).map((x) => `<div><span>${esc(x.name)}</span><span>${x.coins}</span></div>`).join(""); $("#again").hidden = !me?.host; }
+  // the call window
+  const pend = d.pending; $("#call").hidden = phase !== "call";
+  if (phase === "call" && pend) { const by = p[pend.by], c = CHARS[pend.action];
+    $("#callText").textContent = pend.action === "fortune" ? `${by.name} claims the Fortune-teller: ${p[pend.target].name} holds a ${CHARS[pend.name].name}?` : `${by.name} claims the ${c.name}${pend.target != null ? ` against ${p[pend.target].name}` : ""}.`;
+    $("#callTimer").style.width = `${Math.min(100, d.deadline / 12 * 100)}%`;
+    const canCall = me && me.index !== pend.by && !pend.passed.includes(me.index); $("#callBtns").hidden = !canCall;
+    $("#callWait").textContent = me && me.index === pend.by ? "Waiting to see if anyone calls your bluff…" : me && pend.passed.includes(me.index) ? "You let it pass." : !me ? "You're watching." : "Think they're bluffing? A wrong call costs you 2.";
+  }
+  if (me && phase !== "lobby") {
+    $("#yours").innerHTML = (me.cards || []).map((k) => card(k)).join("");
+    $("#notes").innerHTML = (me.notes || []).slice(-3).map((n) => `<div>✦ ${esc(n)}</div>`).join("");
+    $("#ferryArea").hidden = !(phase === "ferry" && mine); $("#turnArea").hidden = phase === "ferry" && mine;
+    if (phase === "ferry" && mine && me.offer) { $("#offer").innerHTML = me.offer.map((k, i) => card(k, { cls: keep.has(i) ? "on" : "" }).replace('class="card', `data-k="${i}" tabindex="0" role="button" class="card`)).join("");
+      document.querySelectorAll("#offer .card").forEach((el) => el.addEventListener("click", () => { const i = +el.dataset.k; keep.has(i) ? keep.delete(i) : keep.size < 2 && keep.add(i); render(S); })); $("#keep").disabled = keep.size !== 2; }
+    const myTurn = phase === "turn" && mine; $("#turnTimerWrap").hidden = !myTurn;
+    $("#turnTitle").textContent = phase === "over" ? "Market closed" : myTurn ? "Your turn: choose a move" : phase === "ferry" ? `${p[d.turn].name} is with the Ferryman…` : phase === "call" ? "A claim is on the table" : `${p[d.turn]?.name}'s turn`;
+    if (myTurn) $("#turnTimer").style.width = `${Math.min(100, d.deadline / 90 * 100)}%`;
+    if (!myTurn) plan = null;
+    $("#moves").hidden = !myTurn || !!plan; $("#step").hidden = !plan;
+    if (myTurn && !plan) $("#moves").innerHTML = `<button class="move" data-a="haggle" type="button"><b>Haggle</b><small>Take 2 coins. No claim, can't be called.</small></button>` +
+      ORDER.map((k) => `<button class="move ${me.cards.includes(k) ? "held" : "bluff"}" data-a="${k}" type="button"><b>${CHARS[k].name}</b><small>${CHARS[k].power}</small></button>`).join("");
+    document.querySelectorAll("#moves .move").forEach((b) => b.onclick = () => begin(b.dataset.a));
+    if (plan) renderStep();
+  }
+  // the crier
+  const fresh = d.log.filter((l) => l.n > lastLog); if (fresh.length) { $("#log").innerHTML = d.log.map((l) => `<div>${esc(l.text)}</div>`).join(""); $("#log").scrollTop = 1e9; lastLog = d.log.at(-1).n; }
+}
+function begin(a) {
+  if (a === "haggle" || a === "peddler" || a === "lamplighter" || a === "ferryman") { plan = null; return send({ op: "act", action: a }); }
+  plan = { action: a, need: "target" }; render(S);
+}
+function choose(kind, v) {
+  if (!plan) return;
+  if (kind === "target") { plan.target = v; plan.need = plan.action === "fortune" ? "name" : plan.action === "fence" ? "give" : null; }
+  if (kind === "name") { plan.name = v; plan.need = null; } if (kind === "give") { plan.give = v; plan.need = null; }
+  if (!plan.need) { const b = { op: "act", action: plan.action, target: plan.target, name: plan.name, give: plan.give }; plan = null; return send(b); }
+  render(S);
+}
+function renderStep() {
+  const s = $("#step"), c = CHARS[plan.action];
+  const head = `<div><b style="color:var(--gold)">${c.name}</b>: ${c.power}</div>`;
+  if (plan.need === "target") s.innerHTML = `${head}<div>Tap a stallholder above to choose who.</div><div class="row"><button type="button" id="cancel">Back</button></div>`;
+  if (plan.need === "name") s.innerHTML = `${head}<div>Which character does ${esc(S.players[plan.target].name)} hold, do you think?</div><div class="row">${ORDER.map((k) => `<button type="button" data-n="${k}">${CHARS[k].name}</button>`).join("")}</div><div class="row"><button type="button" id="cancel">Back</button></div>`;
+  if (plan.need === "give") s.innerHTML = `${head}<div>Which of your cards do you give ${esc(S.players[plan.target].name)}?</div><div class="row">${S.you.cards.map((k, i) => `<button type="button" data-g="${i}">${CHARS[k].name}</button>`).join("")}</div><div class="row"><button type="button" id="cancel">Back</button></div>`;
+  s.querySelectorAll("[data-n]").forEach((b) => b.onclick = () => choose("name", b.dataset.n));
+  s.querySelectorAll("[data-g]").forEach((b) => b.onclick = () => choose("give", +b.dataset.g));
+  $("#cancel").onclick = () => { plan = null; render(S); };
+}
+$("#doCall").addEventListener("click", () => send({ op: "call" }));
+$("#doPass").addEventListener("click", () => send({ op: "pass" }));
+$("#keep").addEventListener("click", () => { const k = [...keep]; keep = new Set(); send({ op: "ferry", keep: k }); });
+$("#start").addEventListener("click", () => send({ op: "start" }));
+$("#again").addEventListener("click", () => send({ op: "start" }));
+const leave = async () => { try { await api({ op: "leave", code, token }); } catch (e) {} store.del(`nm:${code}`); location.href = location.pathname; };
+$("#leave").addEventListener("click", leave); $("#leave2").addEventListener("click", leave);
+$("#copy").addEventListener("click", async () => { const url = `${location.origin}${location.pathname}?t=${code}`;
+  try { if (navigator.share && matchMedia("(pointer: coarse)").matches) await navigator.share({ title: "Night Market", text: "Come play Night Market with me", url }); else { await navigator.clipboard.writeText(url); $("#copy").textContent = "Copied!"; setTimeout(() => { $("#copy").textContent = "Copy invite link"; }, 1600); } } catch (e) { prompt("Send this link:", url); } });
+</script>
+</body>
+</html>

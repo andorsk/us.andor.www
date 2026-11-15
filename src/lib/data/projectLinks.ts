@@ -38,6 +38,13 @@ export const ProjectLinks: Link[] = [
       "The first spell from the Roadmap to Magic made real: an inked map of San Francisco that stays blank until you say the words out loud, then unfolds and shows who is walking where. Speech recognition opens and closes it; the streets come from OpenStreetMap, drawn by hand-ish code. For now the wanderers are mock.",
   },
   {
+    url: "/night-market/",
+    label: "Night Market",
+    dates: "2026",
+    description:
+      "An original bluffing card game for 2 to 6 friends, played in the browser over an invite link. Claim the powers of characters you may not hold, call each other's bluffs, and be the richest stallholder when the lanterns burn out. Cards are dealt on the server so nobody can peek; comes with an illustrated rule book.",
+  },
+  {
     url: "https://projectnanda.org/",
     label: "Project NANDA : Bay Area Chapter",
     organization: "Bay Area Chapter",
