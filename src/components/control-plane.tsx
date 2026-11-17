@@ -5,11 +5,12 @@
 // which is exchanged for a 30-day session token kept on the device (see tokenStore).
 import { useCallback, useEffect, useState } from "react";
 import {
-  Bell, Bot, CalendarDays, Check, ChevronRight, LayoutGrid, QrCode, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
+  Bell, BookOpen, Bot, CalendarDays, Check, ChevronRight, LayoutGrid, QrCode, ListChecks, LogOut, Mail, MessageCircle, Sun, Terminal, Users, X,
 } from "lucide-react";
 import WorkPanel from "@/components/work-panel";
 import InboxPanel from "@/components/inbox-panel";
 import ConnectionsPanel from "@/components/connections-panel";
+import PapersPanel from "@/components/papers-panel";
 import { QRCodeSVG } from "qrcode.react";
 import AntonChat, { slackToMarkdown } from "@/components/anton-chat";
 import { Markdown } from "@/components/ui/markdown";
@@ -274,11 +275,12 @@ function Section({ title, right, children }: { title: string; right?: React.Reac
 
 // Every section of the dashboard. Add new areas here: they show up in the desktop sidebar and the phone's
 // "more" sheet automatically, and can be pinned to the phone's bottom bar.
-type Tab = "today" | "week" | "inbox" | "connections" | "chat" | "tickets" | "work";
+type Tab = "today" | "week" | "papers" | "inbox" | "connections" | "chat" | "tickets" | "work";
 const GROUPS = ["daily", "people", "build"] as const;
 const SECTIONS: { id: Tab; label: string; Icon: typeof Sun; group: (typeof GROUPS)[number] }[] = [
   { id: "today", label: "today", Icon: Sun, group: "daily" },
   { id: "week", label: "week", Icon: CalendarDays, group: "daily" },
+  { id: "papers", label: "papers", Icon: BookOpen, group: "daily" },
   { id: "inbox", label: "inbox", Icon: Mail, group: "people" },
   { id: "connections", label: "people", Icon: Users, group: "people" },
   { id: "chat", label: "chat", Icon: MessageCircle, group: "people" },
@@ -487,6 +489,11 @@ function Dashboard({ api, signOut }: { api: Api; signOut: () => void }) {
     week,
     inbox,
     connections,
+    papers: (
+      <Section title="paper a day">
+        <PapersPanel api={api} />
+      </Section>
+    ),
     chat: full(<AntonChat api={api} fill />),
     tickets: ticketsSection,
     work: full(<WorkPanel api={api} fill />),
