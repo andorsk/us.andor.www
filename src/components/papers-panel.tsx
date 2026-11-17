@@ -129,7 +129,7 @@ export default function PapersPanel({ api }: { api: Api }) {
       ))}
       {s.planned < s.total ? (
         <p className="mt-8 text-sm text-paper-muted">
-          Days {s.planned + 1}–{s.total} appear here once theyonce they're addedapos;re added to the plan.
+          Days {s.planned + 1}–{s.total} appear here once they&apos;re added to the plan.
         </p>
       ) : null}
     </div>
